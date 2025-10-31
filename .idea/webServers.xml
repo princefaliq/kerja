@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="643071f7-f9ae-435d-8011-bf375dff39b9" name="dev">
+        <fileTransfer rootFolder="/var/www/kerja" accessType="SFTP" host="172.11.10.19" port="22" sshConfigId="3f169327-b3d7-4e3f-80cf-ab3ff42fc900" sshConfig="root@172.11.10.19:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
