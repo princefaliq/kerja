@@ -224,7 +224,8 @@
 
                 fetch('{{ route("profile.update-dokumen") }}', {
                     method: 'POST',
-                    headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                    headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept' : 'application/json' },
+                    
                     body: formData
                 })
                     .then(res => {
@@ -254,7 +255,7 @@
                     })
                     .catch(err => {
                         console.error(err);
-                        alert('Terjadi kesalahan saat upload dokumen, '+err);
+                        alert('Terjadi kesalahan saat upload dokumen, '+err.message);
                     });
             });
         });
