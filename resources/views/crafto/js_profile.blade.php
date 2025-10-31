@@ -227,7 +227,22 @@
                     headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
                     body: formData
                 })
-                    .then(res => res.json())
+                    .then(res => {
+                        if(!res.ok){
+                            if(res.status === 422){
+                                return res.json().then(data =>{
+                                    let pesan ='';
+                                    for(const key in data.errors){
+                                        pesan += `${data.errors[key][0]}\n`;
+                                    }
+                                    alert ("Validasi gagal :\n" + pesan);
+                                    throw new Error('Validasi gagal');
+                                })
+                            }
+                            throw new Error ("Terjadi kesalahan server");
+                        }
+                        return res.json();
+                    })
                     .then(data => {
                         if (data.success) {
                             modalEditDokumen.hide();
@@ -239,7 +254,7 @@
                     })
                     .catch(err => {
                         console.error(err);
-                        alert('Terjadi kesalahan saat upload dokumen.');
+                        alert('Terjadi kesalahan saat upload dokumen, '+err);
                     });
             });
         });

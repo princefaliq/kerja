@@ -383,27 +383,27 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label">KTP</label>
-                                <input type="file" name="ktp" class="form-control">
+                                <input type="file" name="ktp" accept=".pdf" class="form-control">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">CV</label>
-                                <input type="file" name="cv" class="form-control">
+                                <input type="file" name="cv" accept=".pdf" class="form-control">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Ijazah</label>
-                                <input type="file" name="ijazah" class="form-control">
+                                <input type="file" name="ijazah" accept=".pdf" class="form-control">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">AK1</label>
-                                <input type="file" name="ak1" class="form-control">
+                                <input type="file" name="ak1" accept=".pdf" class="form-control">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Sertifikat</label>
-                                <input type="file" name="sertifikat" class="form-control">
+                                <input type="file" name="sertifikat" accept=".pdf" class="form-control">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Syarat Lain</label>
-                                <input type="file" name="syarat_lain" class="form-control">
+                                <input type="file" name="syarat_lain" accept=".pdf" class="form-control">
                             </div>
                         </div>
                     </form>

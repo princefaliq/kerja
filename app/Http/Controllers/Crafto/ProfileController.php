@@ -221,7 +221,6 @@ class ProfileController extends Controller
 
         return response()->json(['success' => true, 'name' => $user->name]);
     }
-
     public function updateData(Request $request)
     {
         $user = Auth::user();
@@ -268,6 +267,26 @@ class ProfileController extends Controller
 
     public function updateDokumen(Request $request)
     {
+        $request->validate([
+            
+            // File wajib
+            'ktp'               => 'nullable|mimes:pdf|max:2048',
+            'cv'                => 'nullable|mimes:pdf|max:2048',
+            'ijazah'            => 'nullable|mimes:pdf|max:2048',
+            'ak1'               => 'nullable|mimes:pdf|max:2048',
+
+            // File opsional
+            'sertifikat'        => 'nullable|mimes:pdf|max:2048',
+            'syarat_lain'       => 'nullable|mimes:pdf|max:2048',
+        ], [
+            // 🔸 Pesan error custom
+            'ktp.mimes' => 'File KTP harus berupa PDF.',
+            'cv.mimes' => 'File CV harus berupa PDF.',
+            'ijazah.mimes' => 'File Ijazah harus berupa PDF.',
+            'ak1.mimes' => 'File AK1 harus berupa PDF.',
+            'sertifikat.mimes' => 'File sertifikat harus berupa PDF.',
+            'syarat_lain.mimes' => 'File syarat lain harus berupa PDF.',
+        ]);
         try {
             $user = Auth::user();
             $profile = $user->pelamar; // pastikan relasi ada
