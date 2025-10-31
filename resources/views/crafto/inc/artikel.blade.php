@@ -1,5 +1,5 @@
 <!-- start section -->
-<section class="pb-3 bg-dark-midnight-blue lg-pb-40px md-pb-20px">
+<section class="pb-3 bg-dark-midnight-blue background-position-right-bottom background-no-repeat sm-background-image-none" style="background-image: url('logo/demo-conference-about-bg.png')">
     <div class="container">
         <div class="row justify-content-center mb-25px">
             <div class="col-lg-5 text-center" data-anime='{ "el": "childs", "translateY": [50, 0], "opacity": [0,1], "duration": 600, "delay": 0, "staggervalue": 150, "easing": "easeOutQuad" }'>

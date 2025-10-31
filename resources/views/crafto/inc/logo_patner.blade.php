@@ -1,4 +1,4 @@
-<section class="bg-dark-midnight-blue background-position-right-bottom background-no-repeat sm-background-image-none" style="background-image: url('logo/demo-conference-about-bg.png')">
+<section class="bg-dark-midnight-blue background-position-right-bottom background-no-repeat sm-background-image-none" >
     <div class="container">
         <div class="row position-relative clients-style-08">
             <div class="col swiper text-center feather-shadow" id="perusahaan-swiper"
