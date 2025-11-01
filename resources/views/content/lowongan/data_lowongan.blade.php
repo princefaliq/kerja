@@ -25,7 +25,7 @@
                     name: 'judul',
                     render: function(data, type, row) {
                         const baseUrl = "{{ url('/') }}/";
-                        const imageUrl = row.user?.avatar ? baseUrl + row.user.avatar : 'https://placehold.co/60';
+                        const imageUrl = row.user.avatar_url;
                         const slug = baseUrl +"lowongan-kerja/" + row.slug;
                         return `
                         <div class="d-flex align-items-center">
@@ -42,7 +42,7 @@
                 { data: 'lokasi', name: 'lokasi' },
                 { data: 'bidang_pekerjaan', name: 'bidang_pekerjaan' },
                 { data: 'jenis_pekerjaan', name: 'jenis_pekerjaan' },
-                { data: 'rentang_gaji', name: 'rentang_gaji' },
+                { data: 'jumlah_lowongan', name: 'jumlah_lowongan' },
                 { data: 'batas_lamaran', name: 'batas_lamaran' },
                 {
                     data: 'status',

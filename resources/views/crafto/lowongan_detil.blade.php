@@ -197,21 +197,29 @@
     <section>
         <div class="text-center">
             @auth
-                @if ($sudahMelamar)
-                    <button class="alt-font btn btn-small btn-box-shadow btn-secondary btn-round-edge" disabled>
-                        <i class="feather icon-feather-check"></i>
-                        <span class="button-text">Sudah Melamar</span>
-                    </button>
-                @else
-                    <form id="lamarForm" action="{{ route('melamar.daftar') }}" method="POST" class="d-inline">
-                        @csrf
-                        <input type="hidden" name="id_lowongan" value="{{ $lowongan->id }}">
-                        <button type="button" id="btnLamar" class="alt-font btn btn-small btn-box-shadow btn-base-color btn-round-edge left-icon add-to-cart">
-                            <i class="feather icon-feather-file"></i>
-                            <span class="button-text">Lamar</span>
+                @role('User')
+                    @if ($sudahMelamar)
+                        <button class="alt-font btn btn-small btn-box-shadow btn-secondary btn-round-edge" disabled>
+                            <i class="feather icon-feather-check"></i>
+                            <span class="button-text">Sudah Melamar</span>
                         </button>
-                    </form>
-                @endif
+                    @elseif (!$sudahIsi)
+                        <a href="{{ url('profile') }}" class="alt-font btn btn-small btn-box-shadow btn-base-color btn-round-edge left-icon">
+                            <i class="feather icon-feather-log-in"></i>
+                            <span class="button-text">Isi Biodata untuk Melamar</span>
+                        </a>
+                    @else
+                        <form id="lamarForm" action="{{ route('melamar.daftar') }}" method="POST" class="d-inline">
+                            @csrf
+                            <input type="hidden" name="id_lowongan" value="{{ $lowongan->id }}">
+                            <button type="button" id="btnLamar" class="alt-font btn btn-small btn-box-shadow btn-base-color btn-round-edge left-icon add-to-cart">
+                                <i class="feather icon-feather-file"></i>
+                                <span class="button-text">Lamar</span>
+                            </button>
+                        </form>
+                    @endif
+                @endrole
+                
             @else
                 <a href="{{ route('login') }}" class="alt-font btn btn-small btn-box-shadow btn-base-color btn-round-edge left-icon">
                     <i class="feather icon-feather-log-in"></i>

@@ -41,6 +41,7 @@ class User extends Authenticatable
      *
      * @var array
      */
+    protected $appends = ['avatar_url'];
     protected $dates = ['last_login']; // Menambahkan kolom batas_lamaran ke dalam array dates
     protected $casts = [
         'email_verified_at' => 'datetime',

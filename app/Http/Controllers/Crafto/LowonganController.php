@@ -89,15 +89,19 @@ class LowonganController extends Controller
         }
         // Default: user belum melamar
         $sudahMelamar = false;
+        $sudahIsi = false;
 
         // Jika user login, cek apakah sudah pernah melamar lowongan ini
         if (auth()->check()) {
             $sudahMelamar = Lamaran::where('user_id', auth()->id())
                 ->where('lowongan_id', $lowongan->id)
                 ->exists();
+            $sudahIsi = Pelamar::where('user_id', auth()->id())
+                ->exists();
         }
-
-        return view('crafto.lowongan_detil', compact('lowongan', 'sudahMelamar'));
+        
+        
+        return view('crafto.lowongan_detil', compact('lowongan', 'sudahMelamar','sudahIsi'));
 
     }
 

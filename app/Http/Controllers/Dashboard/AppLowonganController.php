@@ -35,7 +35,7 @@ class AppLowonganController extends Controller
                                 ->orWhere('lokasi', 'like', "%{$search}%")
                                 ->orWhere('bidang_pekerjaan', 'like', "%{$search}%")
                                 ->orWhere('jenis_pekerjaan', 'like', "%{$search}%")
-                                ->orWhere('rentang_gaji', 'like', "%{$search}%");
+                                ->orWhere('jumlah_lowongan', 'like', "%{$search}%");
                         });
                     }
                 })
@@ -70,7 +70,7 @@ class AppLowonganController extends Controller
             'status' => 'boolean',
             'deskripsi_pekerjaan' => 'nullable|string',
             'persyaratan_khusus' => 'nullable|string',
-            'pendidikan_minimal' => 'nullable|in:SD,SMP,SMA,D1,D2,D3,S1,S2,S3',
+            'pendidikan_minimal' => 'nullable|in:SD,SMP,SMA,D1,D2,D3,S1/D4,S2,S3',
             'status_pernikahan' => 'nullable|in:Nikah,Belum,Tidak Ada Preferensi',
             'pengalaman_minimal' => 'nullable|integer|min:0',
             'kondisi_fisik' => 'nullable|in:Non Disabilitas,Disabilitas',
@@ -87,37 +87,56 @@ class AppLowonganController extends Controller
         return view('content.lowongan.edit', compact('lowongan'));
     }
     public function update(Request $request, $id)
-    {
-        $lowongan = Lowongan::findOrFail($id);
+{
+    $lowongan = Lowongan::findOrFail($id);
 
-        // Validasi input
-        $request->validate([
-            'judul'            => 'required|string|max:255',
-            'lokasi'           => 'required|string|max:255',
-            'bidang_pekerjaan' => 'nullable|string|max:255',
-            'jenis_pekerjaan'  => 'nullable|string|max:50',
-            'tipe_pekerjaan'   => 'nullable|string|max:50',
-            'jenis_kelamin'    => 'nullable|string|max:50',
-            'rentang_gaji'     => 'nullable|string|max:100',
-            'batas_lamaran'    => 'nullable|date',
-        ]);
+    // Validasi input
+    $validated = $request->validate([
+        'judul'               => 'required|string|max:255',
+        'lokasi'              => 'required|string|max:255',
+        'bidang_pekerjaan'    => 'nullable|string|max:255',
+        'jenis_pekerjaan'     => 'nullable|string|max:50',
+        'tipe_pekerjaan'      => 'nullable|string|max:50',
+        'jenis_kelamin'       => 'nullable|string|max:50',
+        'rentang_gaji'        => 'nullable|string|max:100',
+        'jumlah_lowongan'     => 'nullable|integer|min:1',
+        'batas_lamaran'       => 'nullable|date',
+        'status'              => 'required|in:0,1',
+        'deskripsi_pekerjaan' => 'nullable|string',
+        'persyaratan_khusus'  => 'nullable|string',
+        'pendidikan_minimal'  => 'nullable|in:SD,SMP,SMA,D1,D2,D3,S1/D4,S2,S3',
+        'status_pernikahan'   => 'nullable|string|max:50',
+        'pengalaman_minimal'  => 'nullable|integer|min:0',
+        'kondisi_fisik'       => 'nullable|string|max:50',
+        'keterampilan'        => 'nullable|string',
+    ]);
 
-        // Update data
-        $lowongan->update([
-            'judul'            => $request->judul,
-            'lokasi'           => $request->lokasi,
-            'bidang_pekerjaan' => $request->bidang_pekerjaan,
-            'jenis_pekerjaan'  => $request->jenis_pekerjaan,
-            'tipe_pekerjaan'   => $request->tipe_pekerjaan,
-            'jenis_kelamin'    => $request->jenis_kelamin,
-            'rentang_gaji'     => $request->rentang_gaji,
-            'batas_lamaran'    => $request->batas_lamaran,
-        ]);
+    // Update data ke database
+    $lowongan->update([
+        'judul'               => $validated['judul'],
+        'lokasi'              => $validated['lokasi'],
+        'bidang_pekerjaan'    => $validated['bidang_pekerjaan'] ?? null,
+        'jenis_pekerjaan'     => $validated['jenis_pekerjaan'] ?? null,
+        'tipe_pekerjaan'      => $validated['tipe_pekerjaan'] ?? null,
+        'jenis_kelamin'       => $validated['jenis_kelamin'] ?? null,
+        'rentang_gaji'        => $validated['rentang_gaji'] ?? null,
+        'jumlah_lowongan'     => $validated['jumlah_lowongan'] ?? null,
+        'batas_lamaran'       => $validated['batas_lamaran'] ?? null,
+        'status'              => $validated['status'],
+        'deskripsi_pekerjaan' => $validated['deskripsi_pekerjaan'] ?? null,
+        'persyaratan_khusus'  => $validated['persyaratan_khusus'] ?? null,
+        'pendidikan_minimal'  => $validated['pendidikan_minimal'] ?? null,
+        'status_pernikahan'   => $validated['status_pernikahan'] ?? null,
+        'pengalaman_minimal'  => $validated['pengalaman_minimal'] ?? null,
+        'kondisi_fisik'       => $validated['kondisi_fisik'] ?? null,
+        'keterampilan'        => $validated['keterampilan'] ?? null,
+    ]);
 
-        return redirect()
-            ->route('lowongan.index')
-            ->with('success', 'Lowongan berhasil diperbarui.');
-    }
+    return redirect()
+        ->route('lowongan.index')
+        ->with('success', 'Lowongan berhasil diperbarui.');
+}
+
 
     /**
      * @param Request $request

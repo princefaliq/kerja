@@ -80,7 +80,9 @@
                             <!--end::Select2-->
                         </div>
                         <!--begin::Add product-->
+                        @role('Perusahaan')
                         <a href="{{ url('app/lowongan/create') }}" class="btn btn-primary">Add Lowongan</a>
+                        @endrole
                         <!--end::Add product-->
                     </div>
                     <!--end::Card toolbar-->
@@ -101,7 +103,7 @@
                             <th class="text-end min-w-100px">Lokasi</th>
                             <th class="text-end min-w-70px">Bidang</th>
                             <th class="text-end min-w-100px">Jenis Pekerjaan</th>
-                            <th class="text-end min-w-100px">Rentang Gaji</th>
+                            <th class="text-end min-w-100px">Jumlah Lowongan</th>
                             <th class="text-end min-w-100px">Batas Lamaran</th>
                             <th class="text-end min-w-100px">Status</th>
                             <th class="text-end min-w-70px">Actions</th>

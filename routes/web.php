@@ -66,20 +66,24 @@ Route::group([
             Route::get('/dashboard/user-data', [DashboardController::class, 'getUserData'])->name('dashboard.user.data');
             Route::get('/dashboard/widget-data', [DashboardController::class, 'widgetData'])->name('dashboard.widget.data');
 
+            Route::any('/lowongan', [AppLowonganController::class, 'index'])->name('lowongan.index');
+            Route::get('/lowongan/qrcode/{slug}', [AppLowonganController::class, 'qrcode'])->name('lowongan.qrcode');
+            Route::get('/lowongan/qrcode/download/{slug}', [AppLowonganController::class, 'downloadQrcode'])->name('lowongan.qrcode.download');
+
             Route::middleware('role:Perusahaan')->group(function () {
-                Route::any('/lowongan', [AppLowonganController::class, 'index'])->name('lowongan.index');
                 Route::get('/lowongan/create', [AppLowonganController::class, 'create']);
                 Route::post('/lowongan/store', [AppLowonganController::class, 'store']);
                 Route::get('/lowongan/edit/{id}', [AppLowonganController::class, 'edit'])->name('lowongan.edit');
                 Route::put('/lowongan/update/{id}', [AppLowonganController::class, 'update'])->name('lowongan.update');
                 Route::post('/lowongan/toggle-status', [AppLowonganController::class, 'toggleStatus'])->name('lowongan.toggleStatus');
-                Route::get('/lowongan/qrcode/{slug}', [AppLowonganController::class, 'qrcode'])->name('lowongan.qrcode');
-                Route::get('/lowongan/qrcode/download/{slug}', [AppLowonganController::class, 'downloadQrcode'])->name('lowongan.qrcode.download');
+                
+                Route::get('/lamaran/{id}', [AppLamaranController::class, 'show'])->name('lamaran.show');
+                Route::put('/lamaran/{id}/status', [AppLamaranController::class, 'updateStatus'])->name('lamaran.updateStatus');
             });
 
             Route::any('/lamaran', [AppLamaranController::class, 'index'])->name('lamaran.index');
-            Route::get('/lamaran/{id}', [AppLamaranController::class, 'show'])->name('lamaran.show');
-            Route::put('/lamaran/{id}/status', [AppLamaranController::class, 'updateStatus'])->name('lamaran.updateStatus');
+            Route::get('/lamaran/detail/{id}', [AppLamaranController::class, 'detail'])->name('lamaran.detail');
+            
         });
     }
 );
