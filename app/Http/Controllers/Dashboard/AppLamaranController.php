@@ -115,9 +115,9 @@ class AppLamaranController extends Controller
     {
         $profile = Pelamar::firstOrNew(['user_id' => $id]); // bikin objek kosong kalau belum ada
         $profile->loadMissing('user');
-        if ($profile->exists) {
+            
             return view('content.lamaran.detail_lamaran',compact('profile'));
-        }
+        
     }
     
 }

@@ -15,13 +15,37 @@ use Illuminate\Validation\Rules;
 
 class LowonganController extends Controller
 {
-    public function index()
-    {
+    public function index(Request $request)
+{
+    // Ambil daftar jenis pekerjaan dan hitung jumlah masing-masing
+    $jenisPekerjaanList = Lowongan::select('jenis_pekerjaan', \DB::raw('COUNT(*) as total'))
+        ->where('status', 1)
+        ->whereNotNull('jenis_pekerjaan')
+        ->groupBy('jenis_pekerjaan')
+        ->orderBy('jenis_pekerjaan', 'asc')
+        ->get();
+         // 🔹 Ambil daftar jenis kelamin dan jumlah masing-masing
+    $jenisKelaminList = Lowongan::select('jenis_kelamin', \DB::raw('COUNT(*) as total'))
+        ->where('status', 1)
+        ->whereNotNull('jenis_kelamin')
+        ->groupBy('jenis_kelamin')
+        ->orderBy('jenis_kelamin', 'asc')
+        ->get();
 
-        $lowongans = Lowongan::with('user')->paginate(10); // Mengambil 10 data per halaman
+    // Query utama untuk data lowongan
+    $query = Lowongan::with('user')->where('status', 1);
 
-        return view('crafto.lowongan_kerja', compact('lowongans'));
+    if ($request->filled('jenis_pekerjaan')) {
+        $query->where('jenis_pekerjaan', $request->jenis_pekerjaan);
     }
+     if ($request->filled('jenis_kelamin')) {
+        $query->where('jenis_kelamin', $request->jenis_kelamin);
+    }
+
+    $lowongans = $query->paginate(12)->appends($request->query());
+    return view('crafto.lowongan_kerja', compact('lowongans', 'jenisPekerjaanList','jenisKelaminList'));
+}
+
     public function login()
     {
         if (Auth::check()) {

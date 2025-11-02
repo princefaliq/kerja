@@ -69,12 +69,13 @@ Route::group([
             Route::any('/lowongan', [AppLowonganController::class, 'index'])->name('lowongan.index');
             Route::get('/lowongan/qrcode/{slug}', [AppLowonganController::class, 'qrcode'])->name('lowongan.qrcode');
             Route::get('/lowongan/qrcode/download/{slug}', [AppLowonganController::class, 'downloadQrcode'])->name('lowongan.qrcode.download');
+            Route::get('/lowongan/edit/{id}', [AppLowonganController::class, 'edit'])->name('lowongan.edit');
+            Route::put('/lowongan/update/{id}', [AppLowonganController::class, 'update'])->name('lowongan.update');
 
             Route::middleware('role:Perusahaan')->group(function () {
                 Route::get('/lowongan/create', [AppLowonganController::class, 'create']);
                 Route::post('/lowongan/store', [AppLowonganController::class, 'store']);
-                Route::get('/lowongan/edit/{id}', [AppLowonganController::class, 'edit'])->name('lowongan.edit');
-                Route::put('/lowongan/update/{id}', [AppLowonganController::class, 'update'])->name('lowongan.update');
+                
                 Route::post('/lowongan/toggle-status', [AppLowonganController::class, 'toggleStatus'])->name('lowongan.toggleStatus');
                 
                 Route::get('/lamaran/{id}', [AppLamaranController::class, 'show'])->name('lamaran.show');

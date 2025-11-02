@@ -44,6 +44,7 @@ class AppPelamarController extends Controller
                     $avatar = $u->avatarUrl ?? null;
                     $name = $u->name ?? '-';
                     $imageUrl = $avatar ?: 'https://placehold.co/600x600';
+                    $detilUrl =  url('app/lamaran/detail/'.$u->id);
                     return "
                         <div class='d-flex align-items-center'>
                             <div class='symbol symbol-circle symbol-45px overflow-hidden me-3'>
@@ -52,7 +53,7 @@ class AppPelamarController extends Controller
                                 </div>
                             </div>
                             <div class='d-flex flex-column'>
-                                <span class='text-gray-800 text-hover-primary mb-1 fw-bold'>{$name}</span>
+                                <a href='{$detilUrl}' titile='Detail Pelamar' target='_blank' class='text-gray-800 text-hover-primary mb-1 fw-bold'>{$name}</a>
                             </div>
                         </div>
                     ";

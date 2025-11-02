@@ -3,9 +3,56 @@
 @push('css')
     <style>
         .card-custom {
-            min-height: 400px;  /* minimal tinggi */
-            max-height: 400px;  /* batas maksimal */
-            overflow-y: auto;   /* kalau isi terlalu panjang, muncul scrollbar */
+            min-height: 500px;  /* minimal tinggi */
+            max-height: 500px;  /* batas maksimal */
+            min-height: 500px;
+        }
+        .bidang-pekerjaan {
+            display: block;
+            line-height: 1.3em;     /* tinggi per baris */
+            min-height: 2.6em;      /* 2 baris tetap (1.3 * 2) */
+            overflow: hidden;       /* cegah tinggi berlebih */
+            text-overflow: ellipsis; /* opsional, untuk potong teks panjang */
+        }
+
+    </style>
+    {{-- RESPONSIVE CSS --}}
+    <style>
+        .pagination-wrapper {
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        /* Default: tampilkan versi desktop */
+        .pagination-desktop {
+            display: flex;
+            gap: 4px;
+        }
+
+        .pagination-mobile {
+            display: none !important;
+        }
+
+        /* MOBILE MODE */
+        @media (max-width: 576px) {
+            .pagination-desktop {
+                display: none !important;
+            }
+
+            .pagination-mobile {
+                display: flex !important;
+            }
+
+            .pagination .page-link {
+                font-size: 13px;
+                padding: 6px 10px;
+            }
+
+            .pagination {
+                flex-wrap: nowrap;
+                justify-content: center;
+                overflow-x: hidden;
+            }
         }
     </style>
 @endpush
@@ -27,8 +74,8 @@
                                             <div class="card card-custom bg-base-color shadow-sm border-0">
                                                 <div class="card-body">
                                                     <div class="row text-start text-light">
-                                                        <div class="col-12 text-end">
-                                                            <img src="{{ $lowongan->user->avatar ? asset($lowongan->user->avatar) : 'https://placehold.co/58x58' }}" alt="Avatar" class="img-fluid" style="width:58px;">
+                                                        <div class="col-12 text-center mt-20">
+                                                            <img src="{{ $lowongan->user->avatar_url ? asset($lowongan->user->avatar_url) : 'https://placehold.co/58x58' }}" alt="{{ $lowongan->user->name }}" class="img-fluid" style="width:60px; height:60px">
                                                         </div>
                                                         <div class="col-12 text-center">
                                                             <p class="mb-10px"> {{ Str::limit($lowongan->judul, 20, '...') }}</p>
@@ -61,8 +108,8 @@
                                         </div>
                                     </div>
                                     <div class="shop-footer text-center">
-                                        <a href="{{ url('lowongan-kerja/'.$lowongan->slug) }}" class="alt-font text-light fs-19 fw-500">{{ $lowongan->bidang_pekerjaan }}</a>
-                                        <div class="price lh-22 fs-16">{{ $lowongan->jenis_pekerjaan }}</div>
+                                        <a href="{{ url('lowongan-kerja/'.$lowongan->slug) }}" class="alt-font text-light fs-19 fw-500 bidang-pekerjaan text-capitalize">{{ $lowongan->bidang_pekerjaan }}</a>
+                                        <div class="price lh-22 fs-16 text-capitalize bidang-pekerjaan">{{ $lowongan->jenis_pekerjaan }}</div>
                                     </div>
                                 </div>
                             </li>
@@ -71,42 +118,145 @@
                     </ul>
                     @endif
                     <div class="w-100 d-flex mt-4 justify-content-center md-mt-30px">
-                        {{ $lowongans->links() }}
-                        {{--<ul class="pagination pagination-style-01 fs-13 fw-500 mb-0">
-                            <li class="page-item"><a class="page-link" href="#"><i class="feather icon-feather-arrow-left fs-18 d-xs-none"></i></a></li>
-                            <li class="page-item"><a class="page-link" href="#">01</a></li>
-                            <li class="page-item active"><a class="page-link" href="#">02</a></li>
-                            <li class="page-item"><a class="page-link" href="#">03</a></li>
-                            <li class="page-item"><a class="page-link" href="#">04</a></li>
-                            <li class="page-item"><a class="page-link" href="#"><i class="feather icon-feather-arrow-right fs-18 d-xs-none"></i></a></li>
-                        </ul>--}}
+                        @if ($lowongans->hasPages())
+                            {{-- Pagination wrapper --}}
+                            <div class="pagination-wrapper d-flex justify-content-center">
+
+                                {{-- DESKTOP PAGINATION --}}
+                                <ul class="pagination pagination-desktop pagination-style-01 fs-13 fw-500 mb-0 justify-content-center">
+
+                                    {{-- Tombol Previous --}}
+                                    @if ($lowongans->onFirstPage())
+                                        <li class="page-item disabled">
+                                            <span class="page-link"><i class="feather icon-feather-arrow-left fs-18 d-xs-none"></i></span>
+                                        </li>
+                                    @else
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $lowongans->previousPageUrl() }}">
+                                                <i class="feather icon-feather-arrow-left fs-18 d-xs-none"></i>
+                                            </a>
+                                        </li>
+                                    @endif
+
+                                    {{-- Logika halaman --}}
+                                    @php
+                                        $current = $lowongans->currentPage();
+                                        $last = $lowongans->lastPage();
+                                        $visible = 3; // jumlah halaman di tengah
+                                    @endphp
+
+                                    {{-- Halaman pertama --}}
+                                    <li class="page-item {{ $current === 1 ? 'active' : '' }}">
+                                        <a class="page-link" href="{{ $lowongans->url(1) }}">1</a>
+                                    </li>
+
+                                    {{-- Titik di awal --}}
+                                    @if ($current > $visible)
+                                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                                    @endif
+
+                                    {{-- Halaman di tengah --}}
+                                    @for ($i = max(2, $current - 1); $i <= min($last - 1, $current + 1); $i++)
+                                        <li class="page-item {{ $i == $current ? 'active' : '' }}">
+                                            <a class="page-link" href="{{ $lowongans->url($i) }}">{{ $i }}</a>
+                                        </li>
+                                    @endfor
+
+                                    {{-- Titik di akhir --}}
+                                    @if ($current < $last - ($visible - 1))
+                                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                                    @endif
+
+                                    {{-- Halaman terakhir --}}
+                                    @if ($last > 1)
+                                        <li class="page-item {{ $current === $last ? 'active' : '' }}">
+                                            <a class="page-link" href="{{ $lowongans->url($last) }}">{{ $last }}</a>
+                                        </li>
+                                    @endif
+
+                                    {{-- Tombol Next --}}
+                                    @if ($lowongans->hasMorePages())
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $lowongans->nextPageUrl() }}">
+                                                <i class="feather icon-feather-arrow-right fs-18 d-xs-none"></i>
+                                            </a>
+                                        </li>
+                                    @else
+                                        <li class="page-item disabled">
+                                            <span class="page-link"><i class="feather icon-feather-arrow-right fs-18 d-xs-none"></i></span>
+                                        </li>
+                                    @endif
+                                </ul>
+
+                                {{-- MOBILE PAGINATION --}}
+                                <ul class="pagination pagination-mobile pagination-style-01 fs-13 fw-500 mb-0 justify-content-center">
+                                    {{-- Tombol Previous --}}
+                                    @if ($lowongans->onFirstPage())
+                                        <li class="page-item disabled">
+                                            <span class="page-link"><i class="feather icon-feather-arrow-left fs-18"></i></span>
+                                        </li>
+                                    @else
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $lowongans->previousPageUrl() }}">
+                                                <i class="feather icon-feather-arrow-left fs-18"></i>
+                                            </a>
+                                        </li>
+                                    @endif
+
+                                    {{-- Halaman aktif / total --}}
+                                    <li class="page-item disabled">
+                                        <span class="page-link border-0 bg-transparent fw-600">{{ $lowongans->currentPage() }} / {{ $lowongans->lastPage() }}</span>
+                                    </li>
+
+                                    {{-- Tombol Next --}}
+                                    @if ($lowongans->hasMorePages())
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $lowongans->nextPageUrl() }}">
+                                                <i class="feather icon-feather-arrow-right fs-18"></i>
+                                            </a>
+                                        </li>
+                                    @else
+                                        <li class="page-item disabled">
+                                            <span class="page-link"><i class="feather icon-feather-arrow-right fs-18"></i></span>
+                                        </li>
+                                    @endif
+                                </ul>
+                            </div>
+                        @endif
                     </div>
                 </div>
                 <div class="col-xxl-2 col-lg-3 shop-sidebar" data-anime='{ "el": "childs", "translateY": [-15, 0], "opacity": [0,1], "duration": 300, "delay": 0, "staggervalue": 300, "easing": "easeOutQuad" }'>
                     <div class="mb-30px">
-                        <span class="alt-font fw-500 fs-19 text-light d-block mb-10px">Filter by categories</span>
+                        <span class="alt-font fw-500 fs-19 text-light d-block mb-10px">Filter by jenis</span>
                         <ul class="shop-filter category-filter fs-16">
-                            <li><a class="text-light" href="#"><span class="product-cb product-category-cb"></span>Jeans</a><span class="item-qty">22</span></li>
-                            <li><a class="text-light" href="#"><span class="product-cb product-category-cb"></span>Trousers</a><span class="item-qty">28</span></li>
-                            <li><a class="text-light" href="#"><span class="product-cb product-category-cb"></span>Swimwear</a><span class="item-qty">36</span></li>
-                            <li><a class="text-light" href="#"><span class="product-cb product-category-cb"></span>Casual shirts</a><span class="item-qty">24</span></li>
-                            <li><a class="text-light" href="#"><span class="product-cb product-category-cb"></span>Winter jackets</a><span class="item-qty">26</span></li>
-                            <li><a class="text-light" href="#"><span class="product-cb product-category-cb"></span>Leggings</a><span class="item-qty">33</span></li>
-                            <li><a class="text-light" href="#"><span class="product-cb product-category-cb"></span>Dupattas</a><span class="item-qty">22</span></li>
+                            @foreach($jenisPekerjaanList as $item)
+                                <li><a class="text-light" href="#"><span class="product-cb product-category-cb"></span>{{ $item->jenis_pekerjaan }}</a><span class="item-qty">{{ $item->total }}</span></li>
+                            @endforeach
                         </ul>
                     </div>
                     <div class="mb-30px">
-                        <span class="alt-font fw-500 fs-19 text-light d-block mb-10px">Filter by color</span>
-                        <ul class="shop-filter color-filter fs-16">
-                            <li><a class="text-light" href="#"><span class="product-cb product-color-cb" style="background-color:#232323"></span>Black</a><span class="item-qty">05</span></li>
-                            <li><a class="text-light" href="#"><span class="product-cb product-color-cb" style="background-color:#5881bf"></span>Blue</a><span class="item-qty">24</span></li>
-                            <li><a class="text-light" href="#"><span class="product-cb product-color-cb" style="background-color:#9f684f"></span>Brown</a><span class="item-qty">32</span></li>
-                            <li><a class="text-light" href="#"><span class="product-cb product-color-cb" style="background-color:#87a968"></span>Green</a><span class="item-qty">22</span></li>
-                            <li><a class="text-light" href="#"><span class="product-cb product-color-cb" style="background-color:#b14141"></span>Maroon</a><span class="item-qty">09</span></li>
-                            <li><a class="text-light" href="#"><span class="product-cb product-color-cb" style="background-color:#d9653e"></span>Orange</a><span class="item-qty">06</span></li>
+                        <span class="alt-font fw-500 fs-19 text-light d-block mb-10px">Filter by Jenis Kelamin</span>
+                        <ul class="shop-filter category-filter fs-16">
+                            @foreach($jenisKelaminList  as $item)
+                                @php
+                                    // Tentukan ikon berdasarkan jenis kelamin
+                                    switch ($item->jenis_kelamin) {
+                                        case 'Laki-laki':
+                                            $icon = 'bi-gender-male';
+                                            break;
+                                        case 'Perempuan':
+                                            $icon = 'bi-gender-female';
+                                            break;
+                                        default:
+                                            $icon = 'bi-gender-ambiguous';
+                                            break;
+                                    }
+                                @endphp
+                                <li><a class="text-light" href="#"><span class="product-cb product-category-cb"></span>{{ $item->jenis_kelamin }} <i class="bi {{ $icon }} me-2"></i></a><span class="item-qty">{{ $item->total }}</span></li>
+                            @endforeach
                         </ul>
                     </div>
-                    <div class="mb-30px">
+                    {{-- <div class="mb-30px">
                         <span class="alt-font fw-500 fs-19 text-light d-block mb-10px">Filter by size</span>
                         <ul class="shop-filter price-filter fs-16">
                             <li><a class="text-light" href="#"><span class="product-cb product-category-cb"></span>S</a><span class="item-qty">08</span></li>
@@ -223,7 +373,7 @@
                             <a class="text-light" href="#">Shorts</a>
                             <a class="text-light" href="#">Tops</a>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>

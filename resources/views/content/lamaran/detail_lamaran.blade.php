@@ -163,9 +163,13 @@
                                             <i class="bi bi-credit-card-fill fs-2 me-2 text-info"></i>
                                             <h2 class="mb-0"> Kartu Tanda Penduduk </h2>
                                         </div>
-
-                                        <iframe src="{{ url($profile->ktpUrl) }}" width="80%" height="500px" 
+                                        @if(!empty($profile->ktpUrl))
+                                            <iframe src="{{ url($profile->ktpUrl) }}" width="80%" height="500px" 
                                             style="border:1px solid #ddd; border-radius: 6px;"></iframe>
+                                        @else
+                                               <span class="text-warning fs-2"><i class="bi bi-sign-stop-fill text-danger fs-2 me-1"></i> Kartu Tanda Penduduk (tidak tersedia)</span> 
+                                        @endif
+                                        
                                         
                                     </div>
                                     <div class="col-md-12 m-10">
@@ -173,9 +177,13 @@
                                             <i class="bi bi-file-earmark-zip-fill     fs-2 me-2 text-info"></i>
                                             <h2 class="mb-0"> Curriculum vitae </h2>
                                         </div>
-
-                                        <iframe src="{{ url($profile->cvUrl) }}" width="80%" height="500px" 
+                                        @if(!empty($profile->cvUrl))
+                                            <iframe src="{{ url($profile->cvUrl) }}" width="80%" height="500px" 
                                             style="border:1px solid #ddd; border-radius: 6px;"></iframe>
+                                        @else
+                                               <span class="text-warning fs-2"><i class="bi bi-sign-stop-fill text-danger fs-2 me-1"></i> Curriculum vitae (tidak tersedia)</span> 
+                                        @endif
+                                        
                                         
                                     </div>
                                     <div class="col-md-12 m-10">
@@ -183,9 +191,13 @@
                                             <i class="bi bi-mortarboard-fill fs-2 me-2 text-info"></i>
                                             <h2 class="mb-0"> Ijazah </h2>
                                         </div>
-
-                                        <iframe src="{{ url($profile->ijazahUrl) }}" width="80%" height="500px" 
+                                        @if(!empty($profile->ijazahUrl))
+                                            <iframe src="{{ url($profile->ijazahUrl) }}" width="80%" height="500px" 
                                             style="border:1px solid #ddd; border-radius: 6px;"></iframe>
+                                        @else
+                                               <span class="text-warning fs-2"><i class="bi bi-sign-stop-fill text-danger fs-2 me-1"></i> Ijazah (tidak tersedia)</span> 
+                                        @endif
+                                        
                                         
                                     </div>
                                     <div class="col-md-12 m-10">
@@ -193,9 +205,13 @@
                                             <i class="bi bi-briefcase-fill fs-2 me-2 text-info"></i>
                                             <h2 class="mb-0"> Kartu Tanda Pencari Kerja </h2>
                                         </div>
-
-                                        <iframe src="{{ url($profile->ak1Url) }}" width="80%" height="500px" 
+                                        @if(!empty($profile->ak1Url))
+                                            <iframe src="{{ url($profile->ak1Url) }}" width="80%" height="500px" 
                                             style="border:1px solid #ddd; border-radius: 6px;"></iframe>
+                                        @else
+                                               <span class="text-warning fs-2"><i class="bi bi-sign-stop-fill text-danger fs-2 me-1"></i> Kartu Tanda Pencari Kerja (tidak tersedia)</span> 
+                                        @endif
+                                        
                                         
                                     </div>
                                     <div class="col-md-12 m-10">
@@ -220,7 +236,7 @@
                                             <iframe src="{{ url($profile->syarat_lainUrl) }}" width="80%" height="500px" 
                                             style="border:1px solid #ddd; border-radius: 6px;"></iframe>
                                         @else
-                                               <span class="text-warning fs-2"><i class="bi bi-sign-stop-fill text-danger fs-2 me-1"></i> Sertifikat (tidak tersedia)</span> 
+                                               <span class="text-warning fs-2"><i class="bi bi-sign-stop-fill text-danger fs-2 me-1"></i> Syarat Lain (tidak tersedia)</span> 
                                         @endif
                                     </div>
                                     

@@ -15,7 +15,10 @@
     <meta property="og:url" content="https://kerja.bondowosokab.go.id" />
     <meta property="og:site_name" content="Kerja Berkah" />
 
-    <link rel="shortcut icon" href="{{ url('assets/media/logos/favicon.ico') }}" />
+    <link rel="shortcut icon" href="{{ url('logo/logo_kerja_berkah_kecil.png') }}" />
+    <link rel="apple-touch-icon" href="{{ url('logo/logo_kerja_berkah_kecil_57x57.png') }}">
+    <link rel="apple-touch-icon" sizes="72x72" href="{{ url('logo/logo_kerja_berkah_kecil_72x72.png') }}">
+    <link rel="apple-touch-icon" sizes="114x114" href="{{ url('logo/logo_kerja_berkah_kecil_114x114.png') }}">
     <!--begin::Fonts(mandatory for all pages)-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
     <!--end::Fonts-->
