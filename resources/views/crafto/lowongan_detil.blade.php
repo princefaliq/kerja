@@ -95,7 +95,7 @@
                                 Rentang gaji
                             </span>
                             <p class="text-dark">
-                                {{ $lowongan->rentang_gaji }}
+                                {{ !empty($lowongan->rentang_gaji) ? $lowongan->rentang_gaji : 'Dirahasiakan' }}
                             </p>
                         </div>
                         <div class="col-4">
@@ -103,7 +103,7 @@
                                 Jumlah Lowongan
                             </span>
                             <p class="text-dark">
-                                {{ $lowongan->jumlah_lowongan }} Orang
+                                @if($lowongan->jumlah_lowongan) {{ $lowongan->jumlah_lowongan }} @else 0 @endif Orang
                             </p>
                         </div>
                     </div>
@@ -168,7 +168,7 @@
                                         Minimal pengalaman
                                     </span>
                                     <p class="text-dark">
-                                        {{ $lowongan->pengalaman_minimal }} tahun
+                                        {{ !empty($lowongan->pengalaman_minimal) ? $lowongan->pengalaman_minimal : '0' }} tahun
                                     </p>
                                 </div>
                                 <div class="col-4">
@@ -219,7 +219,7 @@
                         </form>
                     @endif
                 @endrole
-                
+
             @else
                 <a href="{{ route('login') }}" class="alt-font btn btn-small btn-box-shadow btn-base-color btn-round-edge left-icon">
                     <i class="feather icon-feather-log-in"></i>

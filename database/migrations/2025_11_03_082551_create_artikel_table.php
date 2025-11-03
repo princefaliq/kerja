@@ -1,0 +1,40 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateArtikelTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('artikel', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->string('slug')->default('');
+            $table->text('content');
+            $table->string('image')->nullable();
+            $table->enum('status', ['PUBLISHED', 'DRAFT'])->default('PUBLISHED');
+            $table->date('date');
+            $table->boolean('featured')->default(0);
+            $table->integer('visitor')->default(0);
+            $table->integer('user_id');
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('artikel');
+    }
+}

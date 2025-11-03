@@ -51,6 +51,7 @@ Route::group([
 
             Route::get('pelamar', [AppPelamarController::class, 'index'])->name('pelamar.index')->name('pelamar.index');
             Route::get('pelamar/data', [AppPelamarController::class, 'data'])->name('pelamar.data');
+            Route::get('/pelamar/detail/{id}', [AppPelamarController::class, 'detail'])->name('lamaran.detail');
         });
 
     });

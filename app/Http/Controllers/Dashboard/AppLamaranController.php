@@ -55,7 +55,7 @@ class AppLamaranController extends Controller
                 ->addColumn('tanggal_lamaran', fn($lamaran) =>
                             $lamaran->created_at ? Carbon::parse($lamaran->created_at)->format('d/m/Y H:i') : '-'
                             )
-                ->addColumn('dokumen', fn ($lamaran)=> 
+                ->addColumn('dokumen', fn ($lamaran)=>
                 '<a class="btn btn-xs btn-info" href="'. url('app/lamaran/detail/'.$lamaran->user->id).'" target="_blank"><i class="ki-duotone ki-faceid fs-2">
  <span class="path1"></span>
  <span class="path2"></span>
@@ -111,13 +111,6 @@ class AppLamaranController extends Controller
         ]);
     }
 
-    public function detail($id)
-    {
-        $profile = Pelamar::firstOrNew(['user_id' => $id]); // bikin objek kosong kalau belum ada
-        $profile->loadMissing('user');
-            
-            return view('content.lamaran.detail_lamaran',compact('profile'));
-        
-    }
-    
+
+
 }

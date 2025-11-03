@@ -44,7 +44,7 @@ class AppPelamarController extends Controller
                     $avatar = $u->avatarUrl ?? null;
                     $name = $u->name ?? '-';
                     $imageUrl = $avatar ?: 'https://placehold.co/600x600';
-                    $detilUrl =  url('app/lamaran/detail/'.$u->id);
+                    $detilUrl =  url('app/pelamar/detail/'.$u->id);
                     return "
                         <div class='d-flex align-items-center'>
                             <div class='symbol symbol-circle symbol-45px overflow-hidden me-3'>
@@ -53,7 +53,7 @@ class AppPelamarController extends Controller
                                 </div>
                             </div>
                             <div class='d-flex flex-column'>
-                                <a href='{$detilUrl}' titile='Detail Pelamar' target='_blank' class='text-gray-800 text-hover-primary mb-1 fw-bold'>{$name}</a>
+                                <a href='{$detilUrl}' title='Detail Pelamar' target='_blank' class='text-gray-800 text-hover-primary mb-1 fw-bold'>{$name}</a>
                             </div>
                         </div>
                     ";
@@ -95,5 +95,14 @@ class AppPelamarController extends Controller
         }
         // Kalau bukan request AJAX
         return abort(404);
+    }
+
+    public function detail($id)
+    {
+        $profile = Pelamar::firstOrNew(['user_id' => $id]); // bikin objek kosong kalau belum ada
+        $profile->loadMissing('user');
+
+        return view('content.user.pelamar.detail_pelamaran',compact('profile'));
+
     }
 }

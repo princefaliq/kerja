@@ -1,5 +1,5 @@
 @extends('content.page')
-@section('title','List User')
+@section('title','List Perusahaan')
 @section('user','show')
 @push('css')
     <link href="{{ url('assets/plugins/custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css" />

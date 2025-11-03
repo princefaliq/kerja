@@ -86,7 +86,7 @@
 
                             <!-- Lokasi -->
                             <div class="mb-10 fv-row">
-                                <label class="required form-label">Lokasi</label>
+                                <label class="required form-label">Lokasi Penempatan</label>
                                 <input type="text" name="lokasi" value="{{ old('lokasi', $lowongan->lokasi) }}" class="form-control mb-2" required />
                             </div>
 

@@ -1,380 +1,297 @@
 @extends('crafto.master')
 @section('title','Lowongan Kerja')
+
 @push('css')
     <style>
-        .card-custom {
-            min-height: 500px;  /* minimal tinggi */
-            max-height: 500px;  /* batas maksimal */
-            min-height: 500px;
-        }
-        .bidang-pekerjaan {
-            display: block;
-            line-height: 1.3em;     /* tinggi per baris */
-            min-height: 2.6em;      /* 2 baris tetap (1.3 * 2) */
-            overflow: hidden;       /* cegah tinggi berlebih */
-            text-overflow: ellipsis; /* opsional, untuk potong teks panjang */
+        /* --- GENERAL STYLE --- */
+        body {
+            background-color: #0b1a2a;
         }
 
-    </style>
-    {{-- RESPONSIVE CSS --}}
-    <style>
-        .pagination-wrapper {
-            width: 100%;
-            flex-wrap: wrap;
+        /* --- JOB CARD --- */
+        .job-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            color: #fff;
         }
 
-        /* Default: tampilkan versi desktop */
-        .pagination-desktop {
+        .job-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .job-company img {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .job-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 8px 0 4px;
+        }
+
+        .job-location,
+        .job-meta {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .job-footer {
             display: flex;
-            gap: 4px;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 8px;
+            margin-top: 10px;
         }
 
-        .pagination-mobile {
-            display: none !important;
+        .job-apply {
+            background: #fdd835;
+            color: #000;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            transition: 0.3s;
         }
 
-        /* MOBILE MODE */
-        @media (max-width: 576px) {
-            .pagination-desktop {
-                display: none !important;
+        .job-apply:hover {
+            background: #ffe95c;
+            color: #000;
+        }
+
+        /* --- PAGINATION --- */
+        /* --- PAGINATION STYLING --- */
+        .pagination-style-01 .page-item {
+            margin: 0 4px;
+        }
+
+        .pagination-style-01 .page-link {
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            text-align: center;
+            line-height: 36px;
+            color: #ffffff; /* Default: teks putih */
+            background-color: rgba(255, 255, 255, 0.1); /* Transparan lembut */
+            transition: all 0.3s ease;
+        }
+
+        /* 🟡 Hover efek: kuning & teks hitam */
+        .pagination-style-01 .page-item:not(.active):not(.disabled) .page-link:hover {
+            background-color: #fdd835 !important;
+            color: #000000 !important;
+        }
+
+        /* ✅ Aktif: tetap kuning & hitam */
+        .pagination-style-01 .page-item.active .page-link {
+            background-color: #fdd835;
+            color: #000000;
+            font-weight: 600;
+            box-shadow: 0 0 10px rgba(253, 216, 53, 0.4);
+        }
+
+        /* ❌ Disabled: tanpa lingkaran & teks pudar */
+        .pagination-style-01 .page-item.disabled .page-link {
+            background: none;
+            color: rgba(255, 255, 255, 0.5);
+            border: none;
+            border-radius: 0;
+            pointer-events: none;
+            box-shadow: none;
+        }
+
+        /* --- SIDEBAR FILTER --- */
+        .filter-box {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .filter-box h5 {
+            font-size: 17px;
+            color: #fff;
+            margin-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 6px;
+        }
+
+        .filter-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .filter-box ul li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 10px;
+            font-size: 14px;
+            color: #ddd;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: background 0.2s ease;
+        }
+
+        .filter-box ul li:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 6px;
+        }
+
+        .filter-box ul li a {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #f0f0f0;
+            text-decoration: none;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 140px; /* cegah teks terlalu panjang */
+        }
+
+        .filter-box ul li a:hover {
+            color: #fdd835;
+        }
+
+        .filter-box ul li span {
+            min-width: 30px;
+            text-align: right;
+            color: #aaa;
+        }
+
+        .filter-box ul li a i {
+            font-size: 1rem;
+            color: #fdd835;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .job-card {
+                margin-bottom: 15px;
             }
 
-            .pagination-mobile {
-                display: flex !important;
-            }
-
-            .pagination .page-link {
-                font-size: 13px;
-                padding: 6px 10px;
-            }
-
-            .pagination {
-                flex-wrap: nowrap;
-                justify-content: center;
-                overflow-x: hidden;
+            .filter-box ul li a {
+                max-width: 100%;
             }
         }
+
     </style>
+
 @endpush
+
 @section('content')
     <section class="bg-dark-midnight-blue text-light pt-10 ps-6 pe-6 lg-ps-2 lg-pe-2 sm-ps-0 sm-pe-0">
         <div class="container-fluid">
-            <div class="row">
-                <div class="col-xxl-10 col-lg-9 pe-5 md-pe-15px md-mb-60px">
-                    @if ($lowongans->isEmpty())
-                        <p>Tidak ada lowongan yang tersedia saat ini.</p>
-                    @else
-                        <ul class="shop-modern shop-wrapper grid-loading grid grid-4col xl-grid-3col sm-grid-2col xs-grid-1col gutter-extra-large text-center" data-anime='{ "el": "childs", "translateY": [-15, 0], "opacity": [0,1], "duration": 300, "delay": 0, "staggervalue": 150, "easing": "easeOutQuad" }'>
-                        <li class="grid-sizer"></li>
-                        @foreach ($lowongans as $lowongan)
-                            <li class="grid-item">
-                                <div class="shop-box mb-10px">
-                                    <div class="shop-image mb-20px">
-                                        <a href="{{ url('lowongan-kerja/'.$lowongan->slug) }}">
-                                            <div class="card card-custom bg-base-color shadow-sm border-0">
-                                                <div class="card-body">
-                                                    <div class="row text-start text-light">
-                                                        <div class="col-12 text-center mt-20">
-                                                            <img src="{{ $lowongan->user->avatar_url ? asset($lowongan->user->avatar_url) : 'https://placehold.co/58x58' }}" alt="{{ $lowongan->user->name }}" class="img-fluid" style="width:60px; height:60px">
-                                                        </div>
-                                                        <div class="col-12 text-center">
-                                                            <p class="mb-10px"> {{ Str::limit($lowongan->judul, 20, '...') }}</p>
-                                                        </div>
-                                                        <div class="col-12">
-                                                            <p class="mb-10px">Lokasi : {{ Str::limit($lowongan->lokasi, 20, '...') }}</p>
-                                                        </div>
-                                                        {{--<div class="col-12">
-                                                            <p class="mb-10px">Rentang Gaji : {{ $lowongan->rentang_gaji }}</p>
-                                                        </div>--}}
-                                                        <div class="col-12">
-                                                            <p class="mb-10px">Pendidikan min : {{ $lowongan->pendidikan_minimal }}</p>
-                                                        </div>
-                                                        <div class="col-12">
-                                                            <p class="mb-10px">Jenis Kelamin : {{ $lowongan->jenis_kelamin }}</p>
-                                                        </div>
-                                                        <div class="col-12">
-                                                            <p class="mb-10px">Batas lamaran : {{ $lowongan->batas_lamaran ? $lowongan->batas_lamaran->diffForHumans() : '-' }}</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <span class="lable bg-golden-yellow">{{ $lowongan->user->name }}</span>
-                                            <div class="shop-overlay bg-gradient-white-transparent"></div>
-                                        </a>
-                                        <div class="shop-buttons-wrap">
-                                            <a href="{{ url('lowongan-kerja/'.$lowongan->slug) }}" class="alt-font btn btn-small btn-box-shadow btn-white btn-round-edge left-icon add-to-cart">
-                                                <i class="feather icon-feather-file"></i><span class="quick-view-text button-text">Lamar</span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div class="shop-footer text-center">
-                                        <a href="{{ url('lowongan-kerja/'.$lowongan->slug) }}" class="alt-font text-light fs-19 fw-500 bidang-pekerjaan text-capitalize">{{ $lowongan->bidang_pekerjaan }}</a>
-                                        <div class="price lh-22 fs-16 text-capitalize bidang-pekerjaan">{{ $lowongan->jenis_pekerjaan }}</div>
-                                    </div>
-                                </div>
-                            </li>
-                        @endforeach
+            <div class="row align-items-center">
+                <div class="col-12 breadcrumb breadcrumb-style-01 fs-14">
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="{{ url('lowongan-kerja') }}">Lowongan</a></li>
 
                     </ul>
-                    @endif
-                    <div class="w-100 d-flex mt-4 justify-content-center md-mt-30px">
-                        @if ($lowongans->hasPages())
-                            {{-- Pagination wrapper --}}
-                            <div class="pagination-wrapper d-flex justify-content-center">
-
-                                {{-- DESKTOP PAGINATION --}}
-                                <ul class="pagination pagination-desktop pagination-style-01 fs-13 fw-500 mb-0 justify-content-center">
-
-                                    {{-- Tombol Previous --}}
-                                    @if ($lowongans->onFirstPage())
-                                        <li class="page-item disabled">
-                                            <span class="page-link"><i class="feather icon-feather-arrow-left fs-18 d-xs-none"></i></span>
-                                        </li>
-                                    @else
-                                        <li class="page-item">
-                                            <a class="page-link" href="{{ $lowongans->previousPageUrl() }}">
-                                                <i class="feather icon-feather-arrow-left fs-18 d-xs-none"></i>
-                                            </a>
-                                        </li>
-                                    @endif
-
-                                    {{-- Logika halaman --}}
-                                    @php
-                                        $current = $lowongans->currentPage();
-                                        $last = $lowongans->lastPage();
-                                        $visible = 3; // jumlah halaman di tengah
-                                    @endphp
-
-                                    {{-- Halaman pertama --}}
-                                    <li class="page-item {{ $current === 1 ? 'active' : '' }}">
-                                        <a class="page-link" href="{{ $lowongans->url(1) }}">1</a>
-                                    </li>
-
-                                    {{-- Titik di awal --}}
-                                    @if ($current > $visible)
-                                        <li class="page-item disabled"><span class="page-link">...</span></li>
-                                    @endif
-
-                                    {{-- Halaman di tengah --}}
-                                    @for ($i = max(2, $current - 1); $i <= min($last - 1, $current + 1); $i++)
-                                        <li class="page-item {{ $i == $current ? 'active' : '' }}">
-                                            <a class="page-link" href="{{ $lowongans->url($i) }}">{{ $i }}</a>
-                                        </li>
-                                    @endfor
-
-                                    {{-- Titik di akhir --}}
-                                    @if ($current < $last - ($visible - 1))
-                                        <li class="page-item disabled"><span class="page-link">...</span></li>
-                                    @endif
-
-                                    {{-- Halaman terakhir --}}
-                                    @if ($last > 1)
-                                        <li class="page-item {{ $current === $last ? 'active' : '' }}">
-                                            <a class="page-link" href="{{ $lowongans->url($last) }}">{{ $last }}</a>
-                                        </li>
-                                    @endif
-
-                                    {{-- Tombol Next --}}
-                                    @if ($lowongans->hasMorePages())
-                                        <li class="page-item">
-                                            <a class="page-link" href="{{ $lowongans->nextPageUrl() }}">
-                                                <i class="feather icon-feather-arrow-right fs-18 d-xs-none"></i>
-                                            </a>
-                                        </li>
-                                    @else
-                                        <li class="page-item disabled">
-                                            <span class="page-link"><i class="feather icon-feather-arrow-right fs-18 d-xs-none"></i></span>
-                                        </li>
-                                    @endif
-                                </ul>
-
-                                {{-- MOBILE PAGINATION --}}
-                                <ul class="pagination pagination-mobile pagination-style-01 fs-13 fw-500 mb-0 justify-content-center">
-                                    {{-- Tombol Previous --}}
-                                    @if ($lowongans->onFirstPage())
-                                        <li class="page-item disabled">
-                                            <span class="page-link"><i class="feather icon-feather-arrow-left fs-18"></i></span>
-                                        </li>
-                                    @else
-                                        <li class="page-item">
-                                            <a class="page-link" href="{{ $lowongans->previousPageUrl() }}">
-                                                <i class="feather icon-feather-arrow-left fs-18"></i>
-                                            </a>
-                                        </li>
-                                    @endif
-
-                                    {{-- Halaman aktif / total --}}
-                                    <li class="page-item disabled">
-                                        <span class="page-link border-0 bg-transparent fw-600">{{ $lowongans->currentPage() }} / {{ $lowongans->lastPage() }}</span>
-                                    </li>
-
-                                    {{-- Tombol Next --}}
-                                    @if ($lowongans->hasMorePages())
-                                        <li class="page-item">
-                                            <a class="page-link" href="{{ $lowongans->nextPageUrl() }}">
-                                                <i class="feather icon-feather-arrow-right fs-18"></i>
-                                            </a>
-                                        </li>
-                                    @else
-                                        <li class="page-item disabled">
-                                            <span class="page-link"><i class="feather icon-feather-arrow-right fs-18"></i></span>
-                                        </li>
-                                    @endif
-                                </ul>
-                            </div>
-                        @endif
-                    </div>
                 </div>
-                <div class="col-xxl-2 col-lg-3 shop-sidebar" data-anime='{ "el": "childs", "translateY": [-15, 0], "opacity": [0,1], "duration": 300, "delay": 0, "staggervalue": 300, "easing": "easeOutQuad" }'>
-                    <div class="mb-30px">
-                        <span class="alt-font fw-500 fs-19 text-light d-block mb-10px">Filter by jenis</span>
-                        <ul class="shop-filter category-filter fs-16">
+            </div>
+        </div>
+    </section>
+    <section class="pt-5 pb-10 ps-4 pe-4">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Kolom utama -->
+                <div class="col-lg-9">
+                    @if ($lowongans->isEmpty())
+                        <p class="text-light text-center mt-5">Tidak ada lowongan yang tersedia saat ini.</p>
+                    @else
+                        <div class="row g-4">
+                            @foreach ($lowongans as $lowongan)
+                                <div class="col-xl-4 col-md-6">
+                                    <div class="job-card p-3 h-100 d-flex flex-column justify-content-between">
+                                        <div>
+                                            <div class="text-center job-company mb-3">
+                                                <img src="{{ $lowongan->user->avatar_url ? asset($lowongan->user->avatar_url) : 'https://placehold.co/80x80' }}" alt="Logo Perusahaan">
+                                            </div>
+                                            <h5 class="job-title text-center">{{ Str::limit($lowongan->judul, 35, '...') }}</h5>
+                                            <p class="job-location text-center mb-2">
+                                                <i class="bi bi-geo-alt"></i> {{ Str::limit($lowongan->lokasi, 25, '...') }}
+                                            </p>
+                                            <p class="job-meta mb-1"><strong>Pendidikan:</strong> {{ $lowongan->pendidikan_minimal }}</p>
+                                            <p class="job-meta mb-1"><strong>Jenis Kelamin:</strong> {{ $lowongan->jenis_kelamin }}</p>
+                                            <p class="job-meta mb-1"><strong>Batas Lamaran:</strong> {{ $lowongan->batas_lamaran ? $lowongan->batas_lamaran->diffForHumans() : '-' }}</p>
+                                        </div>
+
+                                        <div class="job-footer mt-2">
+                                            <span class="text-capitalize">{{ $lowongan->bidang_pekerjaan }}</span>
+                                            <a href="{{ url('lowongan-kerja/'.$lowongan->slug) }}" class="job-apply">
+                                                Lamar
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    <!-- Pagination -->
+                    <div class="mt-4">
+                        {{ $lowongans->links('crafto.pagination.paging') }}
+                        <div class="pagination-info">
+                            Showing {{ $lowongans->firstItem() }} to {{ $lowongans->lastItem() }} of {{ $lowongans->total() }} results
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Sidebar -->
+                <div class="col-lg-3 mt-4 mt-lg-0">
+                    {{-- Filter Jenis Pekerjaan --}}
+                    <div class="filter-box mb-4">
+                        <h5 class="alt-font fw-600 fs-18 mb-3">Filter Jenis Pekerjaan</h5>
+                        <ul class="filter-list list-unstyled mb-0">
                             @foreach($jenisPekerjaanList as $item)
-                                <li><a class="text-light" href="#"><span class="product-cb product-category-cb"></span>{{ $item->jenis_pekerjaan }}</a><span class="item-qty">{{ $item->total }}</span></li>
+                                <li class="d-flex justify-content-between align-items-center py-1 px-2 border-bottom border-opacity-10">
+                                    <a href="#" class="text-decoration-none text-light flex-grow-1 text-truncate">
+                                        {{ $item->jenis_pekerjaan }}
+                                    </a>
+                                    <span class="text-secondary fw-500">{{ $item->total }}</span>
+                                </li>
                             @endforeach
                         </ul>
                     </div>
-                    <div class="mb-30px">
-                        <span class="alt-font fw-500 fs-19 text-light d-block mb-10px">Filter by Jenis Kelamin</span>
-                        <ul class="shop-filter category-filter fs-16">
-                            @foreach($jenisKelaminList  as $item)
+
+                    {{-- Filter Jenis Kelamin --}}
+                    <div class="filter-box">
+                        <h5 class="alt-font fw-600 fs-18 mb-3">Filter Jenis Kelamin</h5>
+                        <ul class="filter-list list-unstyled mb-0">
+                            @foreach($jenisKelaminList as $item)
                                 @php
-                                    // Tentukan ikon berdasarkan jenis kelamin
                                     switch ($item->jenis_kelamin) {
-                                        case 'Laki-laki':
-                                            $icon = 'bi-gender-male';
-                                            break;
-                                        case 'Perempuan':
-                                            $icon = 'bi-gender-female';
-                                            break;
-                                        default:
-                                            $icon = 'bi-gender-ambiguous';
-                                            break;
+                                        case 'Laki-laki': $icon = 'bi-gender-male'; break;
+                                        case 'Perempuan': $icon = 'bi-gender-female'; break;
+                                        default: $icon = 'bi-gender-ambiguous'; break;
                                     }
                                 @endphp
-                                <li><a class="text-light" href="#"><span class="product-cb product-category-cb"></span>{{ $item->jenis_kelamin }} <i class="bi {{ $icon }} me-2"></i></a><span class="item-qty">{{ $item->total }}</span></li>
+                                <li class="d-flex justify-content-between align-items-center py-1 px-2 border-bottom border-opacity-10">
+                                    <a href="#" class="text-decoration-none text-light d-flex align-items-center gap-2 flex-grow-1 text-nowrap">
+                                        <i class="bi {{ $icon }}"></i>
+                                        {{ $item->jenis_kelamin }}
+                                    </a>
+                                    <span class="text-secondary fw-500">{{ $item->total }}</span>
+                                </li>
                             @endforeach
                         </ul>
                     </div>
-                    {{-- <div class="mb-30px">
-                        <span class="alt-font fw-500 fs-19 text-light d-block mb-10px">Filter by size</span>
-                        <ul class="shop-filter price-filter fs-16">
-                            <li><a class="text-light" href="#"><span class="product-cb product-category-cb"></span>S</a><span class="item-qty">08</span></li>
-                            <li><a class="text-light" href="#"><span class="product-cb product-category-cb"></span>M</a><span class="item-qty">05</span></li>
-                            <li><a class="text-light" href="#"><span class="product-cb product-category-cb"></span>L</a><span class="item-qty">25</span></li>
-                            <li><a class="text-light" href="#"><span class="product-cb product-category-cb"></span>XL</a><span class="item-qty">18</span></li>
-                            <li><a class="text-light" href="#"><span class="product-cb product-category-cb"></span>XXL</a><span class="item-qty">36</span></li>
-                        </ul>
-                    </div>
-                    <div class="mb-30px">
-                        <div class="d-flex align-items-center mb-20px">
-                            <span class="alt-font fw-500 fs-19 text-light">New arrivals</span>
-                            <div class="d-flex ms-auto">
-                                <!-- start slider navigation -->
-                                <div class="slider-one-slide-prev-1 icon-very-small swiper-button-prev slider-navigation-style-08 me-5px"><i class="fa-solid fa-arrow-left text-light"></i></div>
-                                <div class="slider-one-slide-next-1 icon-very-small swiper-button-next slider-navigation-style-08 ms-5px"><i class="fa-solid fa-arrow-right text-light"></i></div>
-                                <!-- end slider navigation -->
-                            </div>
-                        </div>
-                        <div class="swiper slider-one-slide" data-slider-options='{ "slidesPerView": 1, "loop": true, "autoplay": { "delay": 5000, "disableOnInteraction": false }, "navigation": { "nextEl": ".slider-one-slide-next-1", "prevEl": ".slider-one-slide-prev-1" }, "keyboard": { "enabled": true, "onlyInViewport": true }, "effect": "slide" }'>
-                            <div class="swiper-wrapper">
-                                <!-- start text slider item -->
-                                <div class="swiper-slide">
-                                    <div class="shop-filter new-arribals">
-                                        <div class="d-flex align-items-center mb-20px">
-                                            <figure class="mb-0">
-                                                <a href="demo-fashion-store-single-product.html">
-                                                    <img class="border-radius-4px w-80px" src="https://placehold.co/600x765" alt="">
-                                                </a>
-                                            </figure>
-                                            <div class="col ps-25px">
-                                                <a href="demo-fashion-store-single-product.html" class="text-light alt-font fw-500 d-inline-block lh-normal">Textured sweater</a>
-                                                <div class="fs-15 lh-normal"><del class="me-5px">$30.00</del>$23.00</div>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex align-items-center mb-20px">
-                                            <figure class="mb-0">
-                                                <a href="demo-fashion-store-single-product.html">
-                                                    <img class="border-radius-4px w-80px" src="https://placehold.co/600x765" alt="">
-                                                </a>
-                                            </figure>
-                                            <div class="col ps-25px">
-                                                <a href="demo-fashion-store-single-product.html" class="text-light alt-font fw-500 d-inline-block lh-normal">Traveller shirt</a>
-                                                <div class="fs-15 lh-normal"><del class="me-5px">$50.00</del>$43.00</div>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex align-items-center">
-                                            <figure class="mb-0">
-                                                <a href="demo-fashion-store-single-product.html">
-                                                    <img class="border-radius-4px w-80px" src="https://placehold.co/600x765" alt="">
-                                                </a>
-                                            </figure>
-                                            <div class="col ps-25px">
-                                                <a href="demo-fashion-store-single-product.html" class="text-light alt-font fw-500 d-inline-block lh-normal">Crewneck tshirt</a>
-                                                <div class="fs-15 lh-normal"><del class="me-5px">$20.00</del>$15.00</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- end text slider item -->
-                                <!-- start text slider item -->
-                                <div class="swiper-slide">
-                                    <div class="shop-filter new-arribals">
-                                        <div class="d-flex align-items-center mb-20px">
-                                            <figure class="mb-0">
-                                                <a href="demo-fashion-store-single-product.html">
-                                                    <img class="border-radius-4px w-80px" src="https://placehold.co/600x765" alt="">
-                                                </a>
-                                            </figure>
-                                            <div class="col ps-25px">
-                                                <a href="demo-fashion-store-single-product.html" class="text-light alt-font fw-500 d-inline-block lh-normal">Skinny trousers</a>
-                                                <div class="fs-15 lh-normal"><del class="me-5px">$15.00</del>$10.00</div>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex align-items-center mb-20px">
-                                            <figure class="mb-0">
-                                                <a href="demo-fashion-store-single-product.html">
-                                                    <img class="border-radius-4px w-80px" src="https://placehold.co/600x765" alt="">
-                                                </a>
-                                            </figure>
-                                            <div class="col ps-25px">
-                                                <a href="demo-fashion-store-single-product.html" class="text-light alt-font fw-500 d-inline-block lh-normal">Sleeve sweater</a>
-                                                <div class="fs-15 lh-normal"><del class="me-5px">$35.00</del>$30.00</div>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex align-items-center">
-                                            <figure class="mb-0">
-                                                <a href="demo-fashion-store-single-product.html">
-                                                    <img class="border-radius-4px w-80px" src="https://placehold.co/600x765" alt="">
-                                                </a>
-                                            </figure>
-                                            <div class="col ps-25px">
-                                                <a href="demo-fashion-store-single-product.html" class="text-light alt-font fw-500 d-inline-block lh-normal">Pocket white</a>
-                                                <div class="fs-15 lh-normal"><del class="me-5px">$20.00</del>$15.00</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- end text slider item -->
-                            </div>
-                            <!-- start slider navigation -->
-                        </div>
-                    </div>
-                    <div>
-                        <span class="alt-font fw-500 fs-19 text-light d-block mb-10px">Filter by tags</span>
-                        <div class="shop-filter tag-cloud fs-16">
-                            <a class="text-light" href="#">Coats</a>
-                            <a class="text-light" href="#">Cotton</a>
-                            <a class="text-light" href="#">Dresses</a>
-                            <a class="text-light" href="#">Jackets</a>
-                            <a class="text-light" href="#">Polyester</a>
-                            <a class="text-light" href="#">Printed</a>
-                            <a class="text-light" href="#">Shirts</a>
-                            <a class="text-light" href="#">Shorts</a>
-                            <a class="text-light" href="#">Tops</a>
-                        </div>
-                    </div> --}}
                 </div>
+
             </div>
         </div>
     </section>

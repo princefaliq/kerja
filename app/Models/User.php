@@ -36,6 +36,10 @@ class User extends Authenticatable
     {
         return $this->hasOne(Pelamar::class);
     }
+    public function perusahaan()
+    {
+        return $this->hasOne(Perusahaan::class, 'user_id');
+    }
     /**
      * The attributes that should be cast to native types.
      *

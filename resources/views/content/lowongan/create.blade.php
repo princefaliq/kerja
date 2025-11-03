@@ -85,7 +85,7 @@
 
                             <!-- Lokasi -->
                             <div class="mb-10 fv-row">
-                                <label class="required form-label">Lokasi</label>
+                                <label class="required form-label">Lokasi Penempatan</label>
                                 <input type="text" name="lokasi" class="form-control mb-2" placeholder="Contoh: Kab. Bantul, D.I. Yogyakarta" required />
                             </div>
 
