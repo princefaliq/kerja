@@ -63,7 +63,47 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav alt-font ls-05px">
                         <li class="nav-item"><a href="/" class="nav-link">Beranda</a></li>
-
+                        <li class="nav-item dropdown dropdown-with-icon">
+                            <a href="#" class="nav-link">Link Terkait</a>
+                            <i class="fa-solid fa-angle-down dropdown-toggle" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <li>
+                                    <a href="https://siapkerja.kemnaker.go.id/" target="_blank"><img src="{{ url('logo/siaker-logo-blue.svg') }}" width="200" alt="">
+                                        <div class="submenu-icon-content">
+                                            <span>Siap Kerja</span>
+                                            <p>Kemnaker</p>
+                                        </div>
+                                    </a>
+                                </li>
+                                {{--<li>
+                                    <a href="demo-conference-speaker-details.html"><img src="https://placehold.co/200x200" alt="">
+                                        <div class="submenu-icon-content">
+                                            <span>Jessica dover</span>
+                                            <p>Geologist speakers</p>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="demo-conference-speaker-details.html"><img src="https://placehold.co/148x148" alt="">
+                                        <div class="submenu-icon-content">
+                                            <span>Matthew taylor</span>
+                                            <p>Psychologist speakers</p>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="demo-conference-speaker-details.html"><img src="https://placehold.co/148x148" alt="">
+                                        <div class="submenu-icon-content">
+                                            <span>Rodney stratton</span>
+                                            <p>Psychologist speakers</p>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="demo-conference-speakers.html" class="btn btn-dark-gray btn-round-edge btn-box-shadow align-self-center text-center text-white">View all speakers</a>
+                                </li>--}}
+                            </ul>
+                        </li>
                     </ul>
                     @auth
                         @role('User')

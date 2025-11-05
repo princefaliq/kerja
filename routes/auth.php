@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Dashboard\AppMyprofileController;
 use App\Http\Controllers\Dashboard\AppPelamarController;
 use App\Http\Controllers\Dashboard\AppPerusahaanController;
 use App\Http\Controllers\UserController;
@@ -51,7 +52,7 @@ Route::group([
 
             Route::get('pelamar', [AppPelamarController::class, 'index'])->name('pelamar.index')->name('pelamar.index');
             Route::get('pelamar/data', [AppPelamarController::class, 'data'])->name('pelamar.data');
-            Route::get('/pelamar/detail/{id}', [AppPelamarController::class, 'detail'])->name('lamaran.detail');
+            Route::get('/myprofile/{id}', [AppMyprofileController::class, 'show'])->name('myprofile.show');
         });
 
     });

@@ -163,73 +163,97 @@
     <script src="{{ url('assets/plugins/global/plugins.bundle.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            fetch("{{ route('dashboard.user.data') }}")
-                .then(response => response.json())
-                .then(data => {
-                    const percent = data.percentage ?? 0;
-                    const totalUser = data.total_user ?? 0;
-                    const totalPelamar = data.total_pelamar ?? 0;
+            // === BAGIAN CHART PERSENTASE PELAMAR ===
+            let chart; // Simpan instance chart agar bisa di-update tanpa render ulang
 
-                    const options = {
-                        series: [percent],
-                        chart: {
-                            height: 260,
-                            type: 'radialBar',
-                            sparkline: { enabled: true },
-                        },
-                        plotOptions: {
-                            radialBar: {
-                                startAngle: -90,
-                                endAngle: 90,
-                                track: {
-                                    background: "#e7e7e7",
-                                    strokeWidth: '97%',
-                                    margin: 5,
-                                },
-                                hollow: { size: '60%' },
-                                dataLabels: {
-                                    name: {
-                                        show: true,
-                                        offsetY: 60,
-                                        color: '#888',
-                                        fontSize: '20px',
-                                        formatter: () => 'Pelamar / Isi Biodata'
+            async function loadUserData() {
+                try {
+                    const response = await fetch("{{ route('dashboard.user.data') }}");
+                    const data = await response.json();
+
+                    const percent = data.percentage ?? 0;
+
+                    // Jika chart belum ada → render baru
+                    if (!chart) {
+                        const options = {
+                            series: [percent],
+                            chart: {
+                                height: 260,
+                                type: 'radialBar',
+                                sparkline: { enabled: true },
+                            },
+                            plotOptions: {
+                                radialBar: {
+                                    startAngle: -90,
+                                    endAngle: 90,
+                                    track: {
+                                        background: "#e7e7e7",
+                                        strokeWidth: '97%',
+                                        margin: 5,
                                     },
-                                    value: {
-                                        offsetY: -10,
-                                        fontSize: '30px',
-                                        color: '#111',
-                                        fontWeight: 'bold',
-                                        formatter: function (val) {
-                                            return val.toFixed(1) + '%';
+                                    hollow: { size: '60%' },
+                                    dataLabels: {
+                                        name: {
+                                            show: true,
+                                            offsetY: 60,
+                                            color: '#888',
+                                            fontSize: '20px',
+                                            formatter: () => 'Pelamar / Isi Biodata'
+                                        },
+                                        value: {
+                                            offsetY: -10,
+                                            fontSize: '30px',
+                                            color: '#111',
+                                            fontWeight: 'bold',
+                                            formatter: function (val) {
+                                                return val.toFixed(1) + '%';
+                                            }
                                         }
                                     }
                                 }
-                            }
-                        },
-                        colors: ['#4ade80'],
-                        stroke: { lineCap: "round" },
-                    };
+                            },
+                            colors: ['#4ade80'],
+                            stroke: { lineCap: "round" },
+                        };
 
-                    const chart = new ApexCharts(document.querySelector("#userPelamarChart"), options);
-                    chart.render();
-                })
-                .catch(error => {
-                    console.error('Error fetching data:', error);
-                });
-        });
-        document.addEventListener('DOMContentLoaded', function() {
-            fetch("{{ route('dashboard.widget.data') }}")
-                .then(response => response.json())
-                .then(data => {
+                        chart = new ApexCharts(document.querySelector("#userPelamarChart"), options);
+                        chart.render();
+                    } else {
+                        // Jika chart sudah ada → update datanya
+                        chart.updateSeries([percent]);
+                    }
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
+                }
+            }
+
+            // === BAGIAN WIDGET COUNT ===
+            async function loadWidgetData() {
+                try {
+                    const response = await fetch("{{ route('dashboard.widget.data') }}");
+                    const data = await response.json();
+
                     document.getElementById('countUser').textContent = data.user ?? 0;
                     document.getElementById('countPerusahaan').textContent = data.perusahaan ?? 0;
                     document.getElementById('countPelamar').textContent = data.pelamar ?? 0;
                     document.getElementById('countLowongan').textContent = data.lowongan ?? 0;
-                })
-                .catch(error => console.error('Error fetching widget data:', error));
+                } catch (error) {
+                    console.error('Error fetching widget data:', error);
+                }
+            }
+
+            // === Panggil pertama kali ===
+            loadUserData();
+            loadWidgetData();
+
+            // === Update setiap 10 detik ===
+            setInterval(() => {
+                loadUserData();
+                loadWidgetData();
+            }, 10000);
         });
     </script>
+
 
     <!--end::Vendors Javascript-->
     <!--end::Custom Javascript-->

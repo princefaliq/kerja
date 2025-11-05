@@ -56,7 +56,7 @@ class AppLamaranController extends Controller
                             $lamaran->created_at ? Carbon::parse($lamaran->created_at)->format('d/m/Y H:i') : '-'
                             )
                 ->addColumn('dokumen', fn ($lamaran)=>
-                '<a class="btn btn-xs btn-info" href="'. url('app/lamaran/detail/'.$lamaran->user->id).'" target="_blank"><i class="ki-duotone ki-faceid fs-2">
+                '<a class="btn btn-xs btn-info" href="'. url('app/pelamar/detail/'.$lamaran->user->id).'" target="_blank"><i class="ki-duotone ki-faceid fs-2">
  <span class="path1"></span>
  <span class="path2"></span>
  <span class="path3"></span>

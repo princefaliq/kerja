@@ -203,6 +203,52 @@
             });
         });
     </script>
+
+    <!-- ============================= -->
+    <!-- JS EDIT PENDIDIKAN -->
+    <!-- ============================= -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const pendidikanModal = new bootstrap.Modal(document.getElementById('editPendidikanModal'));
+            const btnEditPendidikan = document.getElementById('btnEditPendidikan');
+            const btnSimpanPendidikan = document.getElementById('btnSimpanPendidikan');
+
+            // Buka modal
+            btnEditPendidikan.addEventListener('click', () => {
+                pendidikanModal.show();
+            });
+
+            // Simpan perubahan
+            btnSimpanPendidikan.addEventListener('click', () => {
+                const form = document.getElementById('formEditPendidikan');
+                const formData = new FormData(form);
+
+                fetch('{{ route("profile.update-pendidikan") }}', {
+                    method: 'POST',
+                    headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                    body: formData
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            // update tampilan tanpa reload
+                            document.getElementById('data-pendidikan').textContent = data.profile.pendidikan_terahir ?? '-';
+                            document.getElementById('data-jurusan').textContent = data.profile.jurusan ?? '-';
+                            document.getElementById('data-namasekolah').textContent = data.profile.nama_sekolah ?? '-';
+
+                            pendidikanModal.hide();
+                        } else {
+                            alert('Gagal menyimpan data pendidikan.');
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert('Terjadi kesalahan.');
+                    });
+            });
+        });
+    </script>
+
     <!-- ============================= -->
     <!-- JS EDIT DOKUMEN -->
     <!-- ============================= -->
@@ -225,7 +271,7 @@
                 fetch('{{ route("profile.update-dokumen") }}', {
                     method: 'POST',
                     headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept' : 'application/json' },
-                    
+
                     body: formData
                 })
                     .then(res => {

@@ -102,8 +102,7 @@
                                      class="border rounded shadow-sm border-3 imageAvatar"
                                      width="120" height="120">
 
-                                <button type="button" class="btn btn-sm position-absolute"
-                                        id="btnEditFoto">
+                                <button type="button" class="btn btn-sm position-absolute" id="btnEditFoto">
                                     <i class="bi bi-pencil-square text-base-color icon-hover text-base-color"></i>
                                 </button>
                             </div>
@@ -115,14 +114,17 @@
                                 </h4>
 
                                 <!-- Input edit nama (disembunyikan dulu) -->
-                                <input type="text" id="input-nama" class="form-control form-control-sm d-none"
-                                       value="{{ $profile->user->name }}" style="max-width: 250px; display: inline-block;">
+                                <input type="text" id="input-nama"
+                                       class="form-control form-control-sm d-none"
+                                       value="{{ $profile->user->name }}"
+                                       style="max-width: 250px; display: inline-block;">
 
                                 <!-- Tombol edit / simpan -->
                                 <button type="button" class="btn btn-sm position-absolute" title="Edit Nama" id="btnEditNama">
                                     <i class="bi bi-pencil-square text-base-color icon-hover text-base-color"></i>
                                 </button>
                             </div>
+
                             <p class="text-muted mb-2">
                                 <i class="feather icon-feather-log-in text-golden-yellow me-1"></i>
                                 Terakhir login:
@@ -130,7 +132,7 @@
                             </p>
                         </div>
 
-
+                        <!-- Garis pemisah -->
                         <div class="d-flex align-items-center justify-content-between my-3 position-relative">
                             <hr class="flex-grow-1 my-0">
                             <button type="button" class="btn btn-sm ms-2 border-0 bg-transparent" title="Edit Biodata" id="btnEditData">
@@ -139,7 +141,6 @@
                         </div>
 
                         <!-- Bagian Informasi Dasar -->
-
                         <div class="row text-center">
                             <div class="col-md-4 mb-3">
                                 <i class="feather icon-feather-user text-golden-yellow me-2"></i>
@@ -183,62 +184,90 @@
                             <p class="text-secondary small m-0">Alamat Lengkap</p>
                         </div>
 
+                        <!-- Garis pemisah -->
+                        <div class="d-flex align-items-center justify-content-between my-3 position-relative">
+                            <hr class="flex-grow-1 my-0">
+                            <button type="button" class="btn btn-sm ms-2 border-0 bg-transparent" title="Edit Pendidikan" id="btnEditPendidikan">
+                                <i class="bi bi-pencil-square text-base-color icon-hover text-base-color"></i>
+                            </button>
+                        </div>
+
+                        <!-- Bagian Pendidikan -->
+                        <h6 class="fw-bold text-dark mb-3 text-center">
+                            <i class="feather icon-feather-book text-golden-yellow me-2"></i>
+                            Pendidikan Terakhir
+                        </h6>
+                        <div class="row text-center">
+                            <div class="col-md-4 mb-3">
+                                <i class="feather icon-feather-bookmark text-golden-yellow me-2"></i>
+                                <span id="data-pendidikan" class="fw-medium text-dark">{{ $profile->pendidikan_terahir ?? '-' }}</span>
+                                <p class="text-secondary small m-0">Tingkat Pendidikan</p>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <i class="feather icon-feather-layers text-golden-yellow me-2"></i>
+                                <span id="data-jurusan" class="fw-medium text-dark">{{ $profile->jurusan ?? '-' }}</span>
+                                <p class="text-secondary small m-0">Jurusan</p>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <i class="feather icon-feather-home text-golden-yellow me-2"></i>
+                                <span id="data-namasekolah" class="fw-medium text-dark">{{ $profile->nama_sekolah ?? '-' }}</span>
+                                <p class="text-secondary small m-0">Nama Sekolah / Universitas</p>
+                            </div>
+                        </div>
+
+                        <!-- Garis pemisah -->
                         <div class="d-flex align-items-center justify-content-between my-3 position-relative">
                             <hr class="flex-grow-1 my-0">
                             <button type="button" class="btn btn-sm ms-2 border-0 bg-transparent" title="Edit Dokumen" id="btnEditDokumen">
                                 <i class="bi bi-pencil-square text-base-color icon-hover text-base-color"></i>
                             </button>
                         </div>
+
                         <!-- Bagian Dokumen -->
                         <h6 class="fw-bold text-dark mb-3 text-center">
                             <i class="feather icon-feather-file-text text-golden-yellow me-2"></i>
                             Dokumen Pelamar
                         </h6>
+
                         <div class="row text-center">
                             <div class="col-md-4 mb-2">
-                                <a href="{{ url($profile->ktpUrl) }}" target="_blank"
-                                   class="text-dark text-decoration-none">
+                                <a href="{{ url($profile->ktpUrl) }}" target="_blank" class="text-dark text-decoration-none">
                                     <i class="feather icon-feather-file text-golden-yellow me-1"></i> KTP
                                 </a>
                             </div>
                             <div class="col-md-4 mb-2">
-                                <a href="{{ url($profile->cvUrl) }}" target="_blank"
-                                   class="text-dark text-decoration-none">
+                                <a href="{{ url($profile->cvUrl) }}" target="_blank" class="text-dark text-decoration-none">
                                     <i class="feather icon-feather-file-text text-golden-yellow me-1"></i> CV
                                 </a>
                             </div>
                             <div class="col-md-4 mb-2">
-                                <a href="{{ url($profile->ijazahUrl) }}" target="_blank"
-                                   class="text-dark text-decoration-none">
-                                    <i class="feather icon-feather-book text-golden-yellow me-1"></i> Ijazah
+                                <a href="{{ url($profile->ijazahUrl) }}" target="_blank" class="text-dark text-decoration-none">
+                                    <i class="feather icon-feather-book text-golden-yellow me-1"></i> Ijazah dan Transkrip
                                 </a>
                             </div>
                             <div class="col-md-4 mb-2">
-                                <a href="{{ url($profile->ak1Url) }}" target="_blank"
-                                   class="text-dark text-decoration-none">
-                                    <i class="feather icon-feather-credit-card text-golden-yellow me-1"></i> AK1
+                                <a href="{{ url($profile->ak1Url) }}" target="_blank" class="text-dark text-decoration-none">
+                                    <i class="feather icon-feather-credit-card text-golden-yellow me-1"></i> Kartu Tanda Pencari Kerja (AK1)
                                 </a>
                             </div>
                             <div class="col-md-4 mb-2">
                                 @if(!empty($profile->sertifikatUrl))
-                                <a href="{{ optional($profile)->sertifikatUrl ? url($profile->sertifikatUrl) : '#' }}" target="_blank"
-                                   class="text-dark text-decoration-none">
-                                    <i class="feather icon-feather-award text-golden-yellow me-1"></i> Sertifikat
-                                </a>
-                                <button type="button" class="btn btn-sm border-0 bg-transparent btnHapus" title="Hapus Sertifikat" id="btnHapusSertifikat" data-field="sertifikat">
-                                    <i class="bi bi-x-square text-danger icon-hover"></i>
-                                </button>
+                                    <a href="{{ url($profile->sertifikatUrl) }}" target="_blank" class="text-dark text-decoration-none">
+                                        <i class="feather icon-feather-award text-golden-yellow me-1"></i> Sertifikat
+                                    </a>
+                                    <button type="button" class="btn btn-sm border-0 bg-transparent btnHapus" title="Hapus Sertifikat" data-field="sertifikat">
+                                        <i class="bi bi-x-square text-danger icon-hover"></i>
+                                    </button>
                                 @else
                                     <span class="text-muted"><i class="feather icon-feather-award me-1"></i> Sertifikat (tidak tersedia)</span>
                                 @endif
                             </div>
                             <div class="col-md-4 mb-2">
                                 @if(!empty($profile->syarat_lainUrl))
-                                <a href="{{ optional($profile)->syarat_lainUrl ? url($profile->syarat_lainUrl) : '#' }}" target="_blank"
-                                   class="text-dark text-decoration-none">
-                                    <i class="feather icon-feather-clipboard text-golden-yellow me-1"></i> Syarat Lain
-                                </a>
-                                    <button type="button" class="btn btn-sm border-0 bg-transparent btnHapus" title="Hapus Syarat Lain" id="btnHapusSyarat" data-field="syarat_lain">
+                                    <a href="{{ url($profile->syarat_lainUrl) }}" target="_blank" class="text-dark text-decoration-none">
+                                        <i class="feather icon-feather-clipboard text-golden-yellow me-1"></i> Syarat Lain
+                                    </a>
+                                    <button type="button" class="btn btn-sm border-0 bg-transparent btnHapus" title="Hapus Syarat Lain" data-field="syarat_lain">
                                         <i class="bi bi-x-square text-danger icon-hover"></i>
                                     </button>
                                 @else
@@ -247,6 +276,7 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
 
             </div>
@@ -416,6 +446,62 @@
             </div>
         </div>
     </div>
+
+    <!-- ============================= -->
+    <!-- MODAL EDIT PENDIDIKAN -->
+    <!-- ============================= -->
+    <div class="modal fade" id="editPendidikanModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Pendidikan Terakhir</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formEditPendidikan">
+                        @csrf
+                        <div class="row g-3">
+
+                            <div class="col-md-12">
+                                <label class="form-label">Pendidikan Terakhir</label>
+                                <select name="pendidikan_terahir" class="form-select">
+                                    <option value="">-- Pilih Pendidikan --</option>
+                                    <option value="SD" {{ $profile->pendidikan_terahir == 'SD' ? 'selected' : '' }}>SD</option>
+                                    <option value="SMP" {{ $profile->pendidikan_terahir == 'SMP' ? 'selected' : '' }}>SMP</option>
+                                    <option value="SMA" {{ $profile->pendidikan_terahir == 'SMA' ? 'selected' : '' }}>SMA</option>
+                                    <option value="SMK" {{ $profile->pendidikan_terahir == 'SMK' ? 'selected' : '' }}>SMK</option>
+                                    <option value="D1" {{ $profile->pendidikan_terahir == 'D1' ? 'selected' : '' }}>D1</option>
+                                    <option value="D2" {{ $profile->pendidikan_terahir == 'D2' ? 'selected' : '' }}>D2</option>
+                                    <option value="D3" {{ $profile->pendidikan_terahir == 'D3' ? 'selected' : '' }}>D3</option>
+                                    <option value="S1/D4" {{ $profile->pendidikan_terahir == 'S1/D4' ? 'selected' : '' }}>S1/D4</option>
+                                    <option value="S2" {{ $profile->pendidikan_terahir == 'S2' ? 'selected' : '' }}>S2</option>
+                                    <option value="S3" {{ $profile->pendidikan_terahir == 'S3' ? 'selected' : '' }}>S3</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-12">
+                                <label class="form-label">Jurusan</label>
+                                <input type="text" name="jurusan" class="form-control"
+                                       value="{{ $profile->jurusan ?? '' }}" placeholder="Contoh: Rekayasa Perangkat Lunak">
+                            </div>
+
+                            <div class="col-md-12">
+                                <label class="form-label">Nama Sekolah / Perguruan Tinggi</label>
+                                <input type="text" name="nama_sekolah" class="form-control"
+                                       value="{{ $profile->nama_sekolah ?? '' }}" placeholder="Contoh: SMKN 1 Bondowoso">
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button class="btn btn-success" id="btnSimpanPendidikan">Simpan Perubahan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 
 @endsection

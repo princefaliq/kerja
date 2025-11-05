@@ -31,20 +31,6 @@
             object-fit: cover;
         }
 
-        .job-company-name {
-            font-size: 15px;
-            font-weight: 500;
-            margin-top: 8px;
-            color: #fdd835;
-            text-align: center;
-            transition: color 0.3s;
-        }
-
-        .job-company-name:hover {
-            color: #fff;
-            text-decoration: underline;
-        }
-
         .job-title {
             font-size: 18px;
             font-weight: 600;
@@ -83,6 +69,7 @@
         }
 
         /* --- PAGINATION --- */
+        /* --- PAGINATION STYLING --- */
         .pagination-style-01 .page-item {
             margin: 0 4px;
         }
@@ -94,16 +81,18 @@
             height: 36px;
             text-align: center;
             line-height: 36px;
-            color: #ffffff;
-            background-color: rgba(255, 255, 255, 0.1);
+            color: #ffffff; /* Default: teks putih */
+            background-color: rgba(255, 255, 255, 0.1); /* Transparan lembut */
             transition: all 0.3s ease;
         }
 
+        /* 🟡 Hover efek: kuning & teks hitam */
         .pagination-style-01 .page-item:not(.active):not(.disabled) .page-link:hover {
             background-color: #fdd835 !important;
             color: #000000 !important;
         }
 
+        /* ✅ Aktif: tetap kuning & hitam */
         .pagination-style-01 .page-item.active .page-link {
             background-color: #fdd835;
             color: #000000;
@@ -111,6 +100,7 @@
             box-shadow: 0 0 10px rgba(253, 216, 53, 0.4);
         }
 
+        /* ❌ Disabled: tanpa lingkaran & teks pudar */
         .pagination-style-01 .page-item.disabled .page-link {
             background: none;
             color: rgba(255, 255, 255, 0.5);
@@ -167,7 +157,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 140px;
+            max-width: 140px; /* cegah teks terlalu panjang */
         }
 
         .filter-box ul li a:hover {
@@ -185,15 +175,19 @@
             color: #fdd835;
         }
 
+        /* --- RESPONSIVE --- */
         @media (max-width: 768px) {
             .job-card {
                 margin-bottom: 15px;
             }
+
             .filter-box ul li a {
                 max-width: 100%;
             }
         }
+
     </style>
+
 @endpush
 
 @section('content')
@@ -204,15 +198,16 @@
                     <ul>
                         <li><a href="/">Home</a></li>
                         <li><a href="{{ url('lowongan-kerja') }}">Lowongan</a></li>
+
                     </ul>
                 </div>
             </div>
         </div>
     </section>
-
     <section class="pt-5 pb-10 ps-4 pe-4">
         <div class="container-fluid">
             <div class="row">
+                <!-- Kolom utama -->
                 <div class="col-lg-9">
                     @if ($lowongans->isEmpty())
                         <p class="text-light text-center mt-5">Tidak ada lowongan yang tersedia saat ini.</p>
@@ -223,23 +218,14 @@
                                     <div class="job-card p-3 h-100 d-flex flex-column justify-content-between">
                                         <div>
                                             <div class="text-center job-company mb-3">
-                                                <img src="{{ $lowongan->user->avatar_url ? asset($lowongan->user->avatar_url) : 'https://placehold.co/80x80' }}" alt="Logo Perusahaan {{ $lowongan->user->name }}">
-
-                                                {{-- 🔗 Nama Perusahaan dengan link ke profil --}}
-                                                <a href="{{ optional($lowongan->perusahaan)->slug ? route('perusahaan.show', optional($lowongan->perusahaan)->slug) : '#' }}"
-                                                   class="job-company-name d-block">
-                                                    {{ $lowongan->user->name }}
-                                                </a>
-
+                                                <img src="{{ $lowongan->user->avatar_url ? asset($lowongan->user->avatar_url) : 'https://placehold.co/80x80' }}" alt="Logo Perusahaan">
                                             </div>
-
                                             <h5 class="job-title text-center">{{ Str::limit($lowongan->judul, 35, '...') }}</h5>
                                             <p class="job-location text-center mb-2">
                                                 <i class="bi bi-geo-alt"></i> {{ Str::limit($lowongan->lokasi, 25, '...') }}
                                             </p>
                                             <p class="job-meta mb-1"><strong>Pendidikan:</strong> {{ $lowongan->pendidikan_minimal }}</p>
                                             <p class="job-meta mb-1"><strong>Jenis Kelamin:</strong> {{ $lowongan->jenis_kelamin }}</p>
-                                            <p class="job-meta mb-1"><strong>Jumlah Lowongan:</strong> {{ $lowongan->jumlah_lowongan }} Orang</p>
                                             <p class="job-meta mb-1"><strong>Batas Lamaran:</strong> {{ $lowongan->batas_lamaran ? $lowongan->batas_lamaran->diffForHumans() : '-' }}</p>
                                         </div>
 
@@ -255,16 +241,19 @@
                         </div>
                     @endif
 
+                    <!-- Pagination -->
                     <div class="mt-4">
                         {{ $lowongans->links('crafto.pagination.paging') }}
                         <div class="pagination-info">
                             Showing {{ $lowongans->firstItem() }} to {{ $lowongans->lastItem() }} of {{ $lowongans->total() }} results
                         </div>
                     </div>
+
                 </div>
 
-                {{-- SIDEBAR FILTER --}}
+                <!-- Sidebar -->
                 <div class="col-lg-3 mt-4 mt-lg-0">
+                    {{-- Filter Jenis Pekerjaan --}}
                     <div class="filter-box mb-4">
                         <h5 class="alt-font fw-600 fs-18 mb-3">Filter Jenis Pekerjaan</h5>
                         <ul class="filter-list list-unstyled mb-0">
@@ -279,6 +268,7 @@
                         </ul>
                     </div>
 
+                    {{-- Filter Jenis Kelamin --}}
                     <div class="filter-box">
                         <h5 class="alt-font fw-600 fs-18 mb-3">Filter Jenis Kelamin</h5>
                         <ul class="filter-list list-unstyled mb-0">
@@ -301,6 +291,7 @@
                         </ul>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>

@@ -2,7 +2,7 @@
     <div class="container">
         <div class="row position-relative clients-style-08">
             <div class="col swiper text-center feather-shadow" id="perusahaan-swiper"
-                 data-slider-options='{ "slidesPerView": 2, "spaceBetween":0, "speed": 4000, "loop": true, "allowTouchMove": false, "autoplay": { "delay":0, "disableOnInteraction": false }, "breakpoints": { "1200": { "slidesPerView": 4 }, "992": { "slidesPerView": 3 }, "768": { "slidesPerView": 2 } }, "effect": "slide" }'>
+                 data-slider-options='{ "slidesPerView": 2, "spaceBetween":0, "speed": 4000, "loop": true, "allowTouchMove": true, "autoplay": { "delay":0, "disableOnInteraction": false }, "breakpoints": { "1200": { "slidesPerView": 4 }, "992": { "slidesPerView": 3 }, "768": { "slidesPerView": 2 } }, "effect": "slide" }'>
                 <div class="swiper-wrapper marquee-slide" id="perusahaan-list">
                      Data akan dimasukkan lewat AJAX
                     <div class="swiper-slide text-center py-5">
@@ -41,11 +41,11 @@
 
                     const container = document.getElementById("perusahaan-list");
                     container.innerHTML = "";
-
+                    const baseUrl = "{{ url('perusahaan/') }}/";
                     data.forEach(item => {
                         const slide = `
                 <div class="swiper-slide">
-                    <a href="#" title="${item.name}">
+                    <a href="${baseUrl+item.id}" title="${item.name}">
                         <img src="${item.avatar_url}" alt="${item.name}"
                             class="h-100px xs-h-30px"
                             >

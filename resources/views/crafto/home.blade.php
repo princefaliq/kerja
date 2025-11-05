@@ -5,9 +5,10 @@
     @include('crafto.inc.keuntungan')
     @include('crafto.inc.about')
 {{--    @include('crafto.inc.lowongan')--}}
-    @include('crafto.inc.patner')
+    {{--@include('crafto.inc.patner')--}}
+    @include('crafto.inc.flayer')
     @include('crafto.inc.jadwal')
-    @include('crafto.inc.artikel')
+    {{--@include('crafto.inc.artikel')--}}
     @include('crafto.inc.logo_patner')
     @include('crafto.inc.countdown')
     @include('crafto.inc.testimoni')

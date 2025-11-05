@@ -32,7 +32,20 @@ class CreatePelamarTable extends Migration
                 'Belum Kawin',
                 'Kawin',
             ]); // Status Pernikahan
-
+            $table->enum('pendidikan_terahir', [
+                'SD',
+                'SMP',
+                'SMA',
+                'SMK',
+                'D1',
+                'D2',
+                'D3',
+                'S1/D4',
+                'S2',
+                'S3'
+            ])->nullable(); // Pilihan pendidikan
+            $table->string('jurusan')->nullable();
+            $table->string('nama_sekolah')->nullable();
             // Disabilitas
             $table->enum('disabilitas', ['iya', 'tidak']); // Disabilitas
 

@@ -3,10 +3,12 @@
 use App\Http\Controllers\Crafto\LamarController;
 use App\Http\Controllers\Crafto\LowonganController;
 use App\Http\Controllers\Crafto\HomeController;
+use App\Http\Controllers\Crafto\PerusahaanController;
 use App\Http\Controllers\Crafto\ProfileController;
 use App\Http\Controllers\Dashboard\AppLamaranController;
 use App\Http\Controllers\Dashboard\AppLowonganController;
 use App\Http\Controllers\Dashboard\AppMyprofileController;
+use App\Http\Controllers\Dashboard\AppPelamarController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\WilayahController;
 use Illuminate\Support\Facades\Route;
@@ -27,6 +29,9 @@ Route::get('/lowongan-kerja/{slug}', [LowonganController::class, 'detil']);
 Route::get('/register', [LowonganController::class, 'register_index']);
 Route::post('/register/store', [LowonganController::class, 'register_store']);
 Route::get('/login', [LowonganController::class, 'login']);
+Route::get('/perusahaan/{slug}', [PerusahaanController::class, 'show'])
+    ->name('perusahaan.show');
+
 
 
 
@@ -51,6 +56,9 @@ Route::group([
     Route::post('/update-dokumen', [ProfileController::class, 'updateDokumen'])->name('profile.update-dokumen');
     Route::delete('/hapus-dokumen/{field}', [ProfileController::class, 'hapusDokumen'])
         ->name('profile.hapusDokumen');
+    Route::post('/update-pendidikan', [ProfileController::class, 'updatePendidikan'])
+        ->name('profile.update-pendidikan');
+
     Route::any('/artikel', [AppLowonganController::class, 'index'])->name('artikel.index');
 
 });
@@ -73,12 +81,15 @@ Route::group([
 
         Route::any('/lamaran', [AppLamaranController::class, 'index'])->name('lamaran.index');
 
+        Route::get('/pelamar/detail/{id}', [AppPelamarController::class, 'detail'])->name('lamaran.detail');
 
         //my Profile
         Route::get('/myprofile', [AppMyprofileController::class, 'index'])->name('myprofile.index');
         Route::get('/myprofile/edit', [AppMyprofileController::class, 'edit'])->name('myprofile.edit');
         Route::put('/myprofile/update', [AppMyprofileController::class, 'update'])->name('myprofile.update');
 
+        Route::get('/myprofile/qrcode/{slug}', [AppMyprofileController::class, 'qrcode'])->name('myprofile.qrcode');
+        Route::get('/myprofile/qrcode/download/{slug}', [AppMyprofileController::class, 'downloadQrcode'])->name('myprofile.qrcode.download');
 
 
         Route::middleware('role:Perusahaan')->group(function () {

@@ -1,5 +1,5 @@
 @extends('master')
-@section('title','My Profile')
+@section('title','My Qrcode')
 @section('profile','show')
 
 @push('css')
@@ -25,10 +25,10 @@
                     </li>
                     <!--end::Item-->
                     <!--begin::Item-->
-                    <li class="breadcrumb-item text-gray-600">Account</li>
+                    <li class="breadcrumb-item text-gray-600">QrCode</li>
                     <!--end::Item-->
                     <!--begin::Item-->
-                    <li class="breadcrumb-item text-gray-500">My Profile</li>
+                    <li class="breadcrumb-item text-gray-500">Perusahaan</li>
                     <!--end::Item-->
                 </ul>
                 <!--end::Breadcrumb-->
@@ -54,7 +54,7 @@
                         <!--begin: Pic-->
                         <div class="me-7 mb-4">
                             <div class="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative">
-                                <img src="{{ url(\Illuminate\Support\Facades\Auth::user()->avatar_url) }}" alt="{{\Illuminate\Support\Facades\Auth::user()->name }}" />
+                                <img src="{{ url($perusahaan->user->avatar_url) }}" alt="{{$perusahaan->user->name }}" />
                                 <div class="position-absolute translate-middle bottom-0 start-100 mb-6 bg-success rounded-circle border border-4 border-body h-20px w-20px"></div>
                             </div>
                         </div>
@@ -67,7 +67,7 @@
                                 <div class="d-flex flex-column">
                                     <!--begin::Name-->
                                     <div class="d-flex align-items-center mb-2">
-                                        <a href="#" class="text-gray-900 text-hover-primary fs-2 fw-bold me-1">{{\Illuminate\Support\Facades\Auth::user()->name }}</a>
+                                        <a href="#" class="text-gray-900 text-hover-primary fs-2 fw-bold me-1">{{$perusahaan->user->name }}</a>
                                         <a href="#">
                                             <i class="ki-duotone ki-verify fs-1 text-primary">
                                                 <span class="path1"></span>
@@ -83,21 +83,21 @@
                                                 <span class="path1"></span>
                                                 <span class="path2"></span>
                                                 <span class="path3"></span>
-                                            </i>{{ \Illuminate\Support\Facades\Auth::user()->getRoleNames()->first() }}</a>
+                                            </i>{{ $perusahaan->user->getRoleNames()->first() }}</a>
                                         <a href="#" class="d-flex align-items-center text-gray-500 text-hover-primary me-5 mb-2">
                                             <i class="ki-duotone ki-geolocation fs-4 me-1">
                                                 <span class="path1"></span>
                                                 <span class="path2"></span>
                                             </i>
-                                            @if(auth()->check() && auth()->user()->perusahaan)
-                                                {{ auth()->user()->perusahaan->alamat }}
-                                            @endif
+
+                                                {{ $perusahaan->alamat }}
+
                                         </a>
                                         <a href="#" class="d-flex align-items-center text-gray-500 text-hover-primary mb-2">
                                             <i class="ki-duotone ki-sms fs-4">
                                                 <span class="path1"></span>
                                                 <span class="path2"></span>
-                                            </i>{{ \Illuminate\Support\Facades\Auth::user()->email }}</a>
+                                            </i>{{ $perusahaan->user->email }}</a>
                                     </div>
                                     <!--end::Info-->
                                 </div>
@@ -174,13 +174,19 @@
                     <ul class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bold">
                         <!--begin::Nav item-->
                         <li class="nav-item mt-2">
-                            <a class="nav-link text-active-primary ms-0 me-10 py-5 active" href="{{ url('app/myprofile') }}">Profile</a>
+                            <a class="nav-link text-active-primary ms-0 me-10 py-5" href="{{ url('app/myprofile') }}">Profile</a>
                         </li>
                         <!--end::Nav item-->
-                        <!--begin::Nav item-->
-                        <li class="nav-item mt-2">
-                            <a class="nav-link text-active-primary ms-0 me-10 py-5" href="{{ url('app/myprofile/edit') }}">Edit</a>
-                        </li>
+                        @auth
+                            @if(auth()->id() === $perusahaan->user->id)
+                                <li class="nav-item mt-2">
+                                    <a class="nav-link text-active-primary ms-0 me-10 py-5" href="{{ url('app/myprofile/edit') }}">
+                                        Edit
+                                    </a>
+                                </li>
+                            @endif
+                        @endauth
+
                         <!--end::Nav item-->
                         <!--begin::Nav item-->
                         <li class="nav-item mt-2">
@@ -188,14 +194,9 @@
                         </li>
                         <!--end::Nav item-->
                         <!--begin::Nav item-->
-                        @php
-                            $perusahaan = auth()->user()->perusahaan;
-                        @endphp
-                        @if ($perusahaan && $perusahaan->slug)
                         <li class="nav-item mt-2">
-                            <a class="nav-link text-active-primary ms-0 me-10 py-5" href="{{ url('app/myprofile/qrcode/'.$perusahaan->slug) }}">QR Code</a>
+                            <a class="nav-link text-active-primary ms-0 me-10 py-5 active" href="{{ url('app/myprofile/qrcode/'.$perusahaan->slug) }}">QR Code</a>
                         </li>
-                        @endif
                         <!--end::Nav item-->
                     </ul>
                     <!--begin::Navs-->
@@ -208,182 +209,29 @@
                 <div class="card-header cursor-pointer">
                     <!--begin::Card title-->
                     <div class="card-title m-0">
-                        <h3 class="fw-bold m-0">Profile Details</h3>
+                        <h3 class="fw-bold m-0">QrCode</h3>
                     </div>
-                    <!--end::Card title-->
-                    <!--begin::Action-->
-                    <a href="{{ url('app/myprofile/edit') }}" class="btn btn-sm btn-primary align-self-center">Edit Profile</a>
-                    <!--end::Action-->
+
                 </div>
                 <!--begin::Card header-->
                 <!--begin::Card body-->
                 <div class="card-body p-9">
-                    <!--begin::Row-->
-                    <div class="row mb-7">
-                        <!--begin::Label-->
-                        <label class="col-lg-4 fw-semibold text-muted">Nama Perusahaan</label>
-                        <!--end::Label-->
-                        <!--begin::Col-->
-                        <div class="col-lg-8">
-                            <span class="fw-bold fs-6 text-gray-800">{{\Illuminate\Support\Facades\Auth::user()->name }}</span>
-                        </div>
-                        <!--end::Col-->
-                    </div>
-                    <!--end::Row-->
-                    <!--begin::Input group-->
-                    <div class="row mb-7">
-                        <!--begin::Label-->
-                        <label class="col-lg-4 fw-semibold text-muted">No Telepon
-                            <span class="ms-1" data-bs-toggle="tooltip" title="Telepone harus aktif">
-                                <i class="ki-duotone ki-information fs-7">
-                                    <span class="path1"></span>
-                                    <span class="path2"></span>
-                                    <span class="path3"></span>
-                                </i>
-                            </span>
-                        </label>
-                        <!--end::Label-->
-                        <!--begin::Col-->
-                        <div class="col-lg-8 fv-row">
-                            <span class="fw-bold fs-6 text-gray-800">{{\Illuminate\Support\Facades\Auth::user()->no_hp }}</span>
-                        </div>
-                        <!--end::Col-->
-                    </div>
-                    <!--end::Input group-->
-                    <!--begin::Input group-->
-                    <div class="row mb-7">
-                        <!--begin::Label-->
-                        <label class="col-lg-4 fw-semibold text-muted">Email
-                            <span class="ms-1" data-bs-toggle="tooltip" title="Email harus aktif">
-                                <i class="ki-duotone ki-information fs-7">
-                                    <span class="path1"></span>
-                                    <span class="path2"></span>
-                                    <span class="path3"></span>
-                                </i>
-                            </span>
-                        </label>
-                        <!--end::Label-->
-                        <!--begin::Col-->
-                        <div class="col-lg-8 fv-row">
-                            <span class="fw-bold fs-6 text-gray-800">{{\Illuminate\Support\Facades\Auth::user()->email }}</span>
-                        </div>
-                        <!--end::Col-->
-                    </div>
-                    <!--end::Input group-->
+                    <div class="container text-center mt-5">
+                        <div class="card p-4 shadow-sm d-inline-block">
+                            <h5 class="mb-2">{{ $perusahaan->user->name }}</h5>
+                            <p class="text-muted mb-3">{{ $url }}</p>
 
-                    <!--begin::Input group-->
-                    <div class="row mb-7">
-                        <!--begin::Label-->
-                        <label class="col-lg-4 fw-semibold text-muted">Website</label>
-                        <!--end::Label-->
-                        <!--begin::Col-->
-                        <div class="col-lg-8">
-                            @if ($perusahaan && $perusahaan->website)
-                                <a href="{{ $perusahaan->website }}"
-                                   target="_blank"
-                                   class="fw-semibold fs-6 text-gray-800 text-hover-primary">
-                                    {{ $perusahaan->website }}
+                            <div>{!! $svg !!}</div>
+
+                            <div class="mt-4">
+                                <a href="{{ route('myprofile.qrcode.download', $perusahaan->slug) }}"
+                                   class="btn btn-success">
+                                    <i class="bi bi-download me-1"></i> Download QR Code
                                 </a>
-                            @else
-                                <span class="text-danger">
-                                    <i class="bi bi-sign-stop-fill text-danger me-1"></i>
-                                    Website Tidak tersedia
-                                </span>
-                            @endif
-                        </div>
-                        <!--end::Col-->
-                    </div>
-                    <!--end::Input group-->
-                    <div class="row mb-7">
-                        <!--begin::Label-->
-                        <label class="col-lg-4 fw-semibold text-muted">Nomor Induk Berusaha (NIB)</label>
-                        <!--end::Label-->
-                        <!--begin::Col-->
-                        <div class="col-lg-8">
-                            @if ($perusahaan && $perusahaan->nib)
-                                <div class="border rounded shadow-sm p-2" style="background: #f8f9fa;">
-                                    <iframe
-                                        src="{{ asset($perusahaan->nib_url) }}"
-                                        width="100%"
-                                        height="400px"
-
-                                    ></iframe>
-
-                                </div>
-                                {{--<div class="form-text">Hanya untuk pratinjau, tidak dapat diunduh.</div>--}}
-                            @else
-                                <span class="text-danger"><i class="bi bi-sign-stop-fill text-danger me-1"></i>NIB Tidak tersedia</span>
-                            @endif
-                        </div>
-                        <!--end::Col-->
-                    </div>
-                    <!--begin::Input group-->
-                    <div class="row mb-7">
-                        <!--begin::Label-->
-                        <label class="col-lg-4 fw-semibold text-muted">Bidang</label>
-                        <!--end::Label-->
-                        <!--begin::Col-->
-                        <div class="col-lg-8">
-                            @if ($perusahaan && $perusahaan->bidang)
-                                <span class="fw-bold fs-6 text-gray-800">{{$perusahaan->bidang }}</span>
-                            @else
-                                <span class="text-danger"><i class="bi bi-sign-stop-fill text-danger me-1"></i>Bidang Tidak tersedia</span>
-                            @endif
-                        </div>
-                        <!--end::Col-->
-                    </div>
-                    <div class="row mb-7">
-                        <!--begin::Label-->
-                        <label class="col-lg-4 fw-semibold text-muted">Alamat</label>
-                        <!--end::Label-->
-                        <!--begin::Col-->
-                        <div class="col-lg-8">
-                            @if ($perusahaan && $perusahaan->alamat)
-                                <span class="fw-bold fs-6 text-gray-800">{{$perusahaan->alamat }}</span>
-                            @else
-                                <span class="text-danger"><i class="bi bi-sign-stop-fill text-danger me-1"></i>Alamat Tidak tersedia</span>
-                            @endif
-                        </div>
-                        <!--end::Col-->
-                    </div>
-                    <div class="row mb-7">
-                        <!--begin::Label-->
-                        <label class="col-lg-4 fw-semibold text-muted">Deskripsi</label>
-                        <!--end::Label-->
-                        <!--begin::Col-->
-                        <div class="col-lg-8">
-                            @if ($perusahaan && $perusahaan->deskripsi)
-                                <span class="fw-bold fs-6 text-gray-800">{{$perusahaan->deskripsi }}</span>
-                            @else
-                                <span class="text-danger"><i class="bi bi-sign-stop-fill text-danger me-1"></i>Deskripsi Tidak tersedia</span>
-                            @endif
-                        </div>
-                        <!--end::Col-->
-                    </div>
-
-                    <!--end::Input group-->
-                    <!--begin::Notice-->
-                    {{--<div class="notice d-flex bg-light-warning rounded border-warning border border-dashed p-6">
-                        <!--begin::Icon-->
-                        <i class="ki-duotone ki-information fs-2tx text-warning me-4">
-                            <span class="path1"></span>
-                            <span class="path2"></span>
-                            <span class="path3"></span>
-                        </i>
-                        <!--end::Icon-->
-                        <!--begin::Wrapper-->
-                        <div class="d-flex flex-stack flex-grow-1">
-                            <!--begin::Content-->
-                            <div class="fw-semibold">
-                                <h4 class="text-gray-900 fw-bold">We need your attention!</h4>
-                                <div class="fs-6 text-gray-700">Your payment was declined. To start using tools, please
-                                    <a class="fw-bold" href="account/billing.html">Add Payment Method</a>.</div>
+                                {{--<button type="button" class="btn btn-light" onclick="window.close()">Tutup Tab</button>--}}
                             </div>
-                            <!--end::Content-->
                         </div>
-                        <!--end::Wrapper-->
-                    </div>--}}
-                    <!--end::Notice-->
+                    </div>
                 </div>
                 <!--end::Card body-->
             </div>
@@ -397,4 +245,5 @@
 @push('js')
 
 @endpush
+
 

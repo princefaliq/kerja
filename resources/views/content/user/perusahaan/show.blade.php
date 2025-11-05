@@ -1,5 +1,5 @@
 @extends('master')
-@section('title','My Profile')
+@section('title','Profile Perusahaan')
 @section('profile','show')
 
 @push('css')
@@ -25,10 +25,10 @@
                     </li>
                     <!--end::Item-->
                     <!--begin::Item-->
-                    <li class="breadcrumb-item text-gray-600">Account</li>
+                    <li class="breadcrumb-item text-gray-600">Profile</li>
                     <!--end::Item-->
                     <!--begin::Item-->
-                    <li class="breadcrumb-item text-gray-500">My Profile</li>
+                    <li class="breadcrumb-item text-gray-500">Perusahaan</li>
                     <!--end::Item-->
                 </ul>
                 <!--end::Breadcrumb-->
@@ -54,7 +54,7 @@
                         <!--begin: Pic-->
                         <div class="me-7 mb-4">
                             <div class="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative">
-                                <img src="{{ url(\Illuminate\Support\Facades\Auth::user()->avatar_url) }}" alt="{{\Illuminate\Support\Facades\Auth::user()->name }}" />
+                                <img src="{{ url($user->avatar_url) }}" alt="{{$user->name }}" />
                                 <div class="position-absolute translate-middle bottom-0 start-100 mb-6 bg-success rounded-circle border border-4 border-body h-20px w-20px"></div>
                             </div>
                         </div>
@@ -67,7 +67,7 @@
                                 <div class="d-flex flex-column">
                                     <!--begin::Name-->
                                     <div class="d-flex align-items-center mb-2">
-                                        <a href="#" class="text-gray-900 text-hover-primary fs-2 fw-bold me-1">{{\Illuminate\Support\Facades\Auth::user()->name }}</a>
+                                        <a href="#" class="text-gray-900 text-hover-primary fs-2 fw-bold me-1">{{$user->name }}</a>
                                         <a href="#">
                                             <i class="ki-duotone ki-verify fs-1 text-primary">
                                                 <span class="path1"></span>
@@ -83,21 +83,21 @@
                                                 <span class="path1"></span>
                                                 <span class="path2"></span>
                                                 <span class="path3"></span>
-                                            </i>{{ \Illuminate\Support\Facades\Auth::user()->getRoleNames()->first() }}</a>
+                                            </i>{{ $user->getRoleNames()->first() }}</a>
                                         <a href="#" class="d-flex align-items-center text-gray-500 text-hover-primary me-5 mb-2">
                                             <i class="ki-duotone ki-geolocation fs-4 me-1">
                                                 <span class="path1"></span>
                                                 <span class="path2"></span>
                                             </i>
-                                            @if(auth()->check() && auth()->user()->perusahaan)
-                                                {{ auth()->user()->perusahaan->alamat }}
-                                            @endif
+
+                                                {{ $user->perusahaan->alamat }}
+
                                         </a>
                                         <a href="#" class="d-flex align-items-center text-gray-500 text-hover-primary mb-2">
                                             <i class="ki-duotone ki-sms fs-4">
                                                 <span class="path1"></span>
                                                 <span class="path2"></span>
-                                            </i>{{ \Illuminate\Support\Facades\Auth::user()->email }}</a>
+                                            </i>{{ $user->email }}</a>
                                     </div>
                                     <!--end::Info-->
                                 </div>
@@ -178,9 +178,9 @@
                         </li>
                         <!--end::Nav item-->
                         <!--begin::Nav item-->
-                        <li class="nav-item mt-2">
+                        {{--<li class="nav-item mt-2">
                             <a class="nav-link text-active-primary ms-0 me-10 py-5" href="{{ url('app/myprofile/edit') }}">Edit</a>
-                        </li>
+                        </li>--}}
                         <!--end::Nav item-->
                         <!--begin::Nav item-->
                         <li class="nav-item mt-2">
@@ -188,14 +188,9 @@
                         </li>
                         <!--end::Nav item-->
                         <!--begin::Nav item-->
-                        @php
-                            $perusahaan = auth()->user()->perusahaan;
-                        @endphp
-                        @if ($perusahaan && $perusahaan->slug)
                         <li class="nav-item mt-2">
-                            <a class="nav-link text-active-primary ms-0 me-10 py-5" href="{{ url('app/myprofile/qrcode/'.$perusahaan->slug) }}">QR Code</a>
+                            <a class="nav-link text-active-primary ms-0 me-10 py-5" href="{{ url('app/myprofile/qrcode/'.$user->perusahaan->slug) }}">QR Code</a>
                         </li>
-                        @endif
                         <!--end::Nav item-->
                     </ul>
                     <!--begin::Navs-->
@@ -212,7 +207,7 @@
                     </div>
                     <!--end::Card title-->
                     <!--begin::Action-->
-                    <a href="{{ url('app/myprofile/edit') }}" class="btn btn-sm btn-primary align-self-center">Edit Profile</a>
+{{--                    <a href="{{ url('app/myprofile/edit') }}" class="btn btn-sm btn-primary align-self-center">Edit Profile</a>--}}
                     <!--end::Action-->
                 </div>
                 <!--begin::Card header-->
@@ -225,7 +220,7 @@
                         <!--end::Label-->
                         <!--begin::Col-->
                         <div class="col-lg-8">
-                            <span class="fw-bold fs-6 text-gray-800">{{\Illuminate\Support\Facades\Auth::user()->name }}</span>
+                            <span class="fw-bold fs-6 text-gray-800">{{$user->name }}</span>
                         </div>
                         <!--end::Col-->
                     </div>
@@ -245,7 +240,7 @@
                         <!--end::Label-->
                         <!--begin::Col-->
                         <div class="col-lg-8 fv-row">
-                            <span class="fw-bold fs-6 text-gray-800">{{\Illuminate\Support\Facades\Auth::user()->no_hp }}</span>
+                            <span class="fw-bold fs-6 text-gray-800">{{$user->no_hp }}</span>
                         </div>
                         <!--end::Col-->
                     </div>
@@ -265,7 +260,7 @@
                         <!--end::Label-->
                         <!--begin::Col-->
                         <div class="col-lg-8 fv-row">
-                            <span class="fw-bold fs-6 text-gray-800">{{\Illuminate\Support\Facades\Auth::user()->email }}</span>
+                            <span class="fw-bold fs-6 text-gray-800">{{$user->email }}</span>
                         </div>
                         <!--end::Col-->
                     </div>
@@ -278,11 +273,11 @@
                         <!--end::Label-->
                         <!--begin::Col-->
                         <div class="col-lg-8">
-                            @if ($perusahaan && $perusahaan->website)
-                                <a href="{{ $perusahaan->website }}"
+                            @if ($user->perusahaan && $user->perusahaan->website)
+                                <a href="{{ $user->perusahaan->website }}"
                                    target="_blank"
                                    class="fw-semibold fs-6 text-gray-800 text-hover-primary">
-                                    {{ $perusahaan->website }}
+                                    {{ $user->perusahaan->website }}
                                 </a>
                             @else
                                 <span class="text-danger">
@@ -300,10 +295,10 @@
                         <!--end::Label-->
                         <!--begin::Col-->
                         <div class="col-lg-8">
-                            @if ($perusahaan && $perusahaan->nib)
+                            @if ($user->perusahaan && $user->perusahaan->nib)
                                 <div class="border rounded shadow-sm p-2" style="background: #f8f9fa;">
                                     <iframe
-                                        src="{{ asset($perusahaan->nib_url) }}"
+                                        src="{{ asset($user->perusahaan->nib_url) }}"
                                         width="100%"
                                         height="400px"
 
@@ -324,8 +319,8 @@
                         <!--end::Label-->
                         <!--begin::Col-->
                         <div class="col-lg-8">
-                            @if ($perusahaan && $perusahaan->bidang)
-                                <span class="fw-bold fs-6 text-gray-800">{{$perusahaan->bidang }}</span>
+                            @if ($user->perusahaan && $user->perusahaan->bidang)
+                                <span class="fw-bold fs-6 text-gray-800">{{$user->perusahaan->bidang }}</span>
                             @else
                                 <span class="text-danger"><i class="bi bi-sign-stop-fill text-danger me-1"></i>Bidang Tidak tersedia</span>
                             @endif
@@ -338,8 +333,8 @@
                         <!--end::Label-->
                         <!--begin::Col-->
                         <div class="col-lg-8">
-                            @if ($perusahaan && $perusahaan->alamat)
-                                <span class="fw-bold fs-6 text-gray-800">{{$perusahaan->alamat }}</span>
+                            @if ($user->perusahaan && $user->perusahaan->alamat)
+                                <span class="fw-bold fs-6 text-gray-800">{{$user->perusahaan->alamat }}</span>
                             @else
                                 <span class="text-danger"><i class="bi bi-sign-stop-fill text-danger me-1"></i>Alamat Tidak tersedia</span>
                             @endif
@@ -352,8 +347,8 @@
                         <!--end::Label-->
                         <!--begin::Col-->
                         <div class="col-lg-8">
-                            @if ($perusahaan && $perusahaan->deskripsi)
-                                <span class="fw-bold fs-6 text-gray-800">{{$perusahaan->deskripsi }}</span>
+                            @if ($user->perusahaan && $user->perusahaan->deskripsi)
+                                <span class="fw-bold fs-6 text-gray-800">{{$user->perusahaan->deskripsi }}</span>
                             @else
                                 <span class="text-danger"><i class="bi bi-sign-stop-fill text-danger me-1"></i>Deskripsi Tidak tersedia</span>
                             @endif

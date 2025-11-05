@@ -89,7 +89,7 @@
                 @endif
                 <div class="row mb-3">
                     <div class="col text-center">
-                        <h2 class="fw-700 alt-font text-dark-gray ls-minus-2px">Isi Biodata</h2>
+                        <h2 class="fw-700 alt-font text-dark-gray ls-minus-2px"><i class="bi bi-person-vcard text-golden-yellow me-2"></i>Isi Biodata</h2>
                     </div>
                 </div>
                 <div class="row align-items-center justify-content-center position-relative z-index-1">
@@ -142,7 +142,6 @@
                                 <small class="text-danger d-block mb-15px">{{ $message }}</small>
                                 @enderror
                             </div>
-
                             {{-- Disabilitas --}}
                             <div class="col-md-6 mb-3">
                                 <label class="text-dark mb-10px fw-500">Apakah Anda Disabilitas? <span class="text-red">*</span></label>
@@ -201,7 +200,7 @@
                             </div>
 
                             {{-- Alamat --}}
-                            <div class="col-md-12 mb-3">
+                            <div class="col-md-12 mb-5">
                                 <label class="text-dark mb-10px fw-500">Alamat<span class="text-red">*</span></label>
                                 <textarea class="border-radius-4px form-control @error('alamat') is-invalid @enderror"
                                           name="alamat" placeholder="Masukan alamat sesuai KTP" required>{{ old('alamat') }}</textarea>
@@ -209,6 +208,48 @@
                                 <small class="text-danger d-block mb-15px">{{ $message }}</small>
                                 @enderror
                             </div>
+                            <div class="col-12 mb-3">
+                                <h5 class="fw-700 text-dark border-bottom pb-2 mb-3">
+                                    <i class="bi bi-mortarboard text-golden-yellow me-2"></i>
+                                    Pendidikan Terakhir
+                                </h5>
+                            </div>
+                            {{-- Pendidikan Terakhir --}}
+                            <div class="col-md-4 mb-3">
+                                <label class="text-dark mb-10px fw-500">Pendidikan Terakhir <span class="text-red">*</span></label>
+                                <select name="pendidikan_terahir" class="border-radius-4px form-control @error('pendidikan_terahir') is-invalid @enderror" required>
+                                    <option value="">Pilih Pendidikan</option>
+                                    @foreach (['SD','SMP','SMA','SMK','D1','D2','D3','S1/D4','S2','S3'] as $pendidikan)
+                                        <option value="{{ $pendidikan }}" {{ old('pendidikan_terahir') == $pendidikan ? 'selected' : '' }}>
+                                            {{ $pendidikan }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('pendidikan_terahir')
+                                <small class="text-danger d-block mb-15px">{{ $message }}</small>
+                                @enderror
+                            </div>
+
+                            {{-- Jurusan --}}
+                            <div class="col-md-4 mb-3">
+                                <label class="text-dark mb-10px fw-500">Jurusan <span class="text-red">*</span></label>
+                                <input type="text" name="jurusan" class="border-radius-4px form-control @error('jurusan') is-invalid @enderror"
+                                       value="{{ old('jurusan') }}" placeholder="Contoh: Teknik Informatika" required>
+                                @error('jurusan')
+                                <small class="text-danger d-block mb-15px">{{ $message }}</small>
+                                @enderror
+                            </div>
+
+                            {{-- Nama Sekolah / Universitas --}}
+                            <div class="col-md-4 mb-5">
+                                <label class="text-dark mb-10px fw-500">Nama Sekolah / Universitas <span class="text-red">*</span></label>
+                                <input type="text" name="nama_sekolah" class="border-radius-4px form-control @error('nama_sekolah') is-invalid @enderror"
+                                       value="{{ old('nama_sekolah') }}" placeholder="Contoh: SMKN 1 Bondowoso" required>
+                                @error('nama_sekolah')
+                                <small class="text-danger d-block mb-15px">{{ $message }}</small>
+                                @enderror
+                            </div>
+
                             <div class="row">
                                 {{-- ============================= --}}
                                 {{-- Upload Dokumen Lamaran --}}
@@ -223,8 +264,8 @@
                                 @foreach ([
                                     'ktp' => 'KTP',
                                     'cv' => 'Curriculum Vitae (CV)',
-                                    'ijazah' => 'Ijazah Terakhir',
-                                    'ak1' => 'Kartu Pencari Kerja (AK1)',
+                                    'ijazah' => 'Ijazah dan Transkrip Terakhir',
+                                    'ak1' => 'Kartu Tanda Pencari Kerja (AK1)',
                                 ] as $name => $label)
                                     <div class="col-md-6 mb-4">
                                         <div class="card border-0 shadow-sm p-3 h-100">

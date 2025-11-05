@@ -45,6 +45,7 @@ class AppPerusahaanController extends Controller
                 ->addColumn('nama', function ($u) {
                     $avatar = $u->avatarUrl ?? null;
                     $name = $u->name ?? '-';
+                    $profil = url('app/myprofile/'.$u->id);
                     $imageUrl = $avatar ?: 'https://placehold.co/600x600';
                     return "
                         <div class='d-flex align-items-center'>
@@ -54,7 +55,7 @@ class AppPerusahaanController extends Controller
                                 </div>
                             </div>
                             <div class='d-flex flex-column'>
-                                <span class='text-gray-800 text-hover-primary mb-1 fw-bold'>{$name}</span>
+                                <a href='{$profil}' class='text-gray-800 text-hover-primary mb-1 fw-bold'>{$name}</a>
                             </div>
                         </div>
                     ";

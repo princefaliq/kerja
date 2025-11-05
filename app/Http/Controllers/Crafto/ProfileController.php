@@ -40,7 +40,10 @@ class ProfileController extends Controller
             'kecamatan'         => 'required|string',
             'desa'              => 'required|string',
             'alamat'            => 'required|string',
-
+            // 🔹 Pendidikan terakhir
+            'pendidikan_terahir' => 'required|in:SD,SMP,SMA,SMK,D1,D2,D3,S1/D4,S2,S3',
+            'jurusan'            => 'nullable|string|max:255',
+            'nama_sekolah'       => 'required|string|max:255',
             // File wajib
             'ktp'               => 'required|mimes:pdf|max:2048',
             'cv'                => 'required|mimes:pdf|max:2048',
@@ -67,6 +70,9 @@ class ProfileController extends Controller
             'kabupaten.required' => 'Kabupaten/Kota wajib dipilih.',
             'kecamatan.required' => 'Kecamatan wajib dipilih.',
             'desa.required' => 'Desa/Kelurahan wajib dipilih.',
+            'pendidikan_terahir.required' => 'Pendidikan terakhir wajib dipilih.',
+            'pendidikan_terahir.in' => 'Pilihan pendidikan terakhir tidak valid.',
+            'nama_sekolah.required' => 'Nama sekolah wajib diisi.',
             'alamat.required' => 'Alamat wajib diisi.',
             'ktp.required' => 'File KTP wajib diunggah.',
             'cv.required' => 'File CV wajib diunggah.',
@@ -131,6 +137,11 @@ class ProfileController extends Controller
             'kecamatan'         => $request->kecamatan,
             'desa'              => $request->desa,
             'alamat'            => $request->alamat,
+            // 🔹 Pendidikan
+            'pendidikan_terahir' => $request->pendidikan_terahir,
+            'jurusan'            => $request->jurusan,
+            'nama_sekolah'       => $request->nama_sekolah,
+
             'ktp'               => $files['ktp'] ?? null,
             'cv'                => $files['cv'] ?? null,
             'ijazah'            => $files['ijazah'] ?? null,
@@ -268,7 +279,7 @@ class ProfileController extends Controller
     public function updateDokumen(Request $request)
     {
         $request->validate([
-            
+
             // File wajib
             'ktp'               => 'nullable|mimes:pdf|max:2048',
             'cv'                => 'nullable|mimes:pdf|max:2048',
@@ -353,4 +364,31 @@ class ProfileController extends Controller
             'message' => ucfirst(str_replace('_', ' ', $field)) . ' berhasil dihapus.'
         ]);
     }
+
+    public function updatePendidikan(Request $request)
+    {
+        $request->validate([
+            'pendidikan_terahir' => 'required|string',
+            'jurusan' => 'nullable|string|max:255',
+            'nama_sekolah' => 'required|string|max:255',
+        ]);
+
+        $pelamar = Pelamar::where('user_id', auth()->id())->first();
+
+        if (!$pelamar) {
+            return response()->json(['success' => false, 'message' => 'Data tidak ditemukan']);
+        }
+
+        $pelamar->update([
+            'pendidikan_terahir' => $request->pendidikan_terahir,
+            'jurusan' => $request->jurusan,
+            'nama_sekolah' => $request->nama_sekolah,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'profile' => $pelamar
+        ]);
+    }
+
 }

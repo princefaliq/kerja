@@ -41,7 +41,9 @@ class DashboardController extends Controller
         $totalUser = User::whereHas('roles', fn($q) => $q->where('name', 'User'))->count();
         $totalPerusahaan = User::whereHas('roles', fn($q) => $q->where('name', 'Perusahaan'))->count();
         $totalPelamar = Pelamar::count();
-        $totalLowongan = Lowongan::count();
+
+        // ✅ Jumlahkan field jumlah_lowongan, bukan count baris
+        $totalLowongan = Lowongan::sum('jumlah_lowongan');
 
         return response()->json([
             'user' => $totalUser,
