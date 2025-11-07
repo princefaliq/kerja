@@ -21,10 +21,8 @@
                             <div class="atropos-scale">
                                 <div class="atropos-rotate">
                                     <div class="atropos-inner border-radius-5px bg-base-color text-white ps-12 pe-12 pt-50px pb-50px lg-pt-35px lg-pb-35px" data-atropos-offset="3">
-                                        @php
-                                            $formattedJumlah = sprintf('%02d', $totalLowongan);
-                                        @endphp
-                                        <span class="fs-130 lg-fs-110 d-inline-block ls-minus-5px fw-600 text-shadow-double-large text-outline text-outline-width-2px alt-font">{{ $formattedJumlah }}</span>
+
+                                        <span class="fs-130 lg-fs-110 d-inline-block ls-minus-5px fw-600 text-shadow-double-large text-outline text-outline-width-2px alt-font">{{ $totalLowongan }}</span>
                                         <span class="alt-font text-uppercase fw-500 ls-2px fs-17 lh-24 d-inline-block">Lowongan Kerja</span>
                                     </div>
                                 </div>

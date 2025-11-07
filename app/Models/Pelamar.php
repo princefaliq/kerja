@@ -36,6 +36,10 @@ class Pelamar extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function testimoni()
+    {
+        return $this->hasMany(Testimoni::class, 'pelamar_id');
+    }
     protected function getFileUrl($field)
     {
         return $this->$field

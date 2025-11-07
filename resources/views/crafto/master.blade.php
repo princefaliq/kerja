@@ -152,7 +152,7 @@
 @yield('content')
 
 <!-- start footer -->
-<footer class="bg-dark-midnight-blue background-position-right-top background-no-repeat md-background-image-none" style="background-image: url('logo/demo-conference-about-bg.png')">
+<footer class="bg-dark-midnight-blue background-position-right-top background-no-repeat md-background-image-none" style="background-image: url({{ url('logo/demo-conference-about-bg.png') }})">
     <div class="container">
         <div class="row justify-content-center text-center text-sm-start">
             <!-- start footer column -->
@@ -227,6 +227,7 @@
 <script type="text/javascript" src="{{ url('crafto/js/jquery.js') }}"></script>
 <script type="text/javascript" src="{{ url('crafto/js/vendors.min.js') }}"></script>
 <script type="text/javascript" src="{{ url('crafto/js/main.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 @stack('js')
 </body>

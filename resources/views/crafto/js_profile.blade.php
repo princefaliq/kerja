@@ -1,6 +1,6 @@
 @push('js')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- ============================= -->
     <!-- JS EDIT FOTO -->
     <!-- ============================= -->
@@ -482,4 +482,66 @@
         });
 
     </script>
+
+    <!-- ============================= -->
+    <!-- JS QR CODE -->
+    <!-- ============================= -->
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const modalScanQR = new bootstrap.Modal(document.getElementById('modalScanQR'));
+            const btnScanQR = document.getElementById('btnScanQR');
+            const readerElem = document.getElementById('reader');
+            let html5QrCode = null;
+
+            btnScanQR.addEventListener('click', function () {
+                modalScanQR.show();
+
+                setTimeout(() => {
+                    if (!html5QrCode) html5QrCode = new Html5Qrcode("reader");
+
+                    html5QrCode.start(
+                        { facingMode: "environment" },
+                        { fps: 10, qrbox: 250 },
+                        async qrCodeMessage => {
+                            html5QrCode.stop();
+                            modalScanQR.hide();
+
+                            // 🟢 Ambil lokasi, lalu lanjutkan ke URL scan seperti biasa
+                            if (navigator.geolocation) {
+                                navigator.geolocation.getCurrentPosition(
+                                    pos => {
+                                        const lat = pos.coords.latitude;
+                                        const lon = pos.coords.longitude;
+
+                                        // tambahkan koordinat ke URL yang sudah ada
+                                        const url = new URL(qrCodeMessage);
+                                        url.searchParams.append('lokasi', `${lat},${lon}`);
+
+                                        // arahkan ke URL seperti semula
+                                        window.location.href = url.toString();
+                                    },
+                                    err => {
+                                        console.warn('Tidak bisa ambil lokasi:', err.message);
+                                        // lanjutkan tanpa lokasi
+                                        window.location.href = qrCodeMessage;
+                                    }
+                                );
+                            } else {
+                                // kalau geolocation tidak didukung
+                                window.location.href = qrCodeMessage;
+                            }
+                        },
+                        errorMessage => { /* scanning in progress */ }
+                    );
+                }, 500);
+            });
+
+            // Matikan kamera saat modal ditutup
+            document.getElementById('modalScanQR').addEventListener('hidden.bs.modal', () => {
+                if (html5QrCode) html5QrCode.stop().catch(err => console.log(err));
+            });
+        });
+    </script>
+
 @endpush

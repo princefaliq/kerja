@@ -41,7 +41,7 @@ class UpdateLowonganStatus extends Command
     public function handle()
     {
         $now = Carbon::now();
-        Lowongan::where('batas_lamaran', '<', $now)->update(['status' => false]);
+        Lowongan::whereDate('batas_lamaran', '<', now()->toDateString())->update(['status' => false]);
 
         $this->info('Status lowongan diperbarui.');
     }

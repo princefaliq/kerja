@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Crafto;
 
 use App\Http\Controllers\Controller;
 use App\Models\Lowongan;
+use App\Models\Testimoni;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
+
     public function index()
     {
         $lowongans = Lowongan::select(
@@ -30,12 +32,29 @@ class HomeController extends Controller
             })
             ->latest()
             ->get();
-        $totalLowongan = Lowongan::where(function ($q) {
-            $q->whereDate('batas_lamaran', '>=', Carbon::today())
-                ->orWhereNull('batas_lamaran');
-        })->count();
+        $testimonis = Testimoni::with('user')
+            ->where('is_approved', true)
+            ->latest()
+            ->get();
 
-        return view('crafto.home',compact('lowongans','totalLowongan'));
+        $totalLowongan = Lowongan::where('status', 1)
+            ->where(function ($q) {
+                $q->whereDate('batas_lamaran', '>=', Carbon::today())
+                    ->orWhereNull('batas_lamaran');
+            })
+            ->sum('jumlah_lowongan');
+
+        // Format singkat angka (contoh: 1K, 1.5M, 2.3B)
+        if ($totalLowongan >= 1000000000) {
+            $totalLowongan = number_format($totalLowongan / 1000000000, 1) . 'B';
+        } elseif ($totalLowongan >= 1000000) {
+            $totalLowongan = number_format($totalLowongan / 1000000, 1) . 'M';
+        } elseif ($totalLowongan >= 1000) {
+            $totalLowongan = number_format($totalLowongan / 1000, 1) . 'K';
+        }
+
+
+        return view('crafto.home',compact('lowongans','totalLowongan','testimonis'));
     }
     public function getPerusahaan()
     {

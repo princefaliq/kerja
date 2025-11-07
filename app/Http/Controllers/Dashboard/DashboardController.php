@@ -38,12 +38,23 @@ class DashboardController extends Controller
     }
     public function widgetData()
     {
+        $user = auth()->user();
         $totalUser = User::whereHas('roles', fn($q) => $q->where('name', 'User'))->count();
         $totalPerusahaan = User::whereHas('roles', fn($q) => $q->where('name', 'Perusahaan'))->count();
         $totalPelamar = Pelamar::count();
-
-        // ✅ Jumlahkan field jumlah_lowongan, bukan count baris
-        $totalLowongan = Lowongan::sum('jumlah_lowongan');
+        // Cek role user login
+        if ($user->hasRole('Admin')) {
+            // Admin: total semua lowongan aktif
+            $totalLowongan = Lowongan::where('status', 1)->sum('jumlah_lowongan');
+        } elseif ($user->hasRole('Perusahaan')) {
+            // Perusahaan: total lowongan miliknya sendiri
+            $totalLowongan = Lowongan::where('status', 1)
+                ->where('user_id', $user->id)
+                ->sum('jumlah_lowongan');
+        } else {
+            // Role lain (misal User): bisa diset 0
+            $totalLowongan = 0;
+        }
 
         return response()->json([
             'user' => $totalUser,

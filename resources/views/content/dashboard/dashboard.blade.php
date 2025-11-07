@@ -103,7 +103,7 @@
                                         <span class="path1"></span>
                                         <span class="path2"></span>
                                     </i>
-                                    <span class="fs-6 fw-bold">Total Pelamar</span>
+                                    <span class="fs-6 fw-bold">Total Register</span>
                                     <span class="fs-3 fw-bolder text-primary mt-2" id="countUser">0</span>
                                 </div>
                             </li>

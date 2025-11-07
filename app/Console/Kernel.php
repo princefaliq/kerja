@@ -25,6 +25,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('lowongan:update-status')->daily();
+        /*$schedule->call(function () {
+            \Log::info('✅ Cron Laravel berhasil jalan: ' . now());
+        })->everyMinute();*/
         // $schedule->command('inspire')->hourly();
     }
 

@@ -67,10 +67,16 @@
                                 <input type="checkbox" name="remember" id="remember" value="1" class="terms-condition check-box align-middle">
                                 <span class="box fs-14">Remember me</span>
                             </label>
-                            <a href="{{ url('register') }}" class="fs-14 fw-500 text-decoration-line-bottom ms-auto">Belum Menjadi Member?</a>
+                            <a
+                                href="{{ route('password.request') }}"
+                                class="fs-14 fw-500 text-decoration-line-bottom ms-auto"
+                            >
+                                Lupa Password?
+                            </a>
                         </div>
                         <input type="hidden" name="redirect" value="">
-                        <button class="btn btn-medium btn-round-edge btn-base-color btn-box-shadow w-100 text-transform-none" type="submit">Login</button>
+                        <button class="btn btn-medium btn-round-edge btn-base-color btn-box-shadow w-100 mb-10px text-transform-none " type="submit">LOGIN</button>
+                        <a href="{{ url('register') }}" class="btn btn-medium btn-round-edge btn-yellow d-table btn-box-shadow d-lg-inline-block w-100">Register</a>
                         <div class="form-results mt-20px d-none"></div>
                     </form>
                 </div>

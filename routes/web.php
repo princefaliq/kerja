@@ -5,6 +5,8 @@ use App\Http\Controllers\Crafto\LowonganController;
 use App\Http\Controllers\Crafto\HomeController;
 use App\Http\Controllers\Crafto\PerusahaanController;
 use App\Http\Controllers\Crafto\ProfileController;
+use App\Http\Controllers\Crafto\TestimoniController;
+use App\Http\Controllers\Dashboard\AppAbsenController;
 use App\Http\Controllers\Dashboard\AppLamaranController;
 use App\Http\Controllers\Dashboard\AppLowonganController;
 use App\Http\Controllers\Dashboard\AppMyprofileController;
@@ -60,7 +62,15 @@ Route::group([
         ->name('profile.update-pendidikan');
 
     Route::any('/artikel', [AppLowonganController::class, 'index'])->name('artikel.index');
+    Route::post('/testimoni/store', [TestimoniController::class, 'store'])->name('testimoni.store');
 
+});
+
+Route::group([
+    'prefix' => 'profile',
+    'middleware' =>['auth','role:User'],
+], function () {
+    Route::get('/absen/scan/{kode}', [AppAbsenController::class, 'store'])->name('absen.scan');
 });
 
 Route::group([

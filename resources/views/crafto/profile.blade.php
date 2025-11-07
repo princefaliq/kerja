@@ -88,6 +88,18 @@
             <strong>Success!</strong> {{ session('success') }}.
         </div>
     @endif
+    @if (session('error'))
+        <div class="alert alert-danger box-shadow-extra-large bg-white alert-dismissable">
+            <a href="#" class="close" data-bs-dismiss="alert" aria-label="close"><i class="fa-solid fa-xmark"></i></a>
+            <strong>Erorr!!</strong> {{ session('error') }}.
+        </div>
+    @endif
+    @if (session('info'))
+        <div class="alert alert-info box-shadow-extra-large bg-white alert-dismissable">
+            <a href="#" class="close" data-bs-dismiss="alert" aria-label="close"><i class="fa-solid fa-xmark"></i></a>
+            <strong>Info!</strong> {{ session('info') }}.
+        </div>
+    @endif
     <section class="pt-60px pb-0 md-pt-30px">
         <div class="container">
             <div class="row">
@@ -130,6 +142,12 @@
                                 Terakhir login:
                                 {{ $profile->user->last_login ? $profile->user->last_login->diffForHumans() : '-' }}
                             </p>
+                        </div>
+                        <!-- Tombol Absen QR -->
+                        <div class="text-center mt-3">
+                            <button id="btnScanQR" class="btn btn-warning fw-semibold rounded-pill px-4">
+                                <i class="feather icon-feather-camera me-2"></i> Absen dengan QR Code
+                            </button>
                         </div>
 
                         <!-- Garis pemisah -->
@@ -502,6 +520,23 @@
         </div>
     </div>
 
+    <!-- ============================= -->
+    <!-- MODAL SCAN QR -->
+    <!-- ============================= -->
+    <div class="modal fade" id="modalScanQR" tabindex="-1" aria-labelledby="modalScanQRLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-centered">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">Scan QR Code Kehadiran</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div id="reader" style="width: 100%; height: 300px;"></div>
+                    <p class="mt-3 small text-light opacity-75">Arahkan kamera ke QR Code yang disediakan admin</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 @endsection
