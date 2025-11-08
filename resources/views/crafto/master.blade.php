@@ -104,14 +104,14 @@
                                 </li>--}}
                             </ul>
                         </li>
-                    </ul>
-                    @auth
+                        @auth
                         @role('User')
-                        <ul class="navbar-nav alt-font ls-05px">
                             <li class="nav-item"><a href="{{ url('profile') }}" class="nav-link">Profile</a></li>
-                        </ul>
+                            <li class="nav-item"><a href="{{ route('lamaran.saya') }}" class="nav-link">Lamaran</a></li>
                         @endrole
                     @endauth
+                    </ul>
+                    
                 </div>
             </div>
             <div class="col-auto col-lg-2 text-end xs-ps-0 xs-pe-0">

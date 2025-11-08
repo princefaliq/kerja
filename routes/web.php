@@ -35,22 +35,13 @@ Route::get('/perusahaan/{slug}', [PerusahaanController::class, 'show'])
     ->name('perusahaan.show');
 
 
-
-
-
 Route::group([
-    'prefix' => 'melamar',
-    'middleware' =>'auth',
-], function () {
-    //Route::get('{slug}', [LamarController::class, 'index']);
-    Route::post('/', [LamarController::class, 'daftar'])->name('melamar.daftar');
-});
-
-Route::group([
-    'prefix' => 'profile',
     'middleware' =>['auth','role:User'],
 ], function () {
-    Route::get('/', [ProfileController::class, 'index'])->name('profile.index');
+    Route::group([
+    'prefix' => 'profile',
+    ], function () {
+        Route::get('/', [ProfileController::class, 'index'])->name('profile.index');
     Route::post('store', [ProfileController::class, 'store'])->name('profile.store');
     Route::post('/update-foto', [ProfileController::class, 'updateFoto'])->name('profile.update-foto');
     Route::post('/update-nama', [ProfileController::class, 'updateNama'])->name('profile.update-nama');
@@ -63,15 +54,16 @@ Route::group([
 
     Route::any('/artikel', [AppLowonganController::class, 'index'])->name('artikel.index');
     Route::post('/testimoni/store', [TestimoniController::class, 'store'])->name('testimoni.store');
-
-});
-
-Route::group([
-    'prefix' => 'profile',
-    'middleware' =>['auth','role:User'],
-], function () {
     Route::get('/absen/scan/{kode}', [AppAbsenController::class, 'store'])->name('absen.scan');
+    });
+
+    
+    //Route::get('{slug}', [LamarController::class, 'index']);
+    Route::post('/melamar', [LamarController::class, 'daftar'])->name('melamar.daftar');
+    Route::get('/lamaran-saya', [LamarController::class, 'index'])->name('lamaran.saya');
+   
 });
+
 
 Route::group([
     'prefix' => '/app',

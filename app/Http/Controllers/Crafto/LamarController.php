@@ -13,6 +13,26 @@ use Illuminate\Support\Str;
 
 class LamarController extends Controller
 {
+    public function index()
+    {
+        $user = Auth::user();
+
+        // Ambil semua lamaran milik user, lengkap dengan relasi ke lowongan dan perusahaan
+        $lamarans = Lamaran::with(['lowongan.user'])
+            ->where('user_id', $user->id)
+            ->latest()
+            ->get();
+
+        // Hitung statistik lamaran berdasarkan status
+        $statistik = [
+            'dikirim'  => $lamarans->where('status', 'dikirim')->count(),
+            'diterima' => $lamarans->where('status', 'diterima')->count(),
+            'ditolak'  => $lamarans->where('status', 'ditolak')->count(),
+        ];
+
+        return view('crafto.lamaran', compact('lamarans', 'statistik'));
+    }
+
     public function daftar(Request $request)
     {
         $sudahIsi = Pelamar::where('user_id', auth()->id())

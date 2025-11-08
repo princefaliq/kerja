@@ -9,6 +9,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\StatusLamaranMail;
 
 class AppLamaranController extends Controller
 {
@@ -57,24 +59,14 @@ class AppLamaranController extends Controller
                             )
                 ->addColumn('dokumen', fn ($lamaran)=>
                 '<a class="btn btn-xs btn-info" href="'. url('app/pelamar/detail/'.$lamaran->user->id).'" target="_blank"><i class="ki-duotone ki-faceid fs-2">
- <span class="path1"></span>
- <span class="path2"></span>
- <span class="path3"></span>
- <span class="path4"></span>
- <span class="path5"></span>
- <span class="path6"></span>
-</i> Lihat</a>' )
-                // ->addColumn('dokumen', function ($lamaran) {
-                //     $files = [];
-                //     if ($lamaran->pelamar->CvUrl) $files[] = '<a href="' . $lamaran->pelamar->CvUrl. '" target="_blank">CV</a>';
-                //     if ($lamaran->pelamar->IjazahUrl) $files[] = '<a href="' . $lamaran->pelamar->IjazahUrl . '" target="_blank">Ijazah</a>';
-                //     if ($lamaran->pelamar->KtpUrl) $files[] = '<a href="' . $lamaran->pelamar->KtpUrl . '" target="_blank">KTP</a>';
-                //     if ($lamaran->pelamar->Ak1Url) $files[] = '<a href="' .$lamaran->pelamar->Ak1Url . '" target="_blank">AK1</a>';
-                //     if ($lamaran->pelamar->SertifikatUrl) $files[] = '<a href="' . $lamaran->pelamar->SertifikatUrl . '" target="_blank">Sertifikat</a>';
-                //     if ($lamaran->pelamar->Syarat_lainUrl) $files[] = '<a href="' . $lamaran->pelamar->Syarat_lainUrl . '" target="_blank">Syarat Lain</a>';
-                //     if ($lamaran->pelamar->Pass_fotoUrl) $files[] = '<a href="' . $lamaran->pelamar->Pass_fotoUrl . '" target="_blank">Pas Foto</a>';
-                //     return implode(' | ', $files) ?: '-';
-                // })
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                    <span class="path3"></span>
+                    <span class="path4"></span>
+                    <span class="path5"></span>
+                    <span class="path6"></span>
+                    </i> Lihat</a>' )
+                
                 ->addColumn('status', fn($lamaran) => $lamaran->status ?? 'diproses')
                 ->addColumn('actions', fn() => '')
                 ->rawColumns(['dokumen'])
@@ -104,6 +96,23 @@ class AppLamaranController extends Controller
 
         $lamaran->status = $request->status;
         $lamaran->save();
+        // 📧 Kirim email hanya jika statusnya diterima atau ditolak
+        if (in_array($request->status, ['diterima', 'ditolak'])) {
+            $pelamar = $lamaran->user;
+            $lowongan = $lamaran->lowongan;
+            
+            try {
+                Mail::to($pelamar->email)->send(new StatusLamaranMail(
+                    $pelamar->name,
+                    $lowongan->judul,
+                    $request->status,
+                    $lowongan->user->name ?? 'Perusahaan Tidak Diketahui'
+                ));
+            } catch (\Exception $e) {
+                // kalau gagal kirim email, tetap lanjut tapi kasih info di log
+                \Log::error('Gagal mengirim email status lamaran: ' . $e->getMessage());
+            }
+        }
 
         return response()->json([
             'message' => "Status lamaran berhasil diubah menjadi '{$request->status}'.",
