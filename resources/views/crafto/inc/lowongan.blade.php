@@ -25,9 +25,9 @@
                                         <p class="mb-10px">Lokasi : {{ Str::limit($lowongan->lokasi, 20, '...') }}</p>
                                         <p class="mb-10px">Rentang Gaji : {{ $lowongan->rentang_gaji ? $lowongan->rentang_gaji : 'Dirahasiakan' }}</p>
                                         {{--<p class="mb-10px">Batas lamaran :{{ \Carbon\Carbon::parse($lowongan->batas_lamaran)->translatedFormat('d F Y') }} </p>--}}
-                                        <p class="mb-10px">
+                                        {{-- <p class="mb-10px">
                                             @php
-                                                $batas = $lowongan->batas_lamaran->endOfDay();
+                                                $batas = $lowongan->batas_lamaran;
                                             @endphp
                                             @if ($batas->isFuture())
                                                 Batas Lamaran:
@@ -42,7 +42,7 @@
                                                     'parts' => 2
                                                 ]) }}
                                             @endif
-                                        </p>
+                                        </p> --}}
                                     </div>
                                     <div class="d-flex align-items-center">
                                         <img class="rounded-circle w-90px h-90px me-20px" src="{{ $lowongan->user->avatar_url ? asset($lowongan->user->avatar_url) : 'https://placehold.co/58x58' }}" alt="">
