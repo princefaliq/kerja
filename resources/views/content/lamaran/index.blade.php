@@ -94,7 +94,7 @@
                             <th>Pelamar</th>
                             <th>Lowongan</th>
                             <th>Lokasi</th>
-                            <th>Bidang</th>
+                            <th>Perusahaan</th>
                             <th>Tanggal Lamaran</th>
                             <th>Dokumen</th>
                             <th>Status</th>

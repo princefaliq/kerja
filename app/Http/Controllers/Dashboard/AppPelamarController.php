@@ -23,7 +23,7 @@ class AppPelamarController extends Controller
             ->whereHas('roles', function ($q) {
                 $q->where('name', 'User');
             })
-            ->latest(); // 👉 data baru muncul di atas (urut created_at DESC);
+            ->orderByDesc('created_at'); // 👉 data baru muncul di atas (urut created_at DESC);
 
 
         if ($request->ajax()) {

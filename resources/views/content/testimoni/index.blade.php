@@ -117,30 +117,32 @@
             // Approve/Reject
             $(document).on('click', '.btn-approve, .btn-reject', function () {
                 const id = $(this).data('id');
-                const is_approved = $(this).data('status');
-                const action = status == 1 ? 'Menerima' : 'Menolak';
 
-                Swal.fire({
-                    title: `${action} testimoni ini?`,
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#157347',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Ya',
-                    cancelButtonText: 'Batal',
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.post(`{{ url('app/testimoni') }}/${id}/status`, {
-                            _token: '{{ csrf_token() }}',
-                            is_approved: is_approved
-                        }, function (res) {
-                            if (res.success) {
-                                Swal.fire('Berhasil!', res.message, 'success');
-                                table.ajax.reload();
-                            }
-                        });
-                    }
-                });
+                const is_approved = $(this).data('status');
+                console.log(is_approved);
+                const action = is_approved === 1 ? 'Menolak' : 'Menerima';
+
+                    Swal.fire({
+                        title: `${action} testimoni ini?`,
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#157347',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Ya',
+                        cancelButtonText: 'Batal',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.post(`{{ url('app/testimoni') }}/${id}/status`, {
+                                _token: '{{ csrf_token() }}',
+                                is_approved: is_approved
+                            }, function (res) {
+                                if (res.success) {
+                                    Swal.fire('Berhasil!', res.message, 'success');
+                                    table.ajax.reload();
+                                }
+                            });
+                        }
+                    });
             });
         });
     </script>

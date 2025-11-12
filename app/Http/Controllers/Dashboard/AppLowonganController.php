@@ -23,7 +23,7 @@ class AppLowonganController extends Controller
             $query = Lowongan::with('user')
                 ->when(!$user->hasRole('Admin'), function ($q) use ($user) {
                     $q->where('user_id', $user->id);
-                });
+                })->latest();
 
             return DataTables::eloquent($query)
                 // 🧠 tambahkan bagian filter untuk pencarian

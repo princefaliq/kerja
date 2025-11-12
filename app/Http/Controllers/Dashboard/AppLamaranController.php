@@ -25,7 +25,7 @@ class AppLamaranController extends Controller
                     $q->whereHas('lowongan', function ($sub) use ($user) {
                         $sub->where('user_id', $user->id);
                     });
-                });
+                })->orderByDesc('created_at');;
 
             return DataTables::eloquent($query)
                 ->filter(function ($query) use ($request) {
@@ -36,10 +36,12 @@ class AppLamaranController extends Controller
                             $q->whereHas('user', function ($u) use ($search) {
                                 $u->where('name', 'like', "%{$search}%");
                             })
+                                ->orWhereHas('lowongan.user', function ($u) use ($search) {
+                                    $u->where('name', 'like', "%{$search}%");
+                                })
                                 ->orWhereHas('lowongan', function ($l) use ($search) {
                                     $l->where('judul', 'like', "%{$search}%")
-                                        ->orWhere('lokasi', 'like', "%{$search}%")
-                                        ->orWhere('bidang_pekerjaan', 'like', "%{$search}%");
+                                        ->orWhere('lokasi', 'like', "%{$search}%");
                                 })
                                 ->orWhere('status', 'like', "%{$search}%");
                         });
@@ -53,7 +55,7 @@ class AppLamaranController extends Controller
                 ->addColumn('pelamar', fn($lamaran) => $lamaran->user->name ?? '-')
                 ->addColumn('lowongan', fn($lamaran) => $lamaran->lowongan->judul ?? '-')
                 ->addColumn('lokasi', fn($lamaran) => $lamaran->lowongan->lokasi ?? '-')
-                ->addColumn('bidang_pekerjaan', fn($lamaran) => $lamaran->lowongan->bidang_pekerjaan ?? '-')
+                ->addColumn('perusahaan', fn($lamaran) => $lamaran->lowongan->user->name ?? '-')
                 ->addColumn('tanggal_lamaran', fn($lamaran) =>
                             $lamaran->created_at ? Carbon::parse($lamaran->created_at)->format('d/m/Y H:i') : '-'
                             )
@@ -66,7 +68,7 @@ class AppLamaranController extends Controller
                     <span class="path5"></span>
                     <span class="path6"></span>
                     </i> Lihat</a>' )
-                
+
                 ->addColumn('status', fn($lamaran) => $lamaran->status ?? 'diproses')
                 ->addColumn('actions', fn() => '')
                 ->rawColumns(['dokumen'])
@@ -100,7 +102,7 @@ class AppLamaranController extends Controller
         if (in_array($request->status, ['diterima', 'ditolak'])) {
             $pelamar = $lamaran->user;
             $lowongan = $lamaran->lowongan;
-            
+
             try {
                 Mail::to($pelamar->email)->send(new StatusLamaranMail(
                     $pelamar->name,

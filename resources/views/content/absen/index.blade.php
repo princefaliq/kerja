@@ -56,7 +56,10 @@
                                 <span class="path1"></span>
                                 <span class="path2"></span>
                             </i>
-                            <input type="text" data-kt-ecommerce-product-filter="search" class="form-control form-control-solid w-250px ps-12" placeholder="Search Product" />
+                            <input type="text"
+                                   data-kt-ecommerce-product-filter="search"
+                                   class="form-control form-control-solid w-250px ps-12"
+                                   placeholder="Cari data absensi..." />
                         </div>
                         <!--end::Search-->
                     </div>

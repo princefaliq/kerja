@@ -20,7 +20,7 @@
                 { data: 'pelamar', name: 'pelamar' },
                 { data: 'lowongan', name: 'lowongan' },
                 { data: 'lokasi', name: 'lokasi' },
-                { data: 'bidang_pekerjaan', name: 'bidang_pekerjaan' },
+                { data: 'perusahaan', name: 'perusahaan' },
                 { data: 'tanggal_lamaran', name: 'tanggal_lamaran' },
                 { data: 'dokumen', name: 'dokumen', orderable: false, searchable: false },
                 {
