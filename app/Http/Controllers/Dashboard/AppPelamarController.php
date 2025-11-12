@@ -42,7 +42,7 @@ class AppPelamarController extends Controller
                 ->addIndexColumn()
                 ->addColumn('nama', function ($u) {
                     $avatar = $u->avatarUrl ?? null;
-                    $name = $u->name ?? '-';
+                    $name = ucwords(strtolower($u->name)) ?? '-';
                     $imageUrl = $avatar ?: 'https://placehold.co/600x600';
                     $detilUrl =  url('app/pelamar/detail/'.$u->id);
                     return "

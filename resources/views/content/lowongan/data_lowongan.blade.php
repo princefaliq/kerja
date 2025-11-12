@@ -6,7 +6,10 @@
             serverSide: true,
             ajax: {
                 url: "{{ url('app/lowongan') }}",
-                type: 'GET'
+                type: 'GET',
+                data: function (d) {
+                    d.status = $('[data-kt-ecommerce-product-filter="status"]').val();
+                }
             },
             columns: [
                 {
@@ -98,6 +101,11 @@
         const searchInput = $('[data-kt-ecommerce-product-filter="search"]');
         searchInput.on('keyup', function () {
             table.search(this.value).draw();
+        });
+        // 🔍 Filter status (pakai select)
+        const statusFilter = $('[data-kt-ecommerce-product-filter="status"]');
+        statusFilter.on('change', function () {
+            table.ajax.reload();
         });
 
         // 🔄 Re-inisialisasi menu dropdown tiap redraw

@@ -2,13 +2,15 @@
 @section('title','Lowongan Kerja')
 
 @push('css')
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
     <style>
-        /* --- GENERAL STYLE --- */
+        /* === GENERAL === */
         body {
             background-color: #0b1a2a;
         }
 
-        /* --- JOB CARD --- */
+        /* === JOB CARD === */
         .job-card {
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -16,6 +18,10 @@
             transition: all 0.3s ease;
             overflow: hidden;
             color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
         }
 
         .job-card:hover {
@@ -60,11 +66,16 @@
         .job-footer {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            font-size: 13px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 8px;
-            margin-top: 10px;
+            align-items: center !important; /* kunci posisi tengah vertikal */
+            flex-wrap: nowrap;
+            gap: 6px;
+            min-height: 48px; /* jaga agar tinggi area footer konsisten */
+        }
+        .job-footer span {
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .job-apply {
@@ -75,6 +86,7 @@
             border-radius: 6px;
             padding: 6px 12px;
             transition: 0.3s;
+            text-decoration: none;
         }
 
         .job-apply:hover {
@@ -82,7 +94,7 @@
             color: #000;
         }
 
-        /* --- PAGINATION --- */
+        /* === PAGINATION === */
         .pagination-style-01 .page-item {
             margin: 0 4px;
         }
@@ -115,12 +127,10 @@
             background: none;
             color: rgba(255, 255, 255, 0.5);
             border: none;
-            border-radius: 0;
             pointer-events: none;
-            box-shadow: none;
         }
 
-        /* --- SIDEBAR FILTER --- */
+        /* === SIDEBAR FILTER === */
         .filter-box {
             background: rgba(255, 255, 255, 0.05);
             border-radius: 10px;
@@ -185,16 +195,87 @@
             color: #fdd835;
         }
 
+        /* === SELECT2 THEME DARK === */
+        .select2-container--default .select2-selection--single {
+            background-color: #1b2838;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            height: 42px;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: #ffffff;
+            line-height: 40px;
+            padding-left: 12px;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__placeholder {
+            color: #ccc;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow b {
+            border-color: #ccc transparent transparent transparent;
+        }
+
+        .select2-dropdown {
+            background-color: #1b2838;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            border-radius: 8px;
+        }
+
+        .select2-results__option {
+            padding: 8px 12px;
+            color: #fff;
+        }
+
+        .select2-results__option--highlighted {
+            background-color: #0d6efd !important;
+            color: #fff !important;
+        }
+
+        /* Responsif agar teks bidang panjang tidak mendorong tombol turun */
         @media (max-width: 768px) {
-            .job-card {
-                margin-bottom: 15px;
+            .job-footer {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 8px;
             }
-            .filter-box ul li a {
-                max-width: 100%;
+            .job-footer span {
+                text-align: center;
+                flex-basis: 100%;
             }
         }
+        /* === STICKY SIDEBAR FILTER === */
+        @media (min-width: 992px) { /* aktif hanya di layar besar */
+            .col-lg-3 {
+                position: relative;
+            }
+
+            .filter-sticky {
+                position: sticky;
+                top: 100px; /* jarak dari navbar, sesuaikan */
+                z-index: 98;
+                max-height: calc(100vh - 120px);
+                overflow-y: auto;
+                scrollbar-width: thin;
+                scrollbar-color: rgba(255,255,255,0.3) transparent;
+            }
+
+            /* scrollbar untuk chrome/safari */
+            .filter-sticky::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            .filter-sticky::-webkit-scrollbar-thumb {
+                background-color: rgba(255, 255, 255, 0.2);
+                border-radius: 4px;
+            }
+        }
+
     </style>
 @endpush
+
 
 @section('content')
     <section class="bg-dark-midnight-blue text-light pt-10 ps-6 pe-6 lg-ps-2 lg-pe-2 sm-ps-0 sm-pe-0">
@@ -240,7 +321,23 @@
                                             <p class="job-meta mb-1"><strong>Pendidikan:</strong> {{ $lowongan->pendidikan_minimal }}</p>
                                             <p class="job-meta mb-1"><strong>Jenis Kelamin:</strong> {{ $lowongan->jenis_kelamin }}</p>
                                             <p class="job-meta mb-1"><strong>Jumlah Lowongan:</strong> {{ $lowongan->jumlah_lowongan }} Orang</p>
-                                            <p class="job-meta mb-1"><strong>Batas Lamaran:</strong> {{ $lowongan->batas_lamaran ? $lowongan->batas_lamaran->diffForHumans() : '-' }}</p>
+                                            <p class="job-meta mb-1">
+                                                @php
+                                                    $batas = $lowongan->batas_lamaran->endOfDay();
+                                                @endphp
+                                                @if ($batas->isFuture())
+                                                    <strong>Batas Lamaran:</strong>
+                                                    {{ now()->diffForHumans($batas, [
+                                                        'syntax' => \Carbon\CarbonInterface::DIFF_ABSOLUTE,
+                                                        'parts' => 2
+                                                    ]) }}
+                                                @else
+                                                    <strong>Melewati batas:</strong>
+                                                    {{ $batas->diffForHumans(now(), [
+                                                        'syntax' => \Carbon\CarbonInterface::DIFF_ABSOLUTE,
+                                                        'parts' => 2
+                                                    ]) }}
+                                                @endif</p>
                                         </div>
 
                                         <div class="job-footer mt-2">
@@ -265,43 +362,88 @@
 
                 {{-- SIDEBAR FILTER --}}
                 <div class="col-lg-3 mt-4 mt-lg-0">
-                    <div class="filter-box mb-4">
-                        <h5 class="alt-font fw-600 fs-18 mb-3">Filter Jenis Pekerjaan</h5>
-                        <ul class="filter-list list-unstyled mb-0">
-                            @foreach($jenisPekerjaanList as $item)
-                                <li class="d-flex justify-content-between align-items-center py-1 px-2 border-bottom border-opacity-10">
-                                    <a href="#" class="text-decoration-none text-light flex-grow-1 text-truncate">
-                                        {{ $item->jenis_pekerjaan }}
-                                    </a>
-                                    <span class="text-secondary fw-500">{{ $item->total }}</span>
+                    <div class="filter-sticky">
+                        <div class="filter-box mb-4">
+                            <h5 class="alt-font fw-600 fs-18 mb-3">Filter Jenis Pekerjaan</h5>
+                            <ul class="filter-list list-unstyled mb-0">
+                                <li class="py-1 px-2 border-bottom border-opacity-10 d-flex justify-content-between">
+                                    <a href="{{ url('lowongan-kerja') }}" class="text-decoration-none text-light">Semua</a>
+                                    <span class="text-secondary fw-500">{{ $jenisPekerjaanList->sum('total') }}</span>
                                 </li>
-                            @endforeach
-                        </ul>
-                    </div>
+                                @foreach($jenisPekerjaanList as $item)
+                                    <li class="d-flex justify-content-between align-items-center py-1 px-2 border-bottom border-opacity-10">
+                                        <a href="{{ request()->fullUrlWithQuery(['jenis_pekerjaan' => $item->jenis_pekerjaan]) }}"
+                                           class="text-decoration-none flex-grow-1 text-truncate {{ request('jenis_pekerjaan') == $item->jenis_pekerjaan ? 'text-warning fw-bold' : 'text-light' }}">
+                                            {{ $item->jenis_pekerjaan }}
+                                        </a>
+                                        <span class="text-secondary fw-500">{{ $item->total }}</span>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
 
-                    <div class="filter-box">
-                        <h5 class="alt-font fw-600 fs-18 mb-3">Filter Jenis Kelamin</h5>
-                        <ul class="filter-list list-unstyled mb-0">
-                            @foreach($jenisKelaminList as $item)
-                                @php
-                                    switch ($item->jenis_kelamin) {
-                                        case 'Laki-laki': $icon = 'bi-gender-male'; break;
-                                        case 'Perempuan': $icon = 'bi-gender-female'; break;
-                                        default: $icon = 'bi-gender-ambiguous'; break;
-                                    }
-                                @endphp
-                                <li class="d-flex justify-content-between align-items-center py-1 px-2 border-bottom border-opacity-10">
-                                    <a href="#" class="text-decoration-none text-light d-flex align-items-center gap-2 flex-grow-1 text-nowrap">
-                                        <i class="bi {{ $icon }}"></i>
-                                        {{ $item->jenis_kelamin }}
-                                    </a>
-                                    <span class="text-secondary fw-500">{{ $item->total }}</span>
+                        <div class="filter-box mb-4">
+                            <h5 class="alt-font fw-600 fs-18 mb-3">Filter Jenis Kelamin</h5>
+                            <ul class="filter-list list-unstyled mb-0">
+                                <li class="py-1 px-2 border-bottom border-opacity-10 d-flex justify-content-between">
+                                    <a href="{{ url('lowongan-kerja') }}" class="text-decoration-none text-light">Semua</a>
+                                    <span class="text-secondary fw-500">{{ $jenisKelaminList->sum('total') }}</span>
                                 </li>
-                            @endforeach
-                        </ul>
+                                @foreach($jenisKelaminList as $item)
+                                    @php
+                                        if ($item->jenis_kelamin === 'Laki-laki') {
+                                            $icon = 'bi-gender-male';
+                                        } elseif ($item->jenis_kelamin === 'Perempuan') {
+                                            $icon = 'bi-gender-female';
+                                        } else {
+                                            $icon = 'bi-gender-ambiguous';
+                                        }
+                                    @endphp
+                                    <li class="d-flex justify-content-between align-items-center py-1 px-2 border-bottom border-opacity-10">
+                                        <a href="{{ request()->fullUrlWithQuery(['jenis_kelamin' => $item->jenis_kelamin]) }}"
+                                           class="text-decoration-none d-flex align-items-center gap-2 flex-grow-1 text-nowrap {{ request('jenis_kelamin') == $item->jenis_kelamin ? 'text-warning fw-bold' : 'text-light' }}">
+                                            <i class="bi {{ $icon }}"></i>
+                                            {{ $item->jenis_kelamin }}
+                                        </a>
+                                        <span class="text-secondary fw-500">{{ $item->total }}</span>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+
+                        <div class="filter-box mb-4">
+                            <h5 class="alt-font fw-600 fs-18">Filter Perusahaan</h5>
+                            <form action="{{ url('lowongan-kerja') }}" method="GET">
+                                <select class="form-select select2" name="perusahaan" onchange="this.form.submit()">
+                                    <option value="">Semua perusahaan</option>
+                                    @foreach($perusahaanList as $item)
+                                        <option value="{{ $item['nama'] }}" {{ request('perusahaan') == $item['nama'] ? 'selected' : '' }}>
+                                            {{ $item['nama'] }} ({{ $item['total'] }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 @endsection
+@push('js')
+    <!-- Select2 JS & CSS -->
+
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            $(document).ready(function() {
+                $('.select2').select2({
+                    width: '100%',
+                    theme: 'default',
+                    dropdownAutoWidth: true
+                });
+            });
+        });
+    </script>
+@endpush

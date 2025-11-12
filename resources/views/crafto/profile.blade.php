@@ -146,7 +146,7 @@
                         <!-- Tombol Absen QR -->
                         <div class="text-center mt-3">
                             <button id="btnScanQR" class="btn btn-warning fw-semibold rounded-pill px-4">
-                                <i class="feather icon-feather-camera me-2"></i> Absen dengan QR Code
+                                <i class="feather icon-feather-camera me-2"></i> Absen QR Code
                             </button>
                         </div>
 
@@ -160,7 +160,7 @@
 
                         <!-- Bagian Informasi Dasar -->
                         <div class="row text-center">
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-12 mb-3">
                                 <i class="feather icon-feather-user text-golden-yellow me-2"></i>
                                 <span id="data-nik" class="fw-medium text-dark">{{ $profile->nik }}</span>
                                 <p class="text-secondary small m-0">NIK</p>
@@ -177,15 +177,29 @@
                                 <span id="data-jk" class="fw-medium text-dark">{{ ucfirst($profile->jenis_kelamin) }}</span>
                                 <p class="text-secondary small m-0">Jenis Kelamin</p>
                             </div>
+                            <div class="col-md-4 mb-3">
+                                <i class="feather icon-feather-phone text-golden-yellow me-2"></i>
+                                <span id="data-nohp" class="fw-medium text-dark">
+                                    {{ $profile->user->no_hp ?? '-' }}
+                                </span>
+                                <p class="text-secondary small m-0">Nomor HP</p>
+                            </div>
                         </div>
 
                         <div class="row text-center">
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-4 mb-3">
+                                <i class="feather icon-feather-mail text-golden-yellow me-2"></i>
+                                <span id="data-email" class="fw-medium text-dark">
+                                    {{ $profile->user->email ?? '-' }}
+                                </span>
+                                <p class="text-secondary small m-0">Email</p>
+                            </div>
+                            <div class="col-md-4 mb-3">
                                 <i class="feather icon-feather-heart text-golden-yellow me-2"></i>
                                 <span id="data-status" class="fw-medium text-dark">{{ $profile->status_pernikahan }}</span>
                                 <p class="text-secondary small m-0">Status Pernikahan</p>
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-4 mb-3">
                                 <i class="feather icon-feather-alert-octagon text-golden-yellow me-2"></i>
                                 <span id="data-disabilitas" class="fw-medium text-dark">{{ ucfirst($profile->disabilitas) }}</span>
                                 <p class="text-secondary small m-0">Disabilitas</p>
@@ -342,6 +356,21 @@
                                 <label class="form-label">NIK</label>
                                 <input type="text" name="nik" class="form-control" value="{{ $profile->nik }}">
                             </div>
+
+                            <!-- ✅ Tambahan Email -->
+                            <div class="col-md-6">
+                                <label class="form-label">Email</label>
+                                <input type="email" name="email" class="form-control"
+                                       value="{{ $profile->user->email ?? '' }}" placeholder="contoh@email.com">
+                            </div>
+
+                            <!-- ✅ Tambahan Nomor HP -->
+                            <div class="col-md-6">
+                                <label class="form-label">Nomor HP</label>
+                                <input type="text" name="no_hp" class="form-control"
+                                       value="{{ $profile->user->no_hp ?? '' }}" placeholder="081234567890">
+                            </div>
+
                             <div class="col-md-6">
                                 <label class="form-label">Tanggal Lahir</label>
                                 <input type="date" name="tgl_lahir" class="form-control" value="{{ $profile->tgl_lahir }}">
@@ -366,6 +395,7 @@
                                 <label class="form-label">Disabilitas</label>
                                 <input type="text" name="disabilitas" class="form-control" value="{{ $profile->disabilitas }}">
                             </div>
+
                             <div class="col-md-6 mb-3">
                                 <label for="provinsi" class="form-label">Provinsi</label>
                                 <select id="provinsi" name="provinsi" class="form-select"
@@ -402,7 +432,6 @@
                                 <label for="alamat" class="form-label">Alamat Detail</label>
                                 <textarea name="alamat" id="alamat" class="form-control">{{ $profile->alamat }}</textarea>
                             </div>
-
                         </div>
                     </form>
                 </div>
@@ -413,6 +442,7 @@
             </div>
         </div>
     </div>
+
 
     <!-- ============================= -->
     <!-- MODAL EDIT DOKUMEN -->

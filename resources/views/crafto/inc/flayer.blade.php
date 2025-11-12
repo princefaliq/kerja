@@ -14,7 +14,7 @@
                 <div class="outside-box-right-30">
                     <div class="swiper image-gallery-style-05" data-slider-options='{ "slidesPerView": 1, "spaceBetween": 25, "loop": true, "autoplay": { "delay": 4000, "disableOnInteraction": false },"pagination": { "el": ".slider-three-slide-pagination", "clickable": true, "dynamicBullets": false }, "keyboard": { "enabled": true, "onlyInViewport": true }, "breakpoints": { "992": { "slidesPerView": 4 }, "768": { "slidesPerView": 3 }, "320": { "slidesPerView": 2 } }, "effect": "slide" }' data-gallery-box="true">
                         <div class="swiper-wrapper">
-                            @for ($i = 1; $i <= 11; $i++)
+                            @for ($i = 1; $i <= 54; $i++)
                                 <!-- start gallery item -->
                                 <div class="swiper-slide transition-inner-all">
                                     <div class="gallery-box">

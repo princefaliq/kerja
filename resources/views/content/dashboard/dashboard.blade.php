@@ -27,9 +27,9 @@
                                     <span class="fw-bold">Pencari Kerja</span>
                                 </h3>
                                 <!--end::Title-->
-                                <div class="fs-4 text-muted mb-7">Jauh sebelum kamu duduk untuk menulis
+                                <div class="fs-4 text-muted mb-7">Jauh sebelum kamu duduk untuk mengetik
                                     <br />Perlu memastikan kamu bernapas.</div>
-                                <a href='#' class="btn btn-success fw-semibold px-6 py-3" data-bs-toggle="modal" data-bs-target="#kt_modal_create_campaign">Create an Store</a>
+                                <a href='{{ url('app/lowongan') }}' class="btn btn-success fw-semibold px-6 py-3" data-bs-toggle="modal" data-bs-target="#kt_modal_create_campaign">Buat Lowongan</a>
                             </div>
                             <!--end::Info-->
                             <!--begin::Illustration-->
@@ -67,9 +67,11 @@
                                     </p>
                                 <!--end::Text-->
                                 <!--begin::Action-->
-                                {{--<div class="m-0">
+                                @role('Admin')
+                                <div class="m-0">
                                     <a href='{{ url('app/pelamar') }}' class="btn btn-success fw-semibold" >Pelamar</a>
-                                </div>--}}
+                                </div>
+                                @endrole
                                 <!--ed::Action-->
                             </div>
                             <!--end::Content-->
@@ -107,6 +109,29 @@
                                     <span class="fs-3 fw-bolder text-primary mt-2" id="countUser">0</span>
                                 </div>
                             </li>
+                            <li class="nav-item col-12 col-lg mb-5 mb-lg-0">
+                                <div class="nav-link btn btn-flex btn-color-gray-500 btn-outline btn-active-success d-flex flex-grow-1 flex-column flex-center py-5 h-125px h-lg-175px">
+                                    <i class="ki-duotone ki-office-bag fs-2x mb-5 mx-0 text-info">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                        <span class="path4"></span>
+                                    </i>
+                                    <span class="fs-6 fw-bold">Isi Biodata</span>
+                                    <span class="fs-3 fw-bolder text-info mt-2" id="countPelamar">0</span>
+                                </div>
+                            </li>
+                            <li class="nav-item col-12 col-lg mb-5 mb-lg-0">
+                                <div class="nav-link btn btn-flex btn-color-gray-500 btn-outline btn-active-success d-flex flex-grow-1 flex-column flex-center py-5 h-125px h-lg-175px">
+                                    <i class="ki-duotone ki-brifecase-tick fs-2x mb-5 mx-0 text-info">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                    </i>
+                                    <span class="fs-6 fw-bold">Melamar</span>
+                                    <span class="fs-3 fw-bolder text-info mt-2" id="countMelamar">0</span>
+                                </div>
+                            </li>
 
                             <li class="nav-item col-12 col-lg mb-5 mb-lg-0">
                                 <div class="nav-link btn btn-flex btn-color-gray-500 btn-outline btn-active-primary d-flex flex-grow-1 flex-column flex-center py-5 h-125px h-lg-175px">
@@ -120,18 +145,6 @@
                                 </div>
                             </li>
 
-                            <li class="nav-item col-12 col-lg mb-5 mb-lg-0">
-                                <div class="nav-link btn btn-flex btn-color-gray-500 btn-outline btn-active-success d-flex flex-grow-1 flex-column flex-center py-5 h-125px h-lg-175px">
-                                    <i class="ki-duotone ki-office-bag fs-2x mb-5 mx-0 text-info">
-                                        <span class="path1"></span>
-                                        <span class="path2"></span>
-                                        <span class="path3"></span>
-                                        <span class="path4"></span>
-                                    </i>
-                                    <span class="fs-6 fw-bold">Isi Biodata</span>
-                                    <span class="fs-3 fw-bolder text-info mt-2" id="countPelamar">0</span>
-                                </div>
-                            </li>
 
                             <li class="nav-item col-12 col-lg mb-5 mb-lg-0">
                                 <div class="nav-link btn btn-flex btn-color-gray-500 btn-outline btn-active-info d-flex flex-grow-1 flex-column flex-center py-5 h-125px h-lg-175px">
@@ -142,6 +155,19 @@
                                     </i>
                                     <span class="fs-6 fw-bold">Lowongan</span>
                                     <span class="fs-3 fw-bolder text-warning mt-2" id="countLowongan">0</span>
+                                </div>
+                            </li>
+                            <li class="nav-item col-12 col-lg mb-5 mb-lg-0">
+                                <div class="nav-link btn btn-flex btn-color-gray-500 btn-outline btn-active-info d-flex flex-grow-1 flex-column flex-center py-5 h-125px h-lg-175px">
+                                    <i class="ki-duotone ki-fingerprint-scanning text-warning fs-2x mb-5 mx-0">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                        <span class="path4"></span>
+                                        <span class="path5"></span>
+                                    </i>
+                                    <span class="fs-6 fw-bold">Absen</span>
+                                    <span class="fs-3 fw-bolder text-warning mt-2" id="countAbsen">0</span>
                                 </div>
                             </li>
                         </ul>
@@ -160,101 +186,5 @@
     <!--end::Container-->
 @endsection
 @push('js')
-    <script src="{{ url('assets/plugins/global/plugins.bundle.js') }}"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // === BAGIAN CHART PERSENTASE PELAMAR ===
-            let chart; // Simpan instance chart agar bisa di-update tanpa render ulang
-
-            async function loadUserData() {
-                try {
-                    const response = await fetch("{{ route('dashboard.user.data') }}");
-                    const data = await response.json();
-
-                    const percent = data.percentage ?? 0;
-
-                    // Jika chart belum ada → render baru
-                    if (!chart) {
-                        const options = {
-                            series: [percent],
-                            chart: {
-                                height: 260,
-                                type: 'radialBar',
-                                sparkline: { enabled: true },
-                            },
-                            plotOptions: {
-                                radialBar: {
-                                    startAngle: -90,
-                                    endAngle: 90,
-                                    track: {
-                                        background: "#e7e7e7",
-                                        strokeWidth: '97%',
-                                        margin: 5,
-                                    },
-                                    hollow: { size: '60%' },
-                                    dataLabels: {
-                                        name: {
-                                            show: true,
-                                            offsetY: 60,
-                                            color: '#888',
-                                            fontSize: '20px',
-                                            formatter: () => 'Pelamar / Isi Biodata'
-                                        },
-                                        value: {
-                                            offsetY: -10,
-                                            fontSize: '30px',
-                                            color: '#111',
-                                            fontWeight: 'bold',
-                                            formatter: function (val) {
-                                                return val.toFixed(1) + '%';
-                                            }
-                                        }
-                                    }
-                                }
-                            },
-                            colors: ['#4ade80'],
-                            stroke: { lineCap: "round" },
-                        };
-
-                        chart = new ApexCharts(document.querySelector("#userPelamarChart"), options);
-                        chart.render();
-                    } else {
-                        // Jika chart sudah ada → update datanya
-                        chart.updateSeries([percent]);
-                    }
-                } catch (error) {
-                    console.error('Error fetching user data:', error);
-                }
-            }
-
-            // === BAGIAN WIDGET COUNT ===
-            async function loadWidgetData() {
-                try {
-                    const response = await fetch("{{ route('dashboard.widget.data') }}");
-                    const data = await response.json();
-
-                    document.getElementById('countUser').textContent = data.user ?? 0;
-                    document.getElementById('countPerusahaan').textContent = data.perusahaan ?? 0;
-                    document.getElementById('countPelamar').textContent = data.pelamar ?? 0;
-                    document.getElementById('countLowongan').textContent = data.lowongan ?? 0;
-                } catch (error) {
-                    console.error('Error fetching widget data:', error);
-                }
-            }
-
-            // === Panggil pertama kali ===
-            loadUserData();
-            loadWidgetData();
-
-            // === Update setiap 10 detik ===
-            setInterval(() => {
-                loadUserData();
-                loadWidgetData();
-            }, 10000);
-        });
-    </script>
-
-
-    <!--end::Vendors Javascript-->
-    <!--end::Custom Javascript-->
+   @include('content.dashboard.js_dashboard')
 @endpush

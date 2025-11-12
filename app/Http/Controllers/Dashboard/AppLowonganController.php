@@ -38,6 +38,15 @@ class AppLowonganController extends Controller
                                 ->orWhere('jumlah_lowongan', 'like', "%{$search}%");
                         });
                     }
+                    // 🟢 Filter berdasarkan status dari dropdown
+                    if ($request->filled('status')) {
+                        $status = trim($request->status);
+
+                        // Pastikan value '1' dan '0' bisa diterima
+                        if ($status === '1' || $status === '0') {
+                            $query->where('status', $status);
+                        }
+                    }
                 })
                 ->editColumn('batas_lamaran', function ($lowongan) {
                     return $lowongan->batas_lamaran

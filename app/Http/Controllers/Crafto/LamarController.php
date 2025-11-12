@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Crafto;
 
 use App\Http\Controllers\Controller;
+use App\Models\Absensi;
 use App\Models\Lamaran;
 use App\Models\Lowongan;
 use App\Models\Pelamar;
@@ -37,9 +38,15 @@ class LamarController extends Controller
     {
         $sudahIsi = Pelamar::where('user_id', auth()->id())
             ->exists();
+        $sudahAbsen = Absensi::where('user_id', auth()->id())
+            ->exists();
         if(!$sudahIsi)
         {
             abort(404);
+        }
+        if (!$sudahAbsen)
+        {
+            return redirect()->back()->with('error', 'Anda belum melakukan absensi hari ini.');
         }
         // Validasi input
         $request->validate([

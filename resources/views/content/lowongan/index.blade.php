@@ -70,12 +70,14 @@
                     <div class="card-toolbar flex-row-fluid justify-content-end gap-5">
                         <div class="w-100 mw-150px">
                             <!--begin::Select2-->
-                            <select class="form-select form-select-solid" data-control="select2" data-hide-search="true" data-placeholder="Status" data-kt-ecommerce-product-filter="status">
-                                <option></option>
-                                <option value="all">All</option>
-                                <option value="published">Published</option>
-                                <option value="scheduled">Scheduled</option>
-                                <option value="inactive">Inactive</option>
+                            <select class="form-select form-select-solid"
+                                    data-control="select2"
+                                    data-hide-search="true"
+                                    data-placeholder="Status"
+                                    data-kt-ecommerce-product-filter="status">
+                                <option value="">Semua</option>
+                                <option value="1">Active</option>
+                                <option value="0">NonActive</option>
                             </select>
                             <!--end::Select2-->
                         </div>

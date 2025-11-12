@@ -54,7 +54,7 @@
                         <a href="#" class="me-25px text-dark-gray fw-500 section-link xs-me-0"><i class="feather icon-feather-calendar text-golden-yellow"></i> Diposting {{ $lowongan->created_at ? $lowongan->created_at->diffForHumans() : '-' }}</a>
                     </div>
                     <div class="d-block d-sm-flex align-items-center mb-30px">
-                        <a href="#" class="me-25px text-dark-gray fw-500 section-link xs-me-0"><i class="feather icon-feather-bell text-golden-yellow"></i> Batas waktu lamaran kurang {{ $lowongan->batas_lamaran ? $lowongan->batas_lamaran->diffForHumans() : '-' }} - {{  \Carbon\Carbon::parse($lowongan->batas_lamaran)->translatedFormat('d F Y') }}</a>
+                        <a href="#" class="me-25px text-dark-gray fw-500 section-link xs-me-0"><i class="feather icon-feather-bell text-golden-yellow"></i> Batas waktu lamaran kurang {{ $lowongan->batas_lamaran ? $lowongan->batas_lamaran->endOfDay()->diffForHumans() : '-' }} - {{  \Carbon\Carbon::parse($lowongan->batas_lamaran)->translatedFormat('d F Y') }}</a>
                     </div>
                     <div class="mb-2 h-1px w-100 bg-extra-medium-gray sm-mt-10px xs-mb-8"></div>
                     <div class="row mb-10px">
@@ -205,8 +205,13 @@
                         </button>
                     @elseif (!$sudahIsi)
                         <a href="{{ url('profile') }}" class="alt-font btn btn-small btn-box-shadow btn-base-color btn-round-edge left-icon">
-                            <i class="feather icon-feather-log-in"></i>
+                            <i class="feather icon-feather-edit"></i>
                             <span class="button-text">Isi Biodata untuk Melamar</span>
+                        </a>
+                    @elseif (!$sudahAbsen)
+                        <a href="{{ url('profile') }}" class="alt-font btn btn-small btn-box-shadow btn-base-color btn-round-edge left-icon">
+                            <i class="feather icon-feather-camera"></i>
+                            <span class="button-text">Absen Dulu!</span>
                         </a>
                     @else
                         <form id="lamarForm" action="{{ route('melamar.daftar') }}" method="POST" class="d-inline">

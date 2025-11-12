@@ -187,6 +187,8 @@
                             document.getElementById('data-tanggal').textContent = formattedDate;
                             document.getElementById('data-jk').textContent = data.profile.jenis_kelamin;
                             document.getElementById('data-status').textContent = data.profile.status_pernikahan;
+                            document.getElementById('data-nohp').textContent = data.user.no_hp;
+                            document.getElementById('data-email').textContent = data.user.email;
                             document.getElementById('data-disabilitas').textContent = data.profile.disabilitas;
                             document.getElementById('data-alamat').textContent =
                                 `${data.profile.provinsi}, ${data.profile.kabupaten}, ${data.profile.kecamatan}, ${data.profile.desa}, ${data.profile.alamat}`;

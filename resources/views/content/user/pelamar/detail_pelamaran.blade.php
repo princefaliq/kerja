@@ -145,6 +145,21 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Disabilitas -->
+                    <div class="profile-section">
+                        <h5 class="fw-bold mb-4 text-primary"><i class="bi bi-person-wheelchair me-2"></i>Disabilitas</h5>
+                        <p class="fs-6 mb-0">
+                            @if($profile->disabilitas)
+                                <span class="badge bg-success-subtle text-success fs-6 px-4 py-2">
+                                    {{ ucfirst($profile->disabilitas) }}
+                                </span>
+                            @else
+                                <span class="badge bg-secondary-subtle text-muted fs-6 px-4 py-2">
+                                    Tidak ada disabilitas
+                                </span>
+                            @endif
+                        </p>
+                    </div>
 
                     <!-- Dokumen -->
                     <div class="profile-section">

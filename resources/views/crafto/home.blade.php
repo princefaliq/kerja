@@ -4,7 +4,7 @@
     @include('crafto.inc.baner')
     @include('crafto.inc.keuntungan')
     @include('crafto.inc.about')
-{{--    @include('crafto.inc.lowongan')--}}
+    @include('crafto.inc.lowongan')
     {{--@include('crafto.inc.patner')--}}
     @include('crafto.inc.flayer')
     @include('crafto.inc.jadwal')

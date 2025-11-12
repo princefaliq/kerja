@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Crafto;
 
 use App\Http\Controllers\Controller;
+use App\Models\Absensi;
 use App\Models\Lamaran;
 use App\Models\Lowongan;
 use App\Models\Pelamar;
@@ -16,35 +17,51 @@ use Illuminate\Validation\Rules;
 class LowonganController extends Controller
 {
     public function index(Request $request)
-{
-    // Ambil daftar jenis pekerjaan dan hitung jumlah masing-masing
-    $jenisPekerjaanList = Lowongan::select('jenis_pekerjaan', \DB::raw('COUNT(*) as total'))
-        ->where('status', 1)
-        ->whereNotNull('jenis_pekerjaan')
-        ->groupBy('jenis_pekerjaan')
-        ->orderBy('jenis_pekerjaan', 'asc')
-        ->get();
-         // 🔹 Ambil daftar jenis kelamin dan jumlah masing-masing
-    $jenisKelaminList = Lowongan::select('jenis_kelamin', \DB::raw('COUNT(*) as total'))
-        ->where('status', 1)
-        ->whereNotNull('jenis_kelamin')
-        ->groupBy('jenis_kelamin')
-        ->orderBy('jenis_kelamin', 'asc')
-        ->get();
+    {
+        // Ambil daftar jenis pekerjaan dan hitung jumlah masing-masing
+        $jenisPekerjaanList = Lowongan::select('jenis_pekerjaan', \DB::raw('COUNT(*) as total'))
+            ->where('status', 1)
+            ->whereNotNull('jenis_pekerjaan')
+            ->groupBy('jenis_pekerjaan')
+            ->orderBy('jenis_pekerjaan', 'asc')
+            ->get();
+             // 🔹 Ambil daftar jenis kelamin dan jumlah masing-masing
+        $jenisKelaminList = Lowongan::select('jenis_kelamin', \DB::raw('COUNT(*) as total'))
+            ->where('status', 1)
+            ->whereNotNull('jenis_kelamin')
+            ->groupBy('jenis_kelamin')
+            ->orderBy('jenis_kelamin', 'asc')
+            ->get();
+        $perusahaanList = Lowongan::select('user_id', \DB::raw('COUNT(*) as total'))
+            ->where('status', 1)
+            ->groupBy('user_id')
+            ->with(['user:id,name'])
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'nama' => $item->user->name ?? 'Tidak diketahui',
+                    'total' => $item->total,
+                ];
+            });
 
-    // Query utama untuk data lowongan
-    $query = Lowongan::with('user')->where('status', 1);
+        // Query utama untuk data lowongan
+        $query = Lowongan::with('user')->where('status', 1);
 
-    if ($request->filled('jenis_pekerjaan')) {
-        $query->where('jenis_pekerjaan', $request->jenis_pekerjaan);
+        if ($request->filled('perusahaan')) {
+            $query->whereHas('user', function ($q) use ($request) {
+                $q->where('name', $request->perusahaan);
+            });
+        }
+        if ($request->filled('jenis_pekerjaan')) {
+            $query->where('jenis_pekerjaan', $request->jenis_pekerjaan);
+        }
+         if ($request->filled('jenis_kelamin')) {
+            $query->where('jenis_kelamin', $request->jenis_kelamin);
+        }
+
+        $lowongans = $query->paginate(12)->appends($request->query());
+        return view('crafto.lowongan_kerja', compact('lowongans', 'jenisPekerjaanList','jenisKelaminList','perusahaanList'));
     }
-     if ($request->filled('jenis_kelamin')) {
-        $query->where('jenis_kelamin', $request->jenis_kelamin);
-    }
-
-    $lowongans = $query->paginate(12)->appends($request->query());
-    return view('crafto.lowongan_kerja', compact('lowongans', 'jenisPekerjaanList','jenisKelaminList'));
-}
 
     public function login()
     {
@@ -67,7 +84,7 @@ class LowonganController extends Controller
         $request->validate([
             'name' => 'required|string|max:255|regex:/^[A-Za-z\s]+$/',
             'email' => 'required|string|email|max:255|unique:users',
-            'no_hp' => 'nullable|string|max:15|unique:users,no_hp',
+            'no_hp' => 'required|regex:/^[0-9]+$/|max:15|unique:users,no_hp',
             'password' => 'required|string|min:8',
         ], [
             'name.required' => 'Nama wajib diisi.',
@@ -81,8 +98,8 @@ class LowonganController extends Controller
             'email.max' => 'Email tidak boleh lebih dari 255 karakter.',
             'email.unique' => 'Email sudah terdaftar.',
 
-            'no_hp.nullable' => 'Nomor HP boleh kosong.',
-            'no_hp.string' => 'Nomor HP harus berupa teks.',
+            'no_hp.required' => 'Nomor HP wajib diisi.',
+            'no_hp.regex'    => 'Nomor HP hanya boleh berisi angka.',
             'no_hp.max' => 'Nomor HP tidak boleh lebih dari 15 karakter.',
             'no_hp.unique' => 'Nomor HP sudah terdaftar.',
 
@@ -114,6 +131,7 @@ class LowonganController extends Controller
         // Default: user belum melamar
         $sudahMelamar = false;
         $sudahIsi = false;
+        $sudahAbsen = false;
 
         // Jika user login, cek apakah sudah pernah melamar lowongan ini
         if (auth()->check()) {
@@ -122,10 +140,12 @@ class LowonganController extends Controller
                 ->exists();
             $sudahIsi = Pelamar::where('user_id', auth()->id())
                 ->exists();
+            $sudahAbsen = Absensi::where('user_id', auth()->id())
+                ->exists();
         }
-        
-        
-        return view('crafto.lowongan_detil', compact('lowongan', 'sudahMelamar','sudahIsi'));
+
+
+        return view('crafto.lowongan_detil', compact('lowongan', 'sudahMelamar','sudahIsi','sudahAbsen'));
 
     }
 

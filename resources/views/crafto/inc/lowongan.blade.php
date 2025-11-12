@@ -14,7 +14,7 @@
                         @foreach($lowongans as $lowongan)
                             <!-- start review item -->
                             <div class="swiper-slide review-style-04">
-                                <div class="d-flex justify-content-center bg-white-transparent hover-box h-100 flex-column hover-box will-change-inherit dark-hover border-left-5 border-top border-end border-color-transparent-white-light border-radius-6px p-15 xl-p-12 box-shadow-extra-large">
+                                <div class="d-flex justify-content-center bg-transparent hover-box h-100 flex-column hover-box will-change-inherit dark-hover border-left-5 border-top border-end border-color-transparent-white-light border-radius-6px p-15 xl-p-12 box-shadow-extra-large">
                                     {{--<div class="review-star-icon fs-18 lh-30">
                                         <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
                                     </div>--}}
@@ -23,19 +23,36 @@
                                     </a>
                                     <div class="mb-10px text-light border-bottom border-light">
                                         <p class="mb-10px">Lokasi : {{ Str::limit($lowongan->lokasi, 20, '...') }}</p>
-                                        <p class="mb-10px">Rentang Gaji : {{ $lowongan->rentang_gaji }}</p>
+                                        <p class="mb-10px">Rentang Gaji : {{ $lowongan->rentang_gaji ? $lowongan->rentang_gaji : 'Dirahasiakan' }}</p>
                                         {{--<p class="mb-10px">Batas lamaran :{{ \Carbon\Carbon::parse($lowongan->batas_lamaran)->translatedFormat('d F Y') }} </p>--}}
-                                        <p class="mb-10px">Sisa waktu : {{ $lowongan->batas_lamaran ? $lowongan->batas_lamaran->diffForHumans() : '-' }}</p>
+                                        <p class="mb-10px">
+                                            @php
+                                                $batas = $lowongan->batas_lamaran->endOfDay();
+                                            @endphp
+                                            @if ($batas->isFuture())
+                                                Batas Lamaran:
+                                                {{ now()->diffForHumans($batas, [
+                                                    'syntax' => \Carbon\CarbonInterface::DIFF_ABSOLUTE,
+                                                    'parts' => 2
+                                                ]) }}
+                                            @else
+                                                Melewati batas:
+                                                {{ $batas->diffForHumans(now(), [
+                                                    'syntax' => \Carbon\CarbonInterface::DIFF_ABSOLUTE,
+                                                    'parts' => 2
+                                                ]) }}
+                                            @endif
+                                        </p>
                                     </div>
                                     <div class="d-flex align-items-center">
-                                        <img class="rounded-circle w-90px h-90px me-20px" src="{{ $lowongan->user->avatar ? asset($lowongan->user->avatar) : 'https://placehold.co/58x58' }}" alt="">
+                                        <img class="rounded-circle w-90px h-90px me-20px" src="{{ $lowongan->user->avatar_url ? asset($lowongan->user->avatar_url) : 'https://placehold.co/58x58' }}" alt="">
                                         <div class="d-inline-block align-middle">
                                             <div class="text-light-gray fw-500 alt-font">{{ $lowongan->user->name }}</div>
                                             <div class="lh-20 fs-16 text-base-color">{{ $lowongan->bidang_pekerjaan }}</div>
                                         </div>
                                     </div>
                                     <div class="mt-5px text-center">
-                                        <a href="{{ url('lowongan-kerja/'.$lowongan->slug) }}" class="bg-black box-shadow-quadruple-large text-uppercase fs-13 ps-25px pe-25px alt-font fw-600 text-light lh-40 sm-lh-55 border-radius-100px d-inline-block ">Detail</a>
+                                        <a href="{{ url('lowongan-kerja/'.$lowongan->slug) }}" class="bg-yellow box-shadow-quadruple-large text-uppercase fs-13 ps-25px pe-25px alt-font fw-600 text-dark lh-40 sm-lh-55 border-radius-100px d-inline-block ">Detail</a>
                                     </div>
                                 </div>
                             </div>

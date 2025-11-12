@@ -239,6 +239,8 @@ class ProfileController extends Controller
 
         $validated = $request->validate([
             'nik'               => 'required|digits:16|unique:pelamar,nik,' . $profile->id,
+            'email'             => 'required|email|unique:users,email,' . $user->id,
+            'no_hp'             => 'nullable|numeric|digits_between:10,15|unique:users,no_hp,' . $user->id,
             'tgl_lahir'         => 'required|date',
             'jenis_kelamin'     => 'required|in:laki-laki,perempuan',
             'status_pernikahan' => 'required|in:Belum Kawin,Kawin',
@@ -253,6 +255,15 @@ class ProfileController extends Controller
             'nik.required' => 'NIK wajib diisi.',
             'nik.digits' => 'NIK harus 16 angka.',
             'nik.unique' => 'NIK ini sudah terdaftar.',
+
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email ini sudah digunakan.',
+
+            'no_hp.numeric' => 'Nomor HP hanya boleh berisi angka.',
+            'no_hp.digits_between' => 'Nomor HP minimal 10 dan maksimal 15 digit.',
+            'no_hp.unique' => 'Nomor HP ini sudah terdaftar.',
+
             'tgl_lahir.required' => 'Tanggal lahir wajib diisi.',
             'jenis_kelamin.required' => 'Jenis kelamin wajib dipilih.',
             'status_pernikahan.required' => 'Status pernikahan wajib dipilih.',
@@ -264,17 +275,36 @@ class ProfileController extends Controller
             'alamat.required' => 'Alamat wajib diisi.',
         ]);
 
-        $profile->update($validated);
+        // ✅ Update data Pelamar
+        $profile->update([
+            'nik'               => $validated['nik'],
+            'tgl_lahir'         => $validated['tgl_lahir'],
+            'jenis_kelamin'     => $validated['jenis_kelamin'],
+            'status_pernikahan' => $validated['status_pernikahan'],
+            'disabilitas'       => $validated['disabilitas'],
+            'provinsi'          => $validated['provinsi'],
+            'kabupaten'         => $validated['kabupaten'],
+            'kecamatan'         => $validated['kecamatan'],
+            'desa'              => $validated['desa'],
+            'alamat'            => $validated['alamat'],
+        ]);
 
-// Reload data terbaru dari database
+        // ✅ Update data User (email dan no_hp)
+        $user->update([
+            'email' => $validated['email'],
+            'no_hp' => $validated['no_hp'],
+        ]);
+
+        // Reload data terbaru
         $profile->refresh();
 
         return response()->json([
             'success' => true,
-            'profile' => $profile
+            'profile' => $profile,
+            'user'    => $user,
         ]);
-
     }
+
 
     public function updateDokumen(Request $request)
     {
