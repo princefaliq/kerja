@@ -72,13 +72,15 @@
             try {
                 const response = await fetch("{{ route('dashboard.widget.data') }}");
                 const data = await response.json();
-
+                console.log(data);
                 document.getElementById('countUser').textContent = Number(data.user ?? 0).toLocaleString('id-ID');
                 document.getElementById('countPerusahaan').textContent = Number(data.perusahaan ?? 0).toLocaleString('id-ID');
                 document.getElementById('countPelamar').textContent = Number(data.pelamar ?? 0).toLocaleString('id-ID');
                 document.getElementById('countLowongan').textContent = Number(data.lowongan ?? 0).toLocaleString('id-ID');
                 document.getElementById('countMelamar').textContent = Number(data.lamaran ?? 0).toLocaleString('id-ID');
                 document.getElementById('countAbsen').textContent = Number(data.absen ?? 0).toLocaleString('id-ID');
+                document.getElementById('countTerima').textContent = Number(data.terima ?? 0).toLocaleString('id-ID');
+                document.getElementById('countTolak').textContent = Number(data.tolak ?? 0).toLocaleString('id-ID');
             } catch (error) {
                 console.error('Error fetching widget data:', error);
             }
@@ -96,6 +98,77 @@
     });
 </script>
 
+<script>
+    let statusChart;
+
+    // Load data chart
+    async function loadStatusChart() {
+        try {
+            const response = await fetch("{{ route('dashboard.widget.data') }}");
+            const data = await response.json();
+
+            const chartData = data.chart_status;
+
+            const series = [
+                chartData.dikirim ?? 0,
+                chartData.ditolak ?? 0,
+                chartData.diterima ?? 0
+            ];
+
+            const options = {
+                chart: {
+                    type: 'bar',
+                    height: 350
+                },
+                series: [{
+                    name: 'Jumlah Lamaran',
+                    data: series
+                }],
+                // 🎨 WARNA BAR
+                colors: ['#007bff', '#dc3545', '#28a745'],
+
+                xaxis: {
+                    categories: ['Dikirim', 'Ditolak', 'Diterima']
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        columnWidth: '45%',
+                        endingShape: 'rounded',
+                        distributed: true // ⬅ WAJIB untuk warna per bar
+                    }
+                },
+                dataLabels: {
+                    enabled: true
+                }
+            };
+
+            // Jika chart belum dirender → render
+            if (!statusChart) {
+                statusChart = new ApexCharts(
+                    document.querySelector("#statusLamaranChart"),
+                    options
+                );
+                statusChart.render();
+
+                // Jika chart sudah ada → update saja
+            } else {
+                statusChart.updateSeries([{ data: series }]);
+            }
+
+        } catch (error) {
+            console.error("Error load chart:", error);
+        }
+    }
+
+    // Load pertama kali
+    loadStatusChart();
+
+    // Auto refresh tiap 10 detik (opsional)
+    setInterval(() => {
+        loadStatusChart();
+    }, 10000);
+</script>
 
 <!--end::Vendors Javascript-->
 <!--end::Custom Javascript-->

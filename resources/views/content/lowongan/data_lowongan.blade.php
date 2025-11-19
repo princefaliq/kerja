@@ -29,7 +29,11 @@
                     render: function(data, type, row) {
                         const baseUrl = "{{ url('/') }}/";
                         const imageUrl = row.user.avatar_url;
-                        const slug = baseUrl +"lowongan-kerja/" + row.slug;
+                        // jika ada acara
+                        const slug = row.acara
+                            ? `{{ url('/') }}/${row.slug}`
+                            : `{{ url('/') }}/${row.slug}`;
+
                         return `
                         <div class="d-flex align-items-center">
                             <a href="${slug}" class="symbol symbol-50px">
@@ -47,6 +51,17 @@
                 { data: 'jenis_pekerjaan', name: 'jenis_pekerjaan' },
                 { data: 'jumlah_lowongan', name: 'jumlah_lowongan' },
                 { data: 'batas_lamaran', name: 'batas_lamaran' },
+                {
+                    data: 'jenis_lowongan',
+                    name: 'jenis_lowongan',
+                    render: function(data, type, row) {
+                        if (row.acara_id) {
+                            return `<span class="badge badge-light-success">${row.acara_nama}</span>`;
+                        }
+                        return `<span class="badge badge-light-primary">Non Acara</span>`;
+                    }
+                },
+
                 {
                     data: 'status',
                     name: 'status',

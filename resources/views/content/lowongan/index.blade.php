@@ -107,8 +107,9 @@
                             <th class="text-end min-w-100px">Jenis Pekerjaan</th>
                             <th class="text-end min-w-100px">Jumlah Lowongan</th>
                             <th class="text-end min-w-100px">Batas Lamaran</th>
+                            <th class="text-end min-w-100px">Acara</th>
                             <th class="text-end min-w-100px">Status</th>
-                            <th class="text-end min-w-70px">Actions</th>
+                            <th class="text-center min-w-70px">Actions</th>
                         </tr>
                         </thead>
                         <tbody class="fw-semibold text-gray-600">

@@ -151,7 +151,29 @@
                                     <option value="0" {{ old('status', $lowongan->status) == 0 ? 'selected' : '' }}>Nonaktif</option>
                                 </select>
                             </div>
+                            <!-- Lowongan Acara -->
+                            <div class="mb-10 fv-row">
+                                <label class="form-label">Jenis Lowongan</label>
+                                <select name="tipe_lowongan" id="tipe_lowongan" class="form-select">
+                                    <option value="non" {{ old('tipe_lowongan', $lowongan->acara_id ? 'acara' : 'non') == 'non' ? 'selected' : '' }}>Lowongan Non Acara</option>
+                                    <option value="acara" {{ old('tipe_lowongan', $lowongan->acara_id ? 'acara' : 'non') == 'acara' ? 'selected' : '' }}>Lowongan Acara</option>
+                                </select>
+                            </div>
 
+                            <!-- Pilih Acara -->
+                            <div class="mb-10 fv-row" id="acara_container"
+                                 style="{{ old('tipe_lowongan', $lowongan->acara_id ? 'acara' : 'non') == 'acara' ? '' : 'display:none;' }}">
+                                <label class="form-label">Pilih Acara</label>
+                                <select name="acara_id" class="form-select">
+                                    <option value="">-- Pilih Acara --</option>
+                                    @foreach ($acara as $a)
+                                        <option value="{{ $a->id }}"
+                                            {{ old('acara_id', $lowongan->acara_id) == $a->id ? 'selected' : '' }}>
+                                            {{ $a->nama_acara }} ({{ $a->tanggal_mulai }} s/d {{ $a->tanggal_selesai }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
                             <!-- Deskripsi Pekerjaan -->
                             <div class="mb-10 fv-row">
                                 <label class="form-label">Deskripsi Pekerjaan</label>
@@ -223,5 +245,17 @@
         ClassicEditor.create(document.querySelector('#deskripsi_pekerjaan')).catch(error => console.error(error));
         ClassicEditor.create(document.querySelector('#persyaratan_khusus')).catch(error => console.error(error));
         ClassicEditor.create(document.querySelector('#keterampilan')).catch(error => console.error(error));
+    </script>
+    <script>
+        document.getElementById('tipe_lowongan').addEventListener('change', function() {
+            const val = this.value;
+            const acaraBox = document.getElementById('acara_container');
+
+            if (val === 'acara') {
+                acaraBox.style.display = '';
+            } else {
+                acaraBox.style.display = 'none';
+            }
+        });
     </script>
 @endpush

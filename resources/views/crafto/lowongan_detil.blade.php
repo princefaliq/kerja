@@ -44,6 +44,12 @@
                         <strong>Success!</strong> {{ session('success') }}.
                     </div>
                 @endif
+                @if (session('error'))
+                    <div class="alert alert-danger box-shadow-extra-large bg-white alert-dismissable">
+                        <a href="#" class="close" data-bs-dismiss="alert" aria-label="close"><i class="fa-solid fa-xmark"></i></a>
+                        <strong>Erorr!!</strong> {{ session('error') }}.
+                    </div>
+                @endif
                 <div class="col-12 product-info">
                     <span class="fw-500 text-dark-gray text-center d-block">{{ $lowongan->user->name }}</span>
                     <h4 class="alt-font text-dark-gray fw-500 mb-50px text-center">{{ $lowongan->judul }}</h4>
@@ -208,8 +214,8 @@
                             <i class="feather icon-feather-edit"></i>
                             <span class="button-text">Isi Biodata untuk Melamar</span>
                         </a>
-                    @elseif (!$sudahAbsen)
-                        <a href="{{ url('profile') }}" class="alt-font btn btn-small btn-box-shadow btn-base-color btn-round-edge left-icon">
+                @elseif ($lowongan->acara_id && !$sudahAbsen)
+                    <a href="{{ url('profile') }}" class="alt-font btn btn-small btn-box-shadow btn-base-color btn-round-edge left-icon">
                             <i class="feather icon-feather-camera"></i>
                             <span class="button-text">Absen Dulu!</span>
                         </a>

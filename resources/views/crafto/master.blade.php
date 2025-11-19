@@ -39,6 +39,15 @@
         }
     </style>
     @stack('css')
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-7MSZZR7N74"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-7MSZZR7N74');
+    </script>
 </head>
 <body data-mobile-nav-style="classic">
 <!-- start header -->
@@ -111,7 +120,7 @@
                         @endrole
                     @endauth
                     </ul>
-                    
+
                 </div>
             </div>
             <div class="col-auto col-lg-2 text-end xs-ps-0 xs-pe-0">

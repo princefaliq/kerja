@@ -30,6 +30,14 @@
     @endrole
     <!--end:Menu item-->
     @role('Admin')
+        <div data-kt-menu-trigger="{default: 'click', lg: 'hover'}" data-kt-menu-placement="bottom-start" class="menu-item @if(View::hasSection('acara')) here show @endif me-0 me-lg-2">
+            <!--begin:Menu link-->
+            <a href="{{ url('app/acara') }}" class="menu-link py-3">
+                <span class="menu-title">Acara</span>
+                <span class="menu-arrow d-lg-none"></span>
+            </a>
+            <!--end:Menu link-->
+        </div>
         <div data-kt-menu-trigger="{default: 'click', lg: 'hover'}" data-kt-menu-placement="bottom-start" class="menu-item @if(View::hasSection('absen')) here show @endif me-0 me-lg-2">
             <!--begin:Menu link-->
             <a href="{{ url('app/absen/qr') }}" class="menu-link py-3">
@@ -38,14 +46,22 @@
             </a>
             <!--end:Menu link-->
         </div>
-    <div data-kt-menu-trigger="{default: 'click', lg: 'hover'}" data-kt-menu-placement="bottom-start" class="menu-item @if(View::hasSection('testimoni')) here show @endif me-0 me-lg-2">
-        <!--begin:Menu link-->
-        <a href="{{ route('testimoni.index') }}" class="menu-link py-3">
-            <span class="menu-title">Testimoni</span>
-            <span class="menu-arrow d-lg-none"></span>
-        </a>
-        <!--end:Menu link-->
-    </div>
+        <div data-kt-menu-trigger="{default: 'click', lg: 'hover'}" data-kt-menu-placement="bottom-start" class="menu-item @if(View::hasSection('laporan')) here show @endif me-0 me-lg-2">
+            <!--begin:Menu link-->
+            <a href="{{ url('app/laporan') }}" class="menu-link py-3">
+                <span class="menu-title">Laporan</span>
+                <span class="menu-arrow d-lg-none"></span>
+            </a>
+            <!--end:Menu link-->
+        </div>
+        <div data-kt-menu-trigger="{default: 'click', lg: 'hover'}" data-kt-menu-placement="bottom-start" class="menu-item @if(View::hasSection('testimoni')) here show @endif me-0 me-lg-2">
+            <!--begin:Menu link-->
+            <a href="{{ route('testimoni.index') }}" class="menu-link py-3">
+                <span class="menu-title">Testimoni</span>
+                <span class="menu-arrow d-lg-none"></span>
+            </a>
+            <!--end:Menu link-->
+        </div>
         <div data-kt-menu-trigger="{default: 'click', lg: 'hover'}" data-kt-menu-placement="bottom-start" class="menu-item @if(View::hasSection('user')) here show @endif me-0 me-lg-2">
             <!--begin:Menu link-->
             <span class="menu-link py-3">

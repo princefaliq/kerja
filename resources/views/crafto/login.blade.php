@@ -47,7 +47,7 @@
                             </div>
                         @endif
                     <span class="fs-26 xs-fs-24 alt-font fw-600 mb-20px d-block">Member login</span>
-                    <form action="{{ route('login') }}" method="post">
+                    <form action="{{ route('login') }}" id="frmLogin" method="post">
                         @csrf
                         <label class="mb-10px fw-500">No HP / email <span class="text-red">*</span></label>
                         <input class="mb-20px bg-very-light-gray form-control " type="text" name="login" placeholder="Enter your username" />
@@ -75,7 +75,14 @@
                             </a>
                         </div>
                         <input type="hidden" name="redirect" value="">
-                        <button class="btn btn-medium btn-round-edge btn-base-color btn-box-shadow w-100 mb-10px text-transform-none " type="submit">LOGIN</button>
+{{--                        <button class="btn btn-medium btn-round-edge btn-base-color btn-box-shadow w-100 mb-10px text-transform-none " type="submit">LOGIN</button>--}}
+                        <button
+                            class="g-recaptcha btn btn-medium btn-round-edge btn-base-color btn-box-shadow w-100 mb-10px text-transform-none"
+                            data-sitekey="{{ env('INVISIBLE_RECAPTCHA_SITE_KEY') }}"
+                            data-callback="onSubmit"
+                            data-action="submit">
+                            LOGIN
+                        </button>
                         <a href="{{ url('register') }}" class="btn btn-medium btn-round-edge btn-yellow d-table btn-box-shadow d-lg-inline-block w-100">Register</a>
                         <div class="form-results mt-20px d-none"></div>
                     </form>
@@ -85,7 +92,12 @@
     </section>
 @endsection
 @push('js')
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
     <script>
+        function onSubmit(token) {
+            document.getElementById("frmLogin").submit();
+        }
         document.getElementById('togglePassword').addEventListener('click', function () {
             const passwordInput = document.getElementById('password');
             const eyeIcon = document.getElementById('eyeIcon');

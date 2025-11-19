@@ -11,7 +11,8 @@
                     <h6 class="text-dark fw-600 mb-5px text-uppercase">Ooops!</h6>
                     <h1 class="fs-200 sm-fs-170 text-dark fw-700 ls-minus-8px">404</h1>
                     <h4 class="text-dark fw-600 sm-fs-22 mb-10px ls-minus-1px">Halaman tidak ditemukan!</h4>
-                    <p class="mb-30px lh-28 sm-mb-30px w-55 text-light md-w-80 sm-w-95 mx-auto">Halaman yang Anda cari tidak ada atau mungkin telah dihapus</p>
+                    <p class="mb-30px lh-28 sm-mb-30px w-55 text-light md-w-80 sm-w-95 mx-auto">
+                        {{($exception->getMessage() ?: 'Halaman yang Anda cari tidak ada atau mungkin telah dihapus')}}</p>
                     <a href="/" class="btn btn-large left-icon btn-rounded btn-dark btn-box-shadow text-transform-none"><i class="fa-solid fa-arrow-left"></i>Kembali ke beranda</a>
                 </div>
             </div>

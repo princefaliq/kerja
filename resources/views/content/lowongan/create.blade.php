@@ -62,7 +62,7 @@
                 </div>
             @endif
             <!--begin::Form-->
-            <form id="kt_ecommerce_add_product_form" action="{{ url('app/lowongan/store') }}" method="POST" class="form d-flex flex-column flex-lg-row" data-kt-redirect="apps/ecommerce/catalog/products.html">
+            <form id="kt_ecommerce_add_product_form" action="{{ url('app/lowongan/store') }}" method="POST" class="form d-flex flex-column flex-lg-row" data-kt-redirect="{{ url('app/lowongan/store') }}">
                 <!--begin::Aside column-->
                 @csrf
                 <div class="d-flex flex-column flex-row-fluid gap-7 gap-lg-10">
@@ -152,7 +152,29 @@
                                     <option value="0">Nonaktif</option>
                                 </select>
                             </div>
+                            <!-- Tipe Lowongan -->
+                            <div class="mb-10 fv-row">
+                                <label class="required form-label">Tipe Lowongan</label>
+                                <select name="tipe_lowongan" id="tipe_lowongan" class="form-select" required>
+                                    <option value="non">Non Acara</option>
+                                    <option value="acara">Acara / Jobfair</option>
+                                </select>
+                                <div class="text-muted fs-7">Pilih apakah lowongan ini bagian dari sebuah acara/jobfair.</div>
+                            </div>
 
+                            <!-- Pilih Acara -->
+                            <div class="mb-10 fv-row" id="acara_wrapper" style="display:none;">
+                                <label class="form-label">Pilih Acara</label>
+                                <select name="acara_id" id="acara_id" class="form-select">
+                                    <option value="">-- Pilih Acara --</option>
+                                    @foreach ($acara as $item)
+                                        <option value="{{ $item->id }}">
+                                            {{ $item->nama_acara }} ({{ $item->tanggal_mulai }} s/d {{ $item->tanggal_selesai }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <div class="text-muted fs-7">Lowongan hanya berlangsung selama acara berlangsung.</div>
+                            </div>
                             <!-- Deskripsi Pekerjaan -->
                             <div class="mb-10 fv-row">
                                 <label class="form-label">Deskripsi Pekerjaan</label>
@@ -244,6 +266,17 @@
         ClassicEditor
             .create(document.querySelector('#keterampilan'))
             .catch(error => console.error(error));
+
+        // Tampilkan/sembunyikan select acara
+        document.getElementById('tipe_lowongan').addEventListener('change', function () {
+            if (this.value === 'acara') {
+                document.getElementById('acara_wrapper').style.display = 'block';
+            } else {
+                document.getElementById('acara_wrapper').style.display = 'none';
+                document.getElementById('acara_id').value = "";
+            }
+        });
+
     </script>
 @endpush
 

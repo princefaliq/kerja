@@ -2467,9 +2467,21 @@
 <!--begin::Global Javascript Bundle(mandatory for all pages)-->
 <script src="{{ url('assets/plugins/global/plugins.bundle.js') }}"></script>
 <script src="{{ url('assets/js/scripts.bundle.js') }}"></script>
+<script>
+    // Patch: Matikan inisialisasi KTSearch yang error
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof KTSearch !== 'undefined') {
+            // Hentikan fungsi init dan konstruktor agar tidak dipanggil otomatis
+            KTSearch.init = function() {
+                console.warn('KTSearch.init() dinonaktifkan karena elemen search tidak ditemukan.');
+            };
+            KTSearch.prototype._update = function() {};
+        }
+    });
+</script>
 <!--end::Global Javascript Bundle-->
 <!--begin::Vendors Javascript(used for this page only)-->
-<script src="{{ url('assets/plugins/custom/fullcalendar/fullcalendar.bundle.js') }}"></script>
+{{--<script src="{{ url('assets/plugins/custom/fullcalendar/fullcalendar.bundle.js') }}"></script>--}}
 <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
 <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
 <script src="https://cdn.amcharts.com/lib/5/percent.js"></script>

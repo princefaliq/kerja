@@ -1,2 +1,30 @@
 User-agent: *
-Disallow:
+
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /login
+Disallow: /register
+Disallow: /password
+Disallow: /password/reset
+Disallow: /password/email
+Disallow: /user
+Disallow: /profile
+Disallow: /settings
+Disallow: /cart
+Disallow: /checkout
+
+# Folder Laravel yang tidak perlu di-index
+Disallow: /vendor
+Disallow: /storage
+Disallow: /app
+Disallow: /config
+Disallow: /database
+Disallow: /resources
+Disallow: /routes
+
+# Izinkan halaman publik
+Allow: /
+
+# Sitemap (sesuaikan dengan domain kamu)
+Sitemap: https://kerja.bondowosokab.go.id/sitemap.xml
+

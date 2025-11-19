@@ -92,7 +92,7 @@
 
 @push('js')
 
-    <script src="{{ url('assets/plugins/custom/datatables/datatables.bundle.js') }}"></script>
+ {{--   <script src="{{ url('assets/plugins/custom/datatables/datatables.bundle.js') }}"></script>--}}
     <!--end::Custom Javascript-->
     @include('content.user.pelamar.data_pelamar')
 @endpush

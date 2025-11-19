@@ -18,7 +18,7 @@
                                     {{--<div class="review-star-icon fs-18 lh-30">
                                         <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
                                     </div>--}}
-                                    <a href="{{ url('lowongan-kerja/'.$lowongan->slug) }}" class="alt-font fw-500 fs-19 text-light mb-10px">
+                                    <a href="{{ url($lowongan->slug) }}" class="alt-font fw-500 fs-19 text-light mb-10px">
                                         {{ Str::limit($lowongan->judul, 30, '...') }}
                                     </a>
                                     <div class="mb-10px text-light border-bottom border-light">
@@ -52,7 +52,7 @@
                                         </div>
                                     </div>
                                     <div class="mt-5px text-center">
-                                        <a href="{{ url('lowongan-kerja/'.$lowongan->slug) }}" class="bg-yellow box-shadow-quadruple-large text-uppercase fs-13 ps-25px pe-25px alt-font fw-600 text-dark lh-40 sm-lh-55 border-radius-100px d-inline-block ">Detail</a>
+                                        <a href="{{ url($lowongan->slug) }}" class="bg-yellow box-shadow-quadruple-large text-uppercase fs-13 ps-25px pe-25px alt-font fw-600 text-dark lh-40 sm-lh-55 border-radius-100px d-inline-block ">Detail</a>
                                     </div>
                                 </div>
                             </div>

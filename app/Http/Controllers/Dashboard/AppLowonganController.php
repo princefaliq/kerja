@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\Acara;
 use App\Models\Lowongan;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -20,15 +21,18 @@ class AppLowonganController extends Controller
         if ($request->ajax()) {
             $user = Auth::user();
 
-            $query = Lowongan::with('user')
+            // 🔥 Tambahkan relasi 'acara'
+            $query = Lowongan::with(['user', 'acara'])
                 ->when(!$user->hasRole('Admin'), function ($q) use ($user) {
                     $q->where('user_id', $user->id);
-                })->latest();
+                })
+                ->latest();
 
             return DataTables::eloquent($query)
-                // 🧠 tambahkan bagian filter untuk pencarian
+
+                // 🔎 Pencarian
                 ->filter(function ($query) use ($request) {
-                    if ($request->has('search') && $request->search['value']) {
+                    if (!empty($request->search['value'])) {
                         $search = $request->search['value'];
                         $query->where(function ($q) use ($search) {
                             $q->where('judul', 'like', "%{$search}%")
@@ -38,23 +42,36 @@ class AppLowonganController extends Controller
                                 ->orWhere('jumlah_lowongan', 'like', "%{$search}%");
                         });
                     }
-                    // 🟢 Filter berdasarkan status dari dropdown
-                    if ($request->filled('status')) {
-                        $status = trim($request->status);
 
-                        // Pastikan value '1' dan '0' bisa diterima
-                        if ($status === '1' || $status === '0') {
-                            $query->where('status', $status);
-                        }
+                    // 🎯 Filter status
+                    if ($request->filled('status') && ($request->status === '1' || $request->status === '0')) {
+                        $query->where('status', $request->status);
                     }
                 })
+
+                // 🟢 Kolom batas lamaran
                 ->editColumn('batas_lamaran', function ($lowongan) {
                     return $lowongan->batas_lamaran
                         ? Carbon::parse($lowongan->batas_lamaran)->format('d/m/Y')
                         : '-';
                 })
-                ->make(true);
+
+                // ⭐ Kolom jenis lowongan (NON / ACARA)
+                ->addColumn('jenis_lowongan', function ($lowongan) {
+                    if ($lowongan->acara_id && $lowongan->acara) {
+                        return $lowongan->acara->nama_acara;
+                    }
+                    return 'Non Acara';
+                })
+
+                // ⭐ Tambahkan acara_nama supaya bisa dipakai di DataTables
+                ->addColumn('acara_nama', function ($lowongan) {
+                    return $lowongan->acara->nama_acara ?? null;
+                })
+
+                ->toJson();
         }
+
 
         // Render tampilan utama jika bukan request AJAX
         return view('content.lowongan.index');
@@ -62,28 +79,32 @@ class AppLowonganController extends Controller
     }
     public function create()
     {
-        return view('content.lowongan.create');
+        // ambil semua acara aktif/semua acara sesuai kebutuhan
+        $acara = Acara::orderBy('tanggal_mulai', 'desc')->get();
+
+        return view('content.lowongan.create',compact('acara'));
     }
     public function store(Request $request)
     {
         $validated = $request->validate([
             'judul' => 'required|string|max:255',
             'lokasi' => 'required|string|max:255',
-            'bidang_pekerjaan' => 'nullable|string|max:255',
+            'bidang_pekerjaan' => 'required|string|max:255',
             'jenis_pekerjaan' => 'required|string|max:255',
-            'tipe_pekerjaan' => 'nullable|string|max:255',
-            'jenis_kelamin' => 'nullable|in:Laki-laki,Perempuan,Laki-laki/Perempuan',
+            'tipe_pekerjaan' => 'required|string|max:255',
+            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan,Laki-laki/Perempuan',
             'rentang_gaji' => 'nullable|string|max:255',
-            'jumlah_lowongan' => 'nullable|integer|min:1',
-            'batas_lamaran' => 'nullable|date',
+            'jumlah_lowongan' => 'required|integer|min:1',
+            'batas_lamaran' => 'required|date',
             'status' => 'boolean',
             'deskripsi_pekerjaan' => 'nullable|string',
             'persyaratan_khusus' => 'nullable|string',
-            'pendidikan_minimal' => 'nullable|in:SD,SMP,SMA,D1,D2,D3,S1/D4,S2,S3',
+            'pendidikan_minimal' => 'required|in:SD,SMP,SMA,D1,D2,D3,S1/D4,S2,S3',
             'status_pernikahan' => 'nullable|in:Nikah,Belum,Tidak Ada Preferensi',
             'pengalaman_minimal' => 'nullable|integer|min:0',
             'kondisi_fisik' => 'nullable|in:Non Disabilitas,Disabilitas',
             'keterampilan' => 'nullable|string',
+            'acara_id' => 'nullable|exists:acara,id',
         ]);
         $validated['user_id'] = Auth::id();
         Lowongan::create($validated);
@@ -92,13 +113,16 @@ class AppLowonganController extends Controller
     public function edit($id)
     {
         $lowongan = Lowongan::findOrFail($id);
-
-        return view('content.lowongan.edit', compact('lowongan'));
+        $acara = Acara::orderBy('tanggal_mulai', 'desc')->get();
+        return view('content.lowongan.edit', compact('lowongan','acara'));
     }
     public function update(Request $request, $id)
-{
+    {
     $lowongan = Lowongan::findOrFail($id);
-
+// Jika user pilih non acara → kosongkan acara_id
+        if ($request->tipe_lowongan === 'non') {
+            $request->merge(['acara_id' => null]);
+        }
     // Validasi input
     $validated = $request->validate([
         'judul'               => 'required|string|max:255',
@@ -118,6 +142,9 @@ class AppLowonganController extends Controller
         'pengalaman_minimal'  => 'nullable|integer|min:0',
         'kondisi_fisik'       => 'nullable|string|max:50',
         'keterampilan'        => 'nullable|string',
+        // Tambahan: untuk lowongan acara / non acara
+        'acara_id'            => 'nullable|exists:acara,id',
+
     ]);
 
     // Update data ke database
@@ -139,12 +166,14 @@ class AppLowonganController extends Controller
         'pengalaman_minimal'  => $validated['pengalaman_minimal'] ?? null,
         'kondisi_fisik'       => $validated['kondisi_fisik'] ?? null,
         'keterampilan'        => $validated['keterampilan'] ?? null,
+        // Masukkan acara_id
+        'acara_id'            => $validated['acara_id'] ?? null,
     ]);
 
     return redirect()
         ->route('lowongan.index')
         ->with('success', 'Lowongan berhasil diperbarui.');
-}
+    }
 
 
     /**

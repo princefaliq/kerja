@@ -92,92 +92,130 @@
         <!--begin::Post-->
         <div class="content flex-row-fluid" id="kt_content">
             <!--begin::Row-->
-            <div class="row gy-0 gx-10">
-                <!--begin::Col-->
-                <div class="col-xl-12">
-                    <!--begin::General Widget 1-->
-                    <div class="mb-10">
-                        <!--begin::Tabs-->
-                        <ul class="nav row mb-10" id="dashboardWidgets">
-                            <li class="nav-item col-12 col-lg mb-5 mb-lg-0">
-                                <div class="nav-link btn btn-flex btn-color-gray-500 btn-outline btn-active-warning  d-flex flex-grow-1 flex-column flex-center py-5 h-125px h-lg-175px">
-                                    <i class="ki-duotone ki-security-user fs-2x mb-5 mx-0 text-primary">
-                                        <span class="path1"></span>
-                                        <span class="path2"></span>
-                                    </i>
-                                    <span class="fs-6 fw-bold">Total Register</span>
-                                    <span class="fs-3 fw-bolder text-primary mt-2" id="countUser">0</span>
-                                </div>
-                            </li>
-                            <li class="nav-item col-12 col-lg mb-5 mb-lg-0">
-                                <div class="nav-link btn btn-flex btn-color-gray-500 btn-outline btn-active-success d-flex flex-grow-1 flex-column flex-center py-5 h-125px h-lg-175px">
-                                    <i class="ki-duotone ki-office-bag fs-2x mb-5 mx-0 text-info">
-                                        <span class="path1"></span>
-                                        <span class="path2"></span>
-                                        <span class="path3"></span>
-                                        <span class="path4"></span>
-                                    </i>
-                                    <span class="fs-6 fw-bold">Isi Biodata</span>
-                                    <span class="fs-3 fw-bolder text-info mt-2" id="countPelamar">0</span>
-                                </div>
-                            </li>
-                            <li class="nav-item col-12 col-lg mb-5 mb-lg-0">
-                                <div class="nav-link btn btn-flex btn-color-gray-500 btn-outline btn-active-success d-flex flex-grow-1 flex-column flex-center py-5 h-125px h-lg-175px">
-                                    <i class="ki-duotone ki-brifecase-tick fs-2x mb-5 mx-0 text-info">
-                                        <span class="path1"></span>
-                                        <span class="path2"></span>
-                                        <span class="path3"></span>
-                                    </i>
-                                    <span class="fs-6 fw-bold">Melamar</span>
-                                    <span class="fs-3 fw-bolder text-info mt-2" id="countMelamar">0</span>
-                                </div>
-                            </li>
-
-                            <li class="nav-item col-12 col-lg mb-5 mb-lg-0">
-                                <div class="nav-link btn btn-flex btn-color-gray-500 btn-outline btn-active-primary d-flex flex-grow-1 flex-column flex-center py-5 h-125px h-lg-175px">
-
-                                    <i class="ki-duotone ki-bank fs-2x mb-5 mx-0 text-success">
-                                        <span class="path1"></span>
-                                        <span class="path2"></span>
-                                    </i>
-                                    <span class="fs-6 fw-bold">Perusahaan</span>
-                                    <span class="fs-3 fw-bolder text-success mt-2" id="countPerusahaan">0</span>
-                                </div>
-                            </li>
+            <div class="card card-xl-stretch bg-body border-0 mt-10 shadow-sm">
+                <div class="card-body">
+                    <div class="row gy-0 gx-10">
+                        <!--begin::Col-->
+                        <div class="col-xl-12">
+                            <!--begin::General Widget 1-->
+                            <div class="mb-10">
+                                <!--begin::Tabs-->
+                                <ul class="nav row mb-10" id="dashboardWidgets">
+                                    <li class="nav-item col-12 col-lg mb-5 mb-lg-0">
+                                        <div class="nav-link btn btn-flex btn-color-gray-500 btn-outline btn-active-warning  d-flex flex-grow-1 flex-column flex-center py-5 h-125px h-lg-175px">
+                                            <i class="ki-duotone ki-security-user fs-2x mb-5 mx-0 text-primary">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                            </i>
+                                            <span class="fs-6 fw-bold">Total Register</span>
+                                            <span class="fs-3 fw-bolder text-primary mt-2" id="countUser">0</span>
+                                        </div>
+                                    </li>
+                                    <li class="nav-item col-12 col-lg mb-5 mb-lg-0">
+                                        <div class="nav-link btn btn-flex btn-color-gray-500 btn-outline btn-active-success d-flex flex-grow-1 flex-column flex-center py-5 h-125px h-lg-175px">
+                                            <i class="ki-duotone ki-office-bag fs-2x mb-5 mx-0 text-info">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                                <span class="path3"></span>
+                                                <span class="path4"></span>
+                                            </i>
+                                            <span class="fs-6 fw-bold">Isi Biodata</span>
+                                            <span class="fs-3 fw-bolder text-info mt-2" id="countPelamar">0</span>
+                                        </div>
+                                    </li>
 
 
-                            <li class="nav-item col-12 col-lg mb-5 mb-lg-0">
-                                <div class="nav-link btn btn-flex btn-color-gray-500 btn-outline btn-active-info d-flex flex-grow-1 flex-column flex-center py-5 h-125px h-lg-175px">
-                                    <i class="ki-duotone ki-delivery-3 text-warning fs-2x mb-5 mx-0">
-                                        <span class="path1"></span>
-                                        <span class="path2"></span>
-                                        <span class="path3"></span>
-                                    </i>
-                                    <span class="fs-6 fw-bold">Lowongan</span>
-                                    <span class="fs-3 fw-bolder text-warning mt-2" id="countLowongan">0</span>
-                                </div>
-                            </li>
-                            <li class="nav-item col-12 col-lg mb-5 mb-lg-0">
-                                <div class="nav-link btn btn-flex btn-color-gray-500 btn-outline btn-active-info d-flex flex-grow-1 flex-column flex-center py-5 h-125px h-lg-175px">
-                                    <i class="ki-duotone ki-fingerprint-scanning text-warning fs-2x mb-5 mx-0">
-                                        <span class="path1"></span>
-                                        <span class="path2"></span>
-                                        <span class="path3"></span>
-                                        <span class="path4"></span>
-                                        <span class="path5"></span>
-                                    </i>
-                                    <span class="fs-6 fw-bold">Absen</span>
-                                    <span class="fs-3 fw-bolder text-warning mt-2" id="countAbsen">0</span>
-                                </div>
-                            </li>
-                        </ul>
+                                    <li class="nav-item col-12 col-lg mb-5 mb-lg-0">
+                                        <div class="nav-link btn btn-flex btn-color-gray-500 btn-outline btn-active-primary d-flex flex-grow-1 flex-column flex-center py-5 h-125px h-lg-175px">
+
+                                            <i class="ki-duotone ki-bank fs-2x mb-5 mx-0 text-success">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                            </i>
+                                            <span class="fs-6 fw-bold">Perusahaan</span>
+                                            <span class="fs-3 fw-bolder text-success mt-2" id="countPerusahaan">0</span>
+                                        </div>
+                                    </li>
+
+                                    <li class="nav-item col-12 col-lg mb-5 mb-lg-0">
+                                        <div class="nav-link btn btn-flex btn-color-gray-500 btn-outline btn-active-info d-flex flex-grow-1 flex-column flex-center py-5 h-125px h-lg-175px">
+                                            <i class="ki-duotone ki-fingerprint-scanning text-warning fs-2x mb-5 mx-0">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                                <span class="path3"></span>
+                                                <span class="path4"></span>
+                                                <span class="path5"></span>
+                                            </i>
+                                            <span class="fs-6 fw-bold">Absen</span>
+                                            <span class="fs-3 fw-bolder text-warning mt-2" id="countAbsen">0</span>
+                                        </div>
+                                    </li>
+                                </ul>
+                                <ul class="nav row mb-10" id="dashboardWidgets">
+                                    <li class="nav-item col-12 col-lg mb-5 mb-lg-0">
+                                        <div class="nav-link btn btn-flex btn-color-gray-500 btn-outline btn-active-success d-flex flex-grow-1 flex-column flex-center py-5 h-125px h-lg-175px">
+                                            <i class="ki-duotone ki-brifecase-tick fs-2x mb-5 mx-0 text-info">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                                <span class="path3"></span>
+                                            </i>
+                                            <span class="fs-6 fw-bold">Melamar</span>
+                                            <span class="fs-3 fw-bolder text-info mt-2" id="countMelamar">0</span>
+                                        </div>
+                                    </li>
+                                    <li class="nav-item col-12 col-lg mb-5 mb-lg-0">
+                                        <div class="nav-link btn btn-flex btn-color-gray-500 btn-outline btn-active-success d-flex flex-grow-1 flex-column flex-center py-5 h-125px h-lg-175px">
+                                            <i class="ki-duotone ki-shield-cross fs-2x mb-5 mx-0 text-danger">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                                <span class="path3"></span>
+                                            </i>
+                                            <span class="fs-6 fw-bold">Ditolak</span>
+                                            <span class="fs-3 fw-bolder text-danger mt-2" id="countTolak">0</span>
+                                        </div>
+                                    </li>
+                                    <li class="nav-item col-12 col-lg mb-5 mb-lg-0">
+                                        <div class="nav-link btn btn-flex btn-color-gray-500 btn-outline btn-active-danger d-flex flex-grow-1 flex-column flex-center py-5 h-125px h-lg-175px">
+                                            <i class="ki-duotone ki-shield-tick fs-2x mb-5 mx-0 text-success">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                            </i>
+                                            <span class="fs-6 fw-bold">Diterima</span>
+                                            <span class="fs-3 fw-bolder text-success mt-2" id="countTerima">0</span>
+                                        </div>
+                                    </li>
+                                    <li class="nav-item col-12 col-lg mb-5 mb-lg-0">
+                                        <div class="nav-link btn btn-flex btn-color-gray-500 btn-outline btn-active-info d-flex flex-grow-1 flex-column flex-center py-5 h-125px h-lg-175px">
+                                            <i class="ki-duotone ki-delivery-3 text-warning fs-2x mb-5 mx-0">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                                <span class="path3"></span>
+                                            </i>
+                                            <span class="fs-6 fw-bold">Lowongan</span>
+                                            <span class="fs-3 fw-bolder text-warning mt-2" id="countLowongan">0</span>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!--end::General Widget 1-->
+
+                        </div>
+                        <!--end::Col-->
 
                     </div>
-                    <!--end::General Widget 1-->
-
                 </div>
-                <!--end::Col-->
+            </div>
 
+            <div class="card card-xl-stretch bg-body border-0 mt-10 shadow-sm">
+                <div class="card-header border-0 pt-5">
+                    <h3 class="card-title fw-bold fs-4">
+                        Grafik Status Lamaran
+                    </h3>
+                </div>
+
+                <div class="card-body">
+                    <div id="statusLamaranChart" style="height: 350px;"></div>
+                </div>
             </div>
             <!--end::Row-->
         </div>
@@ -186,5 +224,6 @@
     <!--end::Container-->
 @endsection
 @push('js')
+
    @include('content.dashboard.js_dashboard')
 @endpush

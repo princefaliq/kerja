@@ -36,41 +36,55 @@ class LamarController extends Controller
 
     public function daftar(Request $request)
     {
-        $sudahIsi = Pelamar::where('user_id', auth()->id())
-            ->exists();
-        $sudahAbsen = Absensi::where('user_id', auth()->id())
-            ->exists();
-        if(!$sudahIsi)
-        {
-            abort(404);
-        }
-        if (!$sudahAbsen)
-        {
-            return redirect()->back()->with('error', 'Anda belum melakukan absensi hari ini.');
-        }
-        // Validasi input
         $request->validate([
             'id_lowongan' => 'required|exists:lowongan,id',
         ]);
-        $user = Auth::user();
-        if(!$user->hasRole('User'))
-        {
+
+        $user = auth()->user();
+
+        // Cek role
+        if (!$user->hasRole('User')) {
             abort(403);
         }
+
+        // Ambil data lowongan
+        $lowongan = Lowongan::findOrFail($request->id_lowongan);
+
+        // Cek isi biodata
+        $sudahIsi = Pelamar::where('user_id', $user->id)->exists();
+        if (!$sudahIsi) {
+            return redirect()->route('profile')->with('error', 'Anda belum mengisi biodata.');
+        }
+
+        // Cek absensi HANYA jika lowongan adalah acara
+        if ($lowongan->acara_id) {
+            $sudahAbsen = Absensi::where('user_id', $user->id)
+                ->where('acara_id', $lowongan->acara_id)
+                ->exists();
+
+            if (!$sudahAbsen) {
+                return redirect()->back()->with('error', 'Anda belum melakukan absensi.');
+            }
+        }
+
+        // Cek apakah sudah melamar sebelumnya
         $sudahMelamar = Lamaran::where('user_id', $user->id)
-            ->where('lowongan_id', $request->id_lowongan)
+            ->where('lowongan_id', $lowongan->id)
             ->exists();
 
         if ($sudahMelamar) {
             return redirect()->back()->with('error', 'Anda sudah melamar pada lowongan ini.');
         }
+
+        // Simpan lamaran baru
         Lamaran::create([
             'user_id' => $user->id,
-            'lowongan_id' => $request->id_lowongan,
+            'lowongan_id' => $lowongan->id,
             'status' => 'dikirim',
         ]);
 
         return redirect()->back()->with('success', 'Lamaran berhasil dikirim!');
     }
+
 
 }

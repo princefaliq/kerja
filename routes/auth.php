@@ -3,15 +3,16 @@
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Crafto\LupaPaswordController;
 use App\Http\Controllers\Dashboard\AppAbsenController;
+use App\Http\Controllers\Dashboard\AppAcaraController;
+use App\Http\Controllers\Dashboard\AppLaporanController;
+use App\Http\Controllers\Dashboard\AppLowonganController;
 use App\Http\Controllers\Dashboard\AppMyprofileController;
 use App\Http\Controllers\Dashboard\AppPelamarController;
 use App\Http\Controllers\Dashboard\AppPerusahaanController;
 use App\Http\Controllers\Dashboard\AppTestimoniController;
 use App\Http\Controllers\UserController;
-use App\Imports\UsersImport;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Maatwebsite\Excel\Facades\Excel;
+
 
 Route::middleware('guest')->group(function () {
 
@@ -60,7 +61,7 @@ Route::group([
             Route::get('user/{id}/edit', [UserController::class, 'edit'])->name('user.edit');
             Route::post('user/update/{id}', [UserController::class, 'update'])->name('user.update');
 
-            Route::post('/perusahaan/import', [AppPerusahaanController::class, 'import'])->name('perusahaan.import');
+            Route::post('perusahaan/import', [AppPerusahaanController::class, 'import'])->name('perusahaan.import');
 
             Route::get('perusahaan/data', [AppPerusahaanController::class, 'data'])->name('perusahaan.data');
             Route::get('perusahaan', [AppPerusahaanController::class, 'index'])->name('perusahaan.index')->name('perusahaan.index');
@@ -77,8 +78,22 @@ Route::group([
             Route::get('absen/data', [AppAbsenController::class, 'data'])->name('absen.data');
 
             Route::get('testimoni', [AppTestimoniController::class, 'index'])->name('testimoni.index');
-            Route::post('/testimoni/{id}/status', [AppTestimoniController::class, 'updateStatus'])->name('admin.testimoni.status');
-            Route::get('/testimoni/data', [AppTestimoniController::class, 'data'])->name('admin.testimoni.data');
+            Route::post('testimoni/{id}/status', [AppTestimoniController::class, 'updateStatus'])->name('admin.testimoni.status');
+            Route::get('testimoni/data', [AppTestimoniController::class, 'data'])->name('admin.testimoni.data');
+
+            Route::get('laporan', [AppLaporanController::class, 'index'])->name('laporan.index');
+            Route::get('laporan', [AppLaporanController::class, 'index'])->name('laporan.index');
+            Route::get('laporan/export', [AppLaporanController::class, 'export'])->name('laporan.export');
+            Route::get('laporan/export-summary', [AppLaporanController::class, 'exportSummary'])->name('laporan.export.summary');
+
+            Route::resource('acara', AppAcaraController::class);
+
+
+
+
+
+
+
         });
 
     });

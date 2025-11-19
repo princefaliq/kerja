@@ -26,10 +26,7 @@ class HomeController extends Controller
             'created_at'
         )
             ->with(['user:id,name,avatar'])
-            ->where(function ($query) {
-                $query->whereDate('batas_lamaran', '>=', Carbon::today())
-                    ->orWhereNull('batas_lamaran');
-            })
+            ->where('status', 1)
             ->latest()
             ->get();
         $testimonis = Testimoni::with('user')

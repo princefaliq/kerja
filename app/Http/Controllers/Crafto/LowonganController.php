@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Crafto;
 
 use App\Http\Controllers\Controller;
 use App\Models\Absensi;
+use App\Models\Acara;
 use App\Models\Lamaran;
 use App\Models\Lowongan;
 use App\Models\Pelamar;
@@ -120,33 +121,60 @@ class LowonganController extends Controller
 
         return redirect('/profile')->with('success', 'Berhasil mendaftar. Silahkan isi profile anda terlebih dahulu.!');
     }
-    public function detil($slug)
+    public function detil($acara = null, $slug = null)
     {
-        // Ambil data lowongan beserta relasi user
-        $lowongan = Lowongan::with('user')->where('slug', $slug)->firstOrFail();
-        if($lowongan->status == 0)
-        {
-            abort(404);
-        }
-        // Default: user belum melamar
-        $sudahMelamar = false;
-        $sudahIsi = false;
-        $sudahAbsen = false;
 
-        // Jika user login, cek apakah sudah pernah melamar lowongan ini
+
+        if ($slug === null) {
+            // Berarti request dari non-acara: lowongan-kerja/{slug}
+            $slug = 'lowongan-kerja/'.$acara; // karena parameter pertama adalah slug
+            $acara = null;
+        }else{
+            $slug = 'job-fair/'.$acara.'/'.$slug;
+        }
+
+        if ($slug) {
+            $lowongan = Lowongan::with('user')
+                ->where('slug', $slug)
+                ->firstOrFail();
+        } else {
+            abort(404, 'Lowongan tidak ditemukan.');
+        }
+
+        if ($lowongan->status == 0 && !auth()->user()->hasRole('Admin')) {
+            abort(404, 'Lowongan tidak ditemukan.');
+        }
+
+
+        $sudahMelamar = $sudahIsi = $sudahAbsen = false;
         if (auth()->check()) {
-            $sudahMelamar = Lamaran::where('user_id', auth()->id())
+            $userId = auth()->id();
+
+            // Cek melamar
+            $sudahMelamar = Lamaran::where('user_id', $userId)
                 ->where('lowongan_id', $lowongan->id)
                 ->exists();
-            $sudahIsi = Pelamar::where('user_id', auth()->id())
-                ->exists();
-            $sudahAbsen = Absensi::where('user_id', auth()->id())
-                ->exists();
+
+            // Cek apakah sudah isi profil
+            $sudahIsi = Pelamar::where('user_id', $userId)->exists();
+
+            // Cek absensi HANYA untuk lowongan acara
+            if ($lowongan->acara_id) {
+                $sudahAbsen = Absensi::where('user_id', $userId)
+                    ->where('acara_id', $lowongan->acara_id)
+                    ->exists();
+            } else {
+                $sudahAbsen = false; // non-acara pasti false
+            }
         }
 
-
-        return view('crafto.lowongan_detil', compact('lowongan', 'sudahMelamar','sudahIsi','sudahAbsen'));
-
+        return view('crafto.lowongan_detil', compact(
+            'lowongan', 'sudahMelamar', 'sudahIsi', 'sudahAbsen'
+        ));
     }
+
+
+
+
 
 }

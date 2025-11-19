@@ -323,26 +323,30 @@
                                             <p class="job-meta mb-1"><strong>Jumlah Lowongan:</strong> {{ $lowongan->jumlah_lowongan }} Orang</p>
                                             <p class="job-meta mb-1">
                                                 @php
-                                                    $batas = $lowongan->batas_lamaran->endOfDay();
+                                                    $batas = $lowongan->batas_lamaran ? $lowongan->batas_lamaran->endOfDay() : null;
                                                 @endphp
-                                                @if ($batas->isFuture())
+
+                                                @if ($batas && $batas->isFuture())
                                                     <strong>Batas Lamaran:</strong>
                                                     {{ now()->diffForHumans($batas, [
                                                         'syntax' => \Carbon\CarbonInterface::DIFF_ABSOLUTE,
                                                         'parts' => 2
                                                     ]) }}
-                                                @else
+                                                @elseif($batas)
                                                     <strong>Melewati batas:</strong>
                                                     {{ $batas->diffForHumans(now(), [
                                                         'syntax' => \Carbon\CarbonInterface::DIFF_ABSOLUTE,
                                                         'parts' => 2
                                                     ]) }}
-                                                @endif</p>
+                                                @else
+                                                    <strong>Batas lamaran belum ditentukan</strong>
+                                                @endif
+                                            </p>
                                         </div>
 
                                         <div class="job-footer mt-2">
                                             <span class="text-capitalize">{{ $lowongan->bidang_pekerjaan }}</span>
-                                            <a href="{{ url('lowongan-kerja/'.$lowongan->slug) }}" class="job-apply">
+                                            <a href="{{ url($lowongan->slug) }}" class="job-apply">
                                                 Lamar
                                             </a>
                                         </div>

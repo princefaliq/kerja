@@ -40,6 +40,10 @@ class Pelamar extends Model
     {
         return $this->hasMany(Testimoni::class, 'pelamar_id');
     }
+    public function lowongan()
+    {
+        return $this->belongsTo(Lowongan::class);
+    }
     protected function getFileUrl($field)
     {
         return $this->$field

@@ -33,7 +33,34 @@ class LoginRequest extends FormRequest
         return [
             'login' => ['required', 'string'],
             'password' => ['required', 'string'],
+            'g-recaptcha-response' => ['required', 'string'],
         ];
+    }
+    public function withValidator($validator)
+    {
+
+        $validator->after(function ($validator) {
+            $captcha = $this->input('g-recaptcha-response');
+
+            if (!$captcha) {
+                $validator->errors()->add('captcha', 'Captcha tidak terdeteksi.');
+                return;
+            }
+
+            // Verifikasi ke Google
+            $verify = \Illuminate\Support\Facades\Http::asForm()->post(
+                'https://www.google.com/recaptcha/api/siteverify',
+                [
+                    'secret'   => env('INVISIBLE_RECAPTCHA_SECRET_KEY'),
+                    'response' => $captcha,
+                    'remoteip' => $this->ip(),
+                ]
+            )->json();
+
+            if (!($verify['success'] ?? false)) {
+                $validator->errors()->add('captcha', 'Captcha gagal divalidasi.');
+            }
+        });
     }
 
     /**
@@ -109,6 +136,6 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey()
     {
-        return Str::lower($this->input('email')).'|'.$this->ip();
+        return Str::lower($this->input('login')).'|'.$this->ip();
     }
 }

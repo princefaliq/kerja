@@ -130,8 +130,7 @@
                     </p>
                     <div class="mt-3">
                         <a href="{{ $perusahaan->website ?? '#' }}" class="btn btn-medium btn-yellow btn-box-shadow d-inline-block align-middle me-20px sm-me-0 sm-mb-30px">Website <i class="fa fa-globe"></i></a>
-                        <a href="tel:{{ $user->no_hp ?? '#' }}" class="btn btn-medium text-light fs-18 fw-600 btn-box-shadow d-inline-block align-middle me-20px sm-me-0 sm-mb-30px">
-                            {{ $user->no_hp ?? '-' }} <i class="fa fa-phone"></i>
+                        <a href="tel:{{ $user->no_hp ?? '#' }}" class="btn btn-medium text-light fs-18 fw-600 btn-box-shadow d-inline-block align-middle me-20px sm-me-0 sm-mb-30px"><i class="fa fa-phone"></i> {{ $user->no_hp ?? '-' }}
                         </a>
                     </div>
                 </div>
