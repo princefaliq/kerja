@@ -113,12 +113,16 @@
                                 </li>--}}
                             </ul>
                         </li>
+                        @guest
+                            <li class="nav-item"><a href="{{ url('register') }}" class="nav-link">Daftar Pelamar</a></li>
+                            <li class="nav-item"><a href="{{ route('register.perusahaan') }}" class="nav-link">Daftar Perusahaan</a></li>
+                        @endguest
                         @auth
-                        @role('User')
-                            <li class="nav-item"><a href="{{ url('profile') }}" class="nav-link">Profile</a></li>
-                            <li class="nav-item"><a href="{{ route('lamaran.saya') }}" class="nav-link">Lamaran</a></li>
-                        @endrole
-                    @endauth
+                            @role('User')
+                                <li class="nav-item"><a href="{{ url('profile') }}" class="nav-link">Profile</a></li>
+                                <li class="nav-item"><a href="{{ route('lamaran.saya') }}" class="nav-link">Lamaran</a></li>
+                            @endrole
+                        @endauth
                     </ul>
 
                 </div>

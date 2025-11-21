@@ -1,12 +1,21 @@
 @php
     $appName = config('app.name', 'Aplikasi Pencari Kerja');
+
+    // Default Values
+    $title = $title ?? 'Notifikasi';
+    $greeting = $greeting ?? 'Halo';
+    $introLines = $introLines ?? [];
+    $outroLines = $outroLines ?? [];
+    $actionText = $actionText ?? null;
+    $actionUrl = $actionUrl ?? null;
+    $expiry = $expiry ?? null;
 @endphp
     <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $appName }} - Reset Password</title>
+    <title>{{ $appName }} - {{ $title }}</title>
     <style>
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -91,28 +100,43 @@
     </div>
 
     <div class="email-body">
-        <h2>Reset Password Akun Anda</h2>
+        <h2>{{ $title }}</h2>
 
-        <p>Halo{{ isset($user->name) ? ', ' . $user->name : '' }} 👋</p>
-        <p>Kami menerima permintaan untuk mengatur ulang kata sandi akun Anda.</p>
+        {{-- GREETING --}}
+        <p>{{ $greeting }}{{ isset($user->name) ? ', ' . $user->name : '' }} 👋</p>
 
+        {{-- INTRO LINES --}}
+        @foreach ($introLines as $line)
+            <p>{{ $line }}</p>
+        @endforeach
+
+        {{-- ACTION BUTTON --}}
         @isset($actionText)
             <p style="text-align:center;">
                 <a href="{{ $actionUrl }}" class="btn">{{ $actionText }}</a>
             </p>
         @endisset
 
-        <p>Tautan ini akan kedaluwarsa dalam 60 menit.</p>
-        <p>Jika Anda tidak meminta reset password, abaikan email ini.</p>
+        {{-- EXPIRY TIME (opsional) --}}
+        @isset($expiry)
+            <p>Tautan ini akan kedaluwarsa dalam {{ $expiry }} menit.</p>
+        @endisset
+
+        {{-- OUTRO LINES --}}
+        @foreach ($outroLines as $line)
+            <p>{{ $line }}</p>
+        @endforeach
 
         <p>Terima kasih,<br><strong>{{ $appName }}</strong></p>
 
         <hr class="divider">
 
-        <p style="font-size:13px; color:#777;">
-            Jika Anda kesulitan mengklik tombol “{{ $actionText }}”, salin dan tempel URL berikut ke browser Anda:<br>
-            <a href="{{ $actionUrl }}">{{ $actionUrl }}</a>
-        </p>
+        @isset($actionUrl)
+            <p style="font-size:13px; color:#777;">
+                Jika Anda kesulitan mengklik tombol “{{ $actionText }}”, salin dan tempel URL berikut:<br>
+                <a href="{{ $actionUrl }}">{{ $actionUrl }}</a>
+            </p>
+        @endisset
     </div>
 
     <div class="email-footer">

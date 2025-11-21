@@ -232,5 +232,5 @@
 
     <script src="{{ url('assets/plugins/custom/datatables/datatables.bundle.js') }}"></script>
     <!--end::Custom Javascript-->
-    @include('content.user.perusahaan.data_perushaan')
+    @include('content.user.perusahaan.data_perusahaan')
 @endpush

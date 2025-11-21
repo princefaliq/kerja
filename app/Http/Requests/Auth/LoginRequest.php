@@ -89,6 +89,12 @@ class LoginRequest extends FormRequest
         }
 // 🔹 Cek status user (ganti 'aktif' sesuai tipe datamu)
         if ($user->status !== 'aktif') { // atau !$user->status jika boolean
+            // jika user PERUSAHAAN → TIDAK PERLU verifikasi email
+            if ($user->hasRole('Perusahaan')) {
+                throw ValidationException::withMessages([
+                    'login' => __('Akun perusahaan Anda belum diaktifkan admin. Akan ada email jika sudah diaktifkan.'),
+                ]);
+            }
             throw ValidationException::withMessages([
                 'login' => __('Akun Anda tidak aktif.'),
             ]);

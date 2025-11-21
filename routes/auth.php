@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Crafto\LowonganController;
 use App\Http\Controllers\Crafto\LupaPaswordController;
 use App\Http\Controllers\Dashboard\AppAbsenController;
 use App\Http\Controllers\Dashboard\AppAcaraController;
@@ -21,9 +22,6 @@ Route::middleware('guest')->group(function () {
 
     Route::post('app/login', [AuthenticatedSessionController::class, 'store']);
 
-});
-
-Route::middleware('guest')->group(function () {
     // tampilkan form minta reset link
     Route::get('password/forgot', [LupaPaswordController::class, 'showLinkRequestForm'])
         ->name('password.request');
@@ -39,6 +37,14 @@ Route::middleware('guest')->group(function () {
     // proses reset password
     Route::post('password/reset', [LupaPaswordController::class, 'reset'])
         ->name('password.update');
+
+    //Route Verifikasi
+    Route::get('/verify/{id}/{hash}', [LowonganController::class, 'verify']);
+    //Route Verifikasi Ulang
+    Route::post('/email/resend', [LowonganController::class, 'resendVerification'])
+        ->name('verification.resend');
+
+
 });
 
 Route::middleware('auth')->group(function () {
@@ -62,6 +68,8 @@ Route::group([
             Route::post('user/update/{id}', [UserController::class, 'update'])->name('user.update');
 
             Route::post('perusahaan/import', [AppPerusahaanController::class, 'import'])->name('perusahaan.import');
+            Route::post('/perusahaan/toggle-status', [AppPerusahaanController::class, 'toggleStatus'])
+                ->name('perusahaan.toggleStatus');
 
             Route::get('perusahaan/data', [AppPerusahaanController::class, 'data'])->name('perusahaan.data');
             Route::get('perusahaan', [AppPerusahaanController::class, 'index'])->name('perusahaan.index')->name('perusahaan.index');

@@ -15,11 +15,11 @@ class AddSlugToPerusahaanTable extends Migration
      */
     public function up()
     {
-        /*Schema::table('perusahaan', function (Blueprint $table) {
+        Schema::table('perusahaan', function (Blueprint $table) {
             $table->string('slug')->unique()->nullable()->after('user_id');
-        });*/
+        });
         // isi slug untuk data lama
-        $perusahaans = Perusahaan::with('user')->get();
+        /*$perusahaans = Perusahaan::with('user')->get();
 
         foreach ($perusahaans as $p) {
             if ($p->user && $p->alamat) {
@@ -36,7 +36,7 @@ class AddSlugToPerusahaanTable extends Migration
                 $p->slug = $slug;
                 $p->save();
             }
-        }
+        }*/
     }
 
     /**

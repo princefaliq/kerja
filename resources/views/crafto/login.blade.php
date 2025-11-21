@@ -43,9 +43,20 @@
                                 <a href="#" class="close" data-bs-dismiss="alert" aria-label="close"><i class="fa-solid fa-xmark"></i></a>
                                     @foreach ($errors->all() as $error)
                                     <strong>Terjadi kesalahan!</strong> {{ $error }}
+                                    {{-- VERIFIKASI ULANG --}}
+                                    @if ($error == 'Akun Anda tidak aktif.')
+                                        <form action="{{ route('verification.resend') }}" method="POST" class="mt-3">
+                                            @csrf
+                                            <input type="hidden" name="login" value="{{ old('login') }}">
+                                            <button class="btn btn-warning btn-box-shadow btn-sm px-3">
+                                                Kirim Ulang Email Verifikasi
+                                            </button>
+                                        </form>
+                                    @endif
                                     @endforeach
                             </div>
                         @endif
+
                     <span class="fs-26 xs-fs-24 alt-font fw-600 mb-20px d-block">Member login</span>
                     <form action="{{ route('login') }}" id="frmLogin" method="post">
                         @csrf
@@ -83,7 +94,17 @@
                             data-action="submit">
                             LOGIN
                         </button>
-                        <a href="{{ url('register') }}" class="btn btn-medium btn-round-edge btn-yellow d-table btn-box-shadow d-lg-inline-block w-100">Register</a>
+                        <div class="d-flex gap-3 mt-2">
+                            <a href="{{ url('register') }}"
+                               class="btn btn-medium btn-round-edge btn-yellow btn-box-shadow w-50 text-center">
+                                Daftar Pelamar
+                            </a>
+
+                            <a href="{{ url('register-perusahaan') }}"
+                               class="btn btn-medium btn-round-edge btn-light btn-box-shadow w-50 text-center">
+                                Daftar Perusahaan
+                            </a>
+                        </div>
                         <div class="form-results mt-20px d-none"></div>
                     </form>
                 </div>

@@ -34,10 +34,20 @@ Route::get('lowongan-kerja/{slug}', [LowonganController::class, 'detil']);
 
 // Lowongan acara / job-fair
 Route::get('job-fair/{acara}/{slug}', [LowonganController::class, 'detil']);
+Route::middleware('guest')->group(function () {
+    // Form register perusahaan
+    Route::get('register-perusahaan', [PerusahaanController::class, 'register'])->name('register.perusahaan');
 
-Route::get('/register', [LowonganController::class, 'register_index']);
-Route::post('/register/store', [LowonganController::class, 'register_store']);
-Route::get('/login', [LowonganController::class, 'login']);
+    // Proses simpan
+    Route::post('/register-perusahaan/store', [PerusahaanController::class, 'store'])->name('register.perusahaan.store');
+
+    // Halaman perusahaan (slug)
+    Route::get('/perusahaan/{slug}', [PerusahaanController::class, 'show'])->name('perusahaan.show');
+
+    Route::get('/register', [LowonganController::class, 'register_index']);
+    Route::post('/register/store', [LowonganController::class, 'register_store']);
+    Route::get('/login', [LowonganController::class, 'login']);
+});
 Route::get('/perusahaan/{slug}', [PerusahaanController::class, 'show'])
     ->name('perusahaan.show');
 //BUAT SITEMAP MANUAL (TANPA PAKET)

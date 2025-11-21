@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Imports\UsersImport;
+use App\Mail\PerusahaanStatusMail;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
@@ -77,17 +79,20 @@ class AppPerusahaanController extends Controller
                         : '-';
                 })
                 ->addColumn('status', function ($u) {
-                    $status = $u->status ?? 'inactive';
+                    $status = $u->status ?? 'nonaktif';
 
-                    if ($status === 'active') {
+                    if ($status === 'aktif') {
                         $badgeClass = 'badge-light-success';
-                    } elseif ($status === 'inactive') {
+                    } elseif ($status === 'nonaktif') {
                         $badgeClass = 'badge-light-danger';
                     } else {
                         $badgeClass = 'badge-light-warning';
                     }
 
                     return "<span class='badge {$badgeClass} fw-bold text-uppercase'>{$status}</span>";
+                })
+                ->addColumn('status_raw', function ($u) {
+                    return $u->status ?? 'nonaktif';
                 })
                 ->addColumn('id', function ($u) {
                     return $u->id;
@@ -107,4 +112,32 @@ class AppPerusahaanController extends Controller
             return redirect()->back()->with('error', 'Gagal import: ' . $e->getMessage());
         }
     }
+    public function toggleStatus(Request $request)
+    {
+        $perusahaan = User::findOrFail($request->id);
+
+        // Bandingkan string enum
+        $statusBaru = $perusahaan->status === 'aktif'
+            ? 'nonaktif'
+            : 'aktif';
+
+        $perusahaan->update([
+            'status' => $statusBaru
+        ]);
+        // Kirim email
+        try {
+            Mail::to($perusahaan->email)->send(
+                new PerusahaanStatusMail($perusahaan, $statusBaru)
+            );
+        } catch (\Exception $e) {
+            // kalau gagal email, tetap lanjut
+        }
+
+        return response()->json([
+            'success' => true,
+            'status' => $statusBaru
+        ]);
+    }
+
+
 }

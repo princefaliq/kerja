@@ -12,13 +12,13 @@
         <div class="row g-0 justify-content-center">
             <div class="col-lg-6 col-md-10 bg-base-color p-6 box-shadow-extra-large border-radius-6px" data-anime='{ "translateY": [0, 0], "opacity": [0,1], "duration": 600, "delay":150, "staggervalue": 150, "easing": "easeOutQuad" }'>
                 <span class="fs-26 xs-fs-24 alt-font fw-600 text-dark-gray mb-20px d-block">Create an account</span>
-                <form action="{{ url('register/store') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ url('register/store') }}" id="regForm" method="post" enctype="multipart/form-data">
                     @csrf
                     {{-- Nama --}}
                     <label class="text-dark-gray mb-10px fw-500">Nama<span class="text-red">*</span></label>
                     <input class="mb-5px bg-very-light-gray form-control @error('name') is-invalid @enderror"
                            type="text" name="name" value="{{ old('name') }}" placeholder="Masukan nama sesuai KTP" />
-                    @error('nama')
+                    @error('name')
                     <small class="text-danger d-block mb-15px">{{ $message }}</small>
                     @enderror
                     {{-- No HP --}}
@@ -54,9 +54,20 @@
                     </span>
 
                     <input type="hidden" name="redirect" value="">
+                    {{-- reCaptcha --}}
+                    <input type="hidden" name="g-recaptcha-response" id="gRecaptcha">
 
-                    <button class="btn btn-medium btn-round-edge btn-light btn-box-shadow w-100 text-transform-none"
-                            type="submit">Register</button>
+                    <button
+                        class="btn btn-medium btn-round-edge btn-light btn-box-shadow w-100 text-transform-none g-recaptcha"
+                        data-sitekey="{{ env('INVISIBLE_RECAPTCHA_SITE_KEY') }}"
+                        data-callback="onSubmit"
+                        data-action="register"
+                        type="button"
+                    >
+                        Register
+                    </button>
+                    {{--<button class="btn btn-medium btn-round-edge btn-light btn-box-shadow w-100 text-transform-none"
+                            type="submit">Register</button>--}}
 
                     {{-- Optional: tampilkan error umum --}}
                     @if ($errors->any())
@@ -74,6 +85,14 @@
         </div>
     </div>
 </section>
+{{-- reCAPTCHA JS --}}
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
+<script>
+    function onSubmit(token) {
+        document.getElementById('gRecaptcha').value = token;
+        document.getElementById('regForm').submit();
+    }
+</script>
 @endsection
 
