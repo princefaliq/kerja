@@ -8,6 +8,7 @@ use App\Models\Pelamar;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\StatusLamaranMail;
@@ -29,7 +30,8 @@ class AppLamaranController extends Controller
 
             return DataTables::eloquent($query)
                 ->filter(function ($query) use ($request) {
-                    // ✅ Filter pencarian teks (kolom umum)
+
+                    // 🔍 Filter pencarian teks
                     if ($request->has('search') && $request->search['value']) {
                         $search = $request->search['value'];
                         $query->where(function ($q) use ($search) {
@@ -47,12 +49,20 @@ class AppLamaranController extends Controller
                         });
                     }
 
-                    // ✅ Filter berdasarkan status dropdown
+                    // 🔍 Filter status
                     if ($request->has('status') && $request->status !== 'all') {
                         $query->where('status', $request->status);
                     }
+
+                    // 🔍 Filter perusahaan → ❗ INI YANG TADINYA HILANG
+                    if ($request->perusahaan_id) {
+                        $query->whereHas('lowongan', function ($q) use ($request) {
+                            $q->where('user_id', $request->perusahaan_id);
+                        });
+                    }
+
                 })
-                ->addColumn('pelamar', fn($lamaran) => $lamaran->user->name ?? '-')
+            ->addColumn('pelamar', fn($lamaran) => $lamaran->user->name ?? '-')
                 ->addColumn('lowongan', fn($lamaran) => $lamaran->lowongan->judul ?? '-')
                 ->addColumn('lokasi', fn($lamaran) => $lamaran->lowongan->lokasi ?? '-')
                 ->addColumn('perusahaan', fn($lamaran) => $lamaran->lowongan->user->name ?? '-')
@@ -122,6 +132,54 @@ class AppLamaranController extends Controller
         ]);
     }
 
+    public function export(Request $request)
+    {
+        $user = Auth::user();
 
+        $query = Lamaran::with(['user', 'lowongan'])
+            ->when(!$user->hasRole('Admin'), function ($q) use ($user) {
+                $q->whereHas('lowongan', function ($sub) use ($user) {
+                    $sub->where('user_id', $user->id);
+                });
+            });
+
+        // ⬅️ Filter berdasarkan perusahaan
+        if ($request->perusahaan_id) {
+            $query->whereHas('lowongan', function ($q) use ($request) {
+                $q->where('user_id', $request->perusahaan_id);
+            });
+        }
+
+        // ⬅️ Filter status (optional)
+        if ($request->status && $request->status !== 'all') {
+            $query->where('status', $request->status);
+        }
+
+        $data = $query->get()->map(function ($item) {
+            return [
+                'Pelamar'          => $item->user->name ?? '-',
+                'Lowongan'         => $item->lowongan->judul ?? '-',
+                'Lokasi'           => $item->lowongan->lokasi ?? '-',
+                'Perusahaan'       => $item->lowongan->user->name ?? '-',
+                'Tanggal Lamaran'  => $item->created_at ? $item->created_at->format('d/m/Y H:i') : '-',
+                'Status'           => $item->status ?? 'diproses',
+            ];
+        })->toArray(); // ubah menjadi array biasa
+        // Tambahkan header
+        $header = [
+            'Pelamar',
+            'Lowongan',
+            'Lokasi',
+            'Perusahaan',
+            'Tanggal Lamaran',
+            'Status'
+        ];
+
+        // Gabungkan header + data
+        $exportData = array_merge([$header], $data);
+
+        return Excel::download(new \App\Exports\ArrayExport($exportData), 'Data-Lamaran.xlsx');
+
+    }
 
 }

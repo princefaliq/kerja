@@ -64,6 +64,14 @@
                                        placeholder="Contoh: Job Fair 2025"
                                        value="{{ old('nama_acara', $acara->nama_acara) }}" required>
                             </div>
+                            {{-- Lokasi Acara --}}
+                            <div class="mb-10 fv-row">
+                                <label class="form-label">Lokasi Acara</label>
+                                <textarea name="lokasi"
+                                          rows="3"
+                                          class="form-control"
+                                          placeholder="Masukkan lokasi atau alamat lengkap acara">{{ old('lokasi', $acara->lokasi) }}</textarea>
+                            </div>
 
                             {{-- Tanggal Mulai & Selesai --}}
                             <div class="row">

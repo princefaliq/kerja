@@ -21,10 +21,10 @@ use Illuminate\Support\Facades\Route;
 Route::group([
     'middleware' =>'auth',
 ], function () {
-    Route::get('wilayah/provinces', [WilayahController::class, 'provinces']);
+
     Route::get('wilayah/regencies/{provinceCode}', [WilayahController::class, 'regencies']);
     Route::get('wilayah/districts/{regencyCode}', [WilayahController::class, 'districts']);
     Route::get('wilayah/villages/{districtCode}', [WilayahController::class, 'villages']);
 });
-
+Route::get('wilayah/provinces', [WilayahController::class, 'provinces']);
 Route::get('/perusahaan/list', [HomeController::class, 'getPerusahaan'])->name('perusahaan.list');

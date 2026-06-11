@@ -8,6 +8,16 @@
         </a>
         <!--end:Menu link-->
     </div>
+    @role('Admin')
+    <div data-kt-menu-trigger="{default: 'click', lg: 'hover'}" data-kt-menu-placement="bottom-start" class="menu-item @if(View::hasSection('informasi')) here show @endif me-0 me-lg-2">
+        <!--begin:Menu link-->
+        <a href="{{ url('app/informasi') }}" class="menu-link py-3">
+            <span class="menu-title">Informasi</span>
+            <span class="menu-arrow d-lg-none"></span>
+        </a>
+        <!--end:Menu link-->
+    </div>
+    @endrole
     @role('Admin|Perusahaan')
         <div data-kt-menu-trigger="{default: 'click', lg: 'hover'}" data-kt-menu-placement="bottom-start" class="menu-item @if(View::hasSection('lowongan')) here show @endif me-0 me-lg-2">
             <!--begin:Menu link-->

@@ -14,22 +14,29 @@
                 <div class="outside-box-right-30">
                     <div class="swiper image-gallery-style-05" data-slider-options='{ "slidesPerView": 1, "spaceBetween": 25, "loop": true, "autoplay": { "delay": 4000, "disableOnInteraction": false },"pagination": { "el": ".slider-three-slide-pagination", "clickable": true, "dynamicBullets": false }, "keyboard": { "enabled": true, "onlyInViewport": true }, "breakpoints": { "992": { "slidesPerView": 4 }, "768": { "slidesPerView": 3 }, "320": { "slidesPerView": 2 } }, "effect": "slide" }' data-gallery-box="true">
                         <div class="swiper-wrapper">
-                            @for ($i = 1; $i <= 54; $i++)
+                            @foreach($informasis as $item)
                                 <!-- start gallery item -->
                                 <div class="swiper-slide transition-inner-all">
                                     <div class="gallery-box">
-                                        <a href="{{ url('storage/uploads/flayer/'.$i.'.jpg') }}" data-group="lightbox-group-gallery-item-{{ $i }}" title="Lightbox gallery image title">
+                                        <a href="{{ asset($item->gambar) }}"
+                                           data-group="lightbox-gallery"
+                                           title="{{ $item->judul }}">
+
                                             <div class="position-relative bg-dark-gray border-radius-6px overflow-hidden">
-                                                <img src="{{ url('storage/uploads/flayer/'.$i.'.jpg') }}" alt="Image {{ $i }}" />
-                                                <div class="d-flex align-items-center justify-content-center position-absolute top-0px left-0px w-100 h-100 gallery-hover move-bottom-top">
+
+                                                <img src="{{ asset($item->gambar) }}"
+                                                     alt="{{ $item->judul }}" />
+
+                                                <div class="d-flex align-items-center justify-content-center position-absolute top-0 start-0 w-100 h-100 gallery-hover move-bottom-top">
                                                     <i class="feather icon-feather-search icon-very-medium text-white"></i>
                                                 </div>
+
                                             </div>
                                         </a>
                                     </div>
                                 </div>
                                 <!-- end gallery item -->
-                            @endfor
+                            @endforeach
                             {{--<!-- start gallery item -->
                             <div class="swiper-slide transition-inner-all">
                                 <div class="gallery-box">

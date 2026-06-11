@@ -78,6 +78,18 @@
                             </select>
                             <!--end::Select2-->
                         </div>
+                        @role('Admin')
+                        <div class="w-100 mw-200px">
+                            <select id="filterPerusahaan" class="form-select form-select-solid" data-allow-clear="true" data-control="select2"
+                                    data-placeholder="Filter Perusahaan">
+                                <option value="">Semua Perusahaan</option>
+                                @foreach(\App\Models\User::role('Perusahaan')->get() as $p)
+                                    <option value="{{ $p->id }}">{{ $p->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @endrole
+                        <a href="javascript:void(0)" id="btnExport" class="btn btn-success">Export</a>
                         <!--begin::Add product-->
 {{--                        <a href="{{ url('app/lowongan/create') }}" class="btn btn-primary">Add Lowongan</a>--}}
                         <!--end::Add product-->

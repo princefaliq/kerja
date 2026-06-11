@@ -10,6 +10,7 @@ class Absensi extends Model
     use HasFactory;
     protected $fillable = [
         'user_id',
+        'acara_id',
         'kode_acara',
         'waktu_absen',
         'lokasi',
@@ -21,5 +22,9 @@ class Absensi extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    public function acara()
+    {
+        return $this->belongsTo(Acara::class);
     }
 }

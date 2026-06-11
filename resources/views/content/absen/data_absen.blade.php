@@ -11,7 +11,7 @@
                 { data: 'no', title: 'No' },
                 { data: 'nama', title: 'Nama' },
                 { data: 'email', title: 'Email' },
-                { data: 'kode_acara', title: 'Kode Acara' },
+                { data: 'acara', title: 'Acara' },
                 { data: 'lokasi', title: 'Lokasi' },
                 { data: 'waktu_absen', title: 'Waktu Absen', className: 'text-end' }
             ],

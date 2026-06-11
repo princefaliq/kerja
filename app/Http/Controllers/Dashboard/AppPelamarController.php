@@ -7,6 +7,9 @@ use App\Models\Pelamar;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
 
 class AppPelamarController extends Controller
@@ -75,17 +78,18 @@ class AppPelamarController extends Controller
                         : '-';
                 })
                 ->addColumn('status', function ($u) {
-                    $status = $u->status ?? 'inactive';
 
-                    if ($status === 'active') {
-                        $badgeClass = 'badge-light-success';
-                    } elseif ($status === 'inactive') {
-                        $badgeClass = 'badge-light-danger';
-                    } else {
-                        $badgeClass = 'badge-light-warning';
+                    if ($u->status == 'aktif') {
+
+                        return '<span class="badge badge-light-success">Aktif</span>';
+
+                    } elseif ($u->status == 'diblokir') {
+
+                        return '<span class="badge badge-light-danger">Diblokir</span>';
+
                     }
 
-                    return "<span class='badge {$badgeClass} fw-bold text-uppercase'>{$status}</span>";
+                    return '<span class="badge badge-light-warning">Nonaktif</span>';
                 })
                 ->addColumn('id', function ($u) {
                     return $u->id;
@@ -104,5 +108,80 @@ class AppPelamarController extends Controller
 
         return view('content.user.pelamar.detail_pelamaran',compact('profile'));
 
+    }
+    public function toggleStatus($id)
+    {
+        $user = User::findOrFail($id);
+
+        $user->status = $user->status == 'aktif'
+            ? 'nonaktif'
+            : 'aktif';
+
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status berhasil diperbarui'
+        ]);
+    }
+    public function toggleBlock($id)
+    {
+        $user = User::findOrFail($id);
+
+        if ($user->status == 'diblokir') {
+
+            $user->status = 'aktif';
+
+        } else {
+
+            $user->status = 'diblokir';
+
+        }
+
+        $user->save();
+
+        return response()->json([
+            'success' => true
+        ]);
+    }
+
+    public function cleanFiles($id)
+    {
+        $user = User::findOrFail($id);
+
+        $pelamar = Pelamar::where('user_id', $id)->first();
+
+        if (!$pelamar) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data pelamar tidak ditemukan.'
+            ], 404);
+        }
+
+        // Folder tempat seluruh file pelamar disimpan
+        $folder = 'uploads/profile/' . Str::slug($user->name, '_') . '_' . $user->id;
+
+        // Hapus seluruh folder beserta isinya
+        Storage::disk('public')->deleteDirectory($folder);
+
+        // Kosongkan kolom file di database
+        $pelamar->update([
+            'ktp'         => null,
+            'cv'          => null,
+            'ijazah'      => null,
+            'ak1'         => null,
+            'sertifikat'  => null,
+            'syarat_lain' => null,
+        ]);
+
+        // Kosongkan avatar user jika ada
+        $user->update([
+            'avatar' => null,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Seluruh file pelamar berhasil dibersihkan.'
+        ]);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Absensi;
+use App\Models\Acara;
 use App\Models\Lamaran;
 use App\Models\Lowongan;
 use App\Models\Pelamar;
@@ -17,8 +18,8 @@ class DashboardController extends Controller
 {
     public function index()
     {
-
-        return view('content.dashboard.dashboard');
+        $acaras = Acara::orderBy('tanggal_mulai', 'desc')->get();
+        return view('content.dashboard.dashboard',compact('acaras'));
     }
 
     public function getUserData()
@@ -38,41 +39,114 @@ class DashboardController extends Controller
             'percentage' => $percentage
         ]);
     }
-    public function widgetData()
+    public function widgetData(Request $request)
     {
+        $filterAcara = $request->acara_id;
+        $tanggalAwal = $request->tanggal_awal;
+        $tanggalAkhir = $request->tanggal_akhir;
+
         $user = auth()->user();
+
         $totalUser = User::whereHas('roles', fn($q) => $q->where('name', 'User'))->count();
+
         $totalPerusahaan = User::whereHas('roles', fn($q) => $q->where('name', 'Perusahaan'))->count();
-        $totalPelamar = Pelamar::count();
-        $totalAbsen = Absensi::count();
 
+        $pelamarQuery = Pelamar::query();
+        $absenQuery = Absensi::query();
+        $lowonganQuery = Lowongan::query();
+        $lamaranQuery = Lamaran::query();
 
+        if ($tanggalAwal && $tanggalAkhir) {
+
+            $absenQuery->whereBetween(
+                'created_at',
+                [
+                    $tanggalAwal . ' 00:00:00',
+                    $tanggalAkhir . ' 23:59:59'
+                ]
+            );
+
+            $lowonganQuery->whereBetween(
+                'created_at',
+                [
+                    $tanggalAwal . ' 00:00:00',
+                    $tanggalAkhir . ' 23:59:59'
+                ]
+            );
+
+            $lamaranQuery->whereBetween(
+                'created_at',
+                [
+                    $tanggalAwal . ' 00:00:00',
+                    $tanggalAkhir . ' 23:59:59'
+                ]
+            );
+        }
+
+        if ($filterAcara == 'non_acara') {
+
+            $lowonganQuery->whereNull('acara_id');
+
+            $lamaranQuery->whereHas('lowongan', function ($q) {
+                $q->whereNull('acara_id');
+            });
+
+            $absenQuery->whereRaw('1=0');
+        }
+        elseif ($filterAcara) {
+
+            $absenQuery->where('acara_id', $filterAcara);
+
+            $lowonganQuery->where('acara_id', $filterAcara);
+
+            $lamaranQuery->whereHas('lowongan', function ($q) use ($filterAcara) {
+                $q->where('acara_id', $filterAcara);
+            });
+        }
+        $totalPelamar = $pelamarQuery->count();
+        $totalAbsen = $absenQuery->count();
         // Cek role user login
         if ($user->hasRole('Admin')) {
             // Admin: total semua lowongan aktif
-            $totalLowongan = Lowongan::where('status', 1)->sum('jumlah_lowongan');
-            $totalLamaran = Lamaran::count();
-            $totalTolak = Lamaran::where('status','ditolak')->count();
-            $totalTerima = Lamaran::where('status','diterima')->count();
+            $totalLowongan = (clone $lowonganQuery)
+                ->where('status', 1)
+                ->sum('jumlah_lowongan');
+
+            $totalLamaran = (clone $lamaranQuery)->count();
+
+            $totalTolak = (clone $lamaranQuery)
+                ->where('status', 'ditolak')
+                ->count();
+
+            $totalTerima = (clone $lamaranQuery)
+                ->where('status', 'diterima')
+                ->count();
         } elseif ($user->hasRole('Perusahaan')) {
             // Perusahaan: total lowongan miliknya sendiri
-            $totalLowongan = Lowongan::where('status', 1)
-                ->where('user_id', $user->id)
-                ->sum('jumlah_lowongan');
-            $totalLamaran = Lamaran::whereHas('lowongan', function ($q) use ($user) {
-                $q->where('user_id', $user->id);
-            })->count();
+            $lowonganPerusahaan = clone $lowonganQuery;
 
-            // total pelamar ditolak berdasarkan lowongan perusahaan yg login
-            $totalTolak = Lamaran::where('status', 'ditolak')
-                ->whereHas('lowongan', function($q) use ($user) {
+            $lowonganPerusahaan->where('user_id', $user->id);
+
+            $totalLowongan = (clone $lowonganPerusahaan)
+                ->where('status', 1)
+                ->sum('jumlah_lowongan');
+
+            $totalLamaran = (clone $lamaranQuery)
+                ->whereHas('lowongan', function ($q) use ($user) {
                     $q->where('user_id', $user->id);
                 })
                 ->count();
 
-            // total pelamar diterima
-            $totalTerima = Lamaran::where('status', 'diterima')
-                ->whereHas('lowongan', function($q) use ($user) {
+            $totalTolak = (clone $lamaranQuery)
+                ->where('status', 'ditolak')
+                ->whereHas('lowongan', function ($q) use ($user) {
+                    $q->where('user_id', $user->id);
+                })
+                ->count();
+
+            $totalTerima = (clone $lamaranQuery)
+                ->where('status', 'diterima')
+                ->whereHas('lowongan', function ($q) use ($user) {
                     $q->where('user_id', $user->id);
                 })
                 ->count();
@@ -84,31 +158,19 @@ class DashboardController extends Controller
             $totalTerima = 0;
         }
         // === DATA GRAFIK STATUS LAMARAN ===
+        $chartQuery = clone $lamaranQuery;
+
         if ($user->hasRole('Perusahaan')) {
-
-            // Perusahaan hanya melihat data dari lowongannya sendiri
-            $chartData = [
-                'dikirim' => Lamaran::where('status', 'dikirim')
-                    ->whereHas('lowongan', fn($q) => $q->where('user_id', $user->id))
-                    ->count(),
-
-                'ditolak' => Lamaran::where('status', 'ditolak')
-                    ->whereHas('lowongan', fn($q) => $q->where('user_id', $user->id))
-                    ->count(),
-
-                'diterima' => Lamaran::where('status', 'diterima')
-                    ->whereHas('lowongan', fn($q) => $q->where('user_id', $user->id))
-                    ->count(),
-            ];
-
-        } else {
-            // Admin & user lain → munculkan semua tanpa filter
-            $chartData = [
-                'dikirim' => Lamaran::where('status', 'dikirim')->count(),
-                'ditolak' => Lamaran::where('status', 'ditolak')->count(),
-                'diterima' => Lamaran::where('status', 'diterima')->count(),
-            ];
+            $chartQuery->whereHas('lowongan', function ($q) use ($user) {
+                $q->where('user_id', $user->id);
+            });
         }
+
+        $chartData = [
+            'dikirim' => (clone $chartQuery)->where('status', 'dikirim')->count(),
+            'ditolak' => (clone $chartQuery)->where('status', 'ditolak')->count(),
+            'diterima' => (clone $chartQuery)->where('status', 'diterima')->count(),
+        ];
         return response()->json([
             'user' => $totalUser,
             'perusahaan' => $totalPerusahaan,

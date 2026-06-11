@@ -9,11 +9,13 @@
         let table = $('#dataLamaran').DataTable({
             processing: true,
             serverSide: true,
+
             ajax: {
                 url: `${baseUrl}/app/lamaran`, // gunakan baseUrl
                 type: 'GET',
                 data: function (d) {
                     d.status = $('[data-kt-ecommerce-product-filter="status"]').val(); // kirim status ke server
+                    d.perusahaan_id = $('#filterPerusahaan').val(); // ⬅️ kirim perusahaan
                 }
             },
             columns: [
@@ -121,10 +123,20 @@
         $('[data-kt-ecommerce-product-filter="search"]').on('keyup', function () {
             table.search(this.value).draw();
         });
-
+        // filter perusahaan
+        $('#filterPerusahaan').on('change', function () {
+            table.ajax.reload();
+        });
         // Filter status
         $('[data-kt-ecommerce-product-filter="status"]').on('change', function () {
             table.ajax.reload();
+        });
+        // TAMBAH TOMBOL EXPORT
+        $('#btnExport').on('click', function () {
+            const perusahaan = $('#filterPerusahaan').val() ?? '';
+            const status = $('[data-kt-ecommerce-product-filter="status"]').val() ?? 'all';
+
+            window.location = `${baseUrl}/app/lamaran/export?perusahaan_id=${perusahaan}&status=${status}`;
         });
         // Fungsi ubah status lamaran
         window.updateStatus = function (id, status) {

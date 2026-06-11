@@ -12,6 +12,7 @@ class Acara extends Model
     protected $table = 'acara';
     protected $fillable = [
         'nama_acara',
+        'lokasi',
         'tanggal_mulai',
         'waktu_mulai',
         'tanggal_selesai',
@@ -54,5 +55,14 @@ class Acara extends Model
     public function lowongan()
     {
         return $this->hasMany(Lowongan::class, 'acara_id');
+    }
+    public function absensis()
+    {
+        return $this->hasMany(Absensi::class);
+    }
+
+    public function qrTokens()
+    {
+        return $this->hasMany(QrToken::class);
     }
 }

@@ -91,8 +91,43 @@
     <div id="kt_content_container" class="d-flex flex-column-fluid align-items-start container-xxl">
         <!--begin::Post-->
         <div class="content flex-row-fluid" id="kt_content">
+
             <!--begin::Row-->
             <div class="card card-xl-stretch bg-body border-0 mt-10 shadow-sm">
+                <div class="card-header">
+                    <div class="row w-100 mt-4 mb-4">
+
+                        <div class="col-md-4">
+                            <label class="form-label">Acara</label>
+                            <select class="form-select" id="filterAcara">
+                                <option value="">Semua Acara</option>
+                                <option value="non_acara">Non Acara</option>
+                                @foreach($acaras as $acara)
+                                    <option value="{{ $acara->id }}">
+                                        {{ $acara->nama_acara }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Tanggal Awal</label>
+                            <input type="date" class="form-control" id="tanggalAwal">
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Tanggal Akhir</label>
+                            <input type="date" class="form-control" id="tanggalAkhir">
+                        </div>
+
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button class="btn btn-primary w-100" id="btnFilter">
+                                Filter
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
                 <div class="card-body">
                     <div class="row gy-0 gx-10">
                         <!--begin::Col-->

@@ -7,6 +7,7 @@ use App\Http\Controllers\Crafto\PerusahaanController;
 use App\Http\Controllers\Crafto\ProfileController;
 use App\Http\Controllers\Crafto\TestimoniController;
 use App\Http\Controllers\Dashboard\AppAbsenController;
+use App\Http\Controllers\Dashboard\AppInformasiController;
 use App\Http\Controllers\Dashboard\AppLamaranController;
 use App\Http\Controllers\Dashboard\AppLowonganController;
 use App\Http\Controllers\Dashboard\AppMyprofileController;
@@ -78,7 +79,7 @@ Route::group([
 
     Route::any('/artikel', [AppLowonganController::class, 'index'])->name('artikel.index');
     Route::post('/testimoni/store', [TestimoniController::class, 'store'])->name('testimoni.store');
-    Route::get('/absen/scan/{kode}', [AppAbsenController::class, 'store'])->name('absen.scan');
+    Route::get('/absen/scan', [AppAbsenController::class, 'store'])->name('absen.scan');
     });
 
 
@@ -87,7 +88,35 @@ Route::group([
     Route::get('/lamaran-saya', [LamarController::class, 'index'])->name('lamaran.saya');
 
 });
+Route::group([
+    'prefix' => 'app/informasi',
+    'middleware' =>['auth','role:Admin|Perusahaan'],
+],
+    function () {
 
+        Route::get('/', [AppInformasiController::class, 'index'])
+            ->name('informasi.index');
+
+        Route::get('/create', [AppInformasiController::class, 'create'])
+            ->name('informasi.create');
+
+        Route::post('/store', [AppInformasiController::class, 'store'])
+            ->name('informasi.store');
+
+        Route::get('/edit/{informasi}', [AppInformasiController::class, 'edit'])
+            ->name('informasi.edit');
+
+        Route::put('/update/{informasi}', [AppInformasiController::class, 'update'])
+            ->name('informasi.update');
+
+        Route::delete('/destroy/{informasi}', [AppInformasiController::class, 'destroy'])
+            ->name('informasi.destroy');
+
+        Route::post('/toggle-status', [AppInformasiController::class, 'toggleStatus'])
+                ->name('informasi.toggleStatus');
+
+    }
+);
 
 Route::group([
     'prefix' => '/app',
@@ -115,11 +144,16 @@ Route::group([
 
         //role admin|perusahaan
         Route::any('lowongan', [AppLowonganController::class, 'index'])->name('lowongan.index');
-        Route::get('lowongan/qrcode/{slug}', [AppLowonganController::class, 'qrcode'])->name('lowongan.qrcode');
-        Route::get('lowongan/qrcode/download/{slug}', [AppLowonganController::class, 'downloadQrcode'])->name('lowongan.qrcode.download');
+        Route::get('lowongan/qrcode/download/{slug}', [AppLowonganController::class, 'downloadQrcode'])
+            ->where('slug', '.*')
+            ->name('lowongan.qrcode.download');
+        Route::get('lowongan/qrcode/{slug}', [AppLowonganController::class, 'qrcode'])
+            ->where('slug', '.*')
+            ->name('lowongan.qrcode');
+
         Route::get('lowongan/edit/{id}', [AppLowonganController::class, 'edit'])->name('lowongan.edit');
         Route::put('lowongan/update/{id}', [AppLowonganController::class, 'update'])->name('lowongan.update');
-
+        Route::get('lamaran/export', [AppLamaranController::class, 'export']);
         Route::middleware('role:Perusahaan')->group(function () {
 
             Route::get('/lamaran/{id}', [AppLamaranController::class, 'show'])->name('lamaran.show');

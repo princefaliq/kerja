@@ -9,7 +9,7 @@ class QrToken extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'kode_acara',
+        'acara_id',
         'token',
         'digunakan',
         'expired_at',
@@ -19,4 +19,8 @@ class QrToken extends Model
         'digunakan' => 'boolean',
         'expired_at' => 'datetime',
     ];
+    public function acara()
+    {
+        return $this->belongsTo(Acara::class);
+    }
 }

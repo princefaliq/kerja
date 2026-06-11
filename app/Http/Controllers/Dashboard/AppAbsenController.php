@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Absensi;
+use App\Models\Acara;
 use App\Models\QrToken;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -22,7 +23,15 @@ class AppAbsenController extends Controller
     }
     public function generate()
     {
-        $kodeAcara = 'JOBFAIR2025';
+        $acara = Acara::latest()->first();
+
+        if (!$acara) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Belum ada acara aktif'
+            ], 422);
+        }
+
 
         // bersihkan token lama
         \App\Models\QrToken::where('expired_at', '<', now())->delete();
@@ -30,13 +39,15 @@ class AppAbsenController extends Controller
         $token = \Str::random(32);
         $ttl = 60; // detik berlaku
 
-        $qr = \App\Models\QrToken::create([
-            'kode_acara' => $kodeAcara,
+        $qr = QrToken::create([
+            'acara_id' => $acara->id,
             'token' => $token,
             'expired_at' => now()->addSeconds($ttl),
         ]);
 
-        $url = route('absen.scan', ['kode' => $kodeAcara, 'token' => $token]);
+        $url = route('absen.scan', [
+            'token' => $token
+        ]);
         $svg = \QrCode::format('svg')->size(250)->generate($url);
 
         return response()->json([
@@ -46,14 +57,13 @@ class AppAbsenController extends Controller
         ]);
     }
 
-    public function store($kode, Request $request)
+    public function store(Request $request)
     {
         $token = $request->query('token');
         $lokasi = $request->query('lokasi'); // 🔹 tangkap lokasi dari URL
 
         // Cek token QR valid?
-        $validToken = QrToken::where('kode_acara', $kode)
-            ->where('token', $token)
+        $validToken = QrToken::where('token', $token)
             ->where('expired_at', '>', now())
             ->where('digunakan', false)
             ->first();
@@ -61,10 +71,10 @@ class AppAbsenController extends Controller
         if (!$validToken) {
             return redirect()->route('profile.index')->with('error', 'QR tidak valid atau sudah kedaluwarsa.');
         }
-
+        $acara=Acara::findOrFail($validToken->acara_id);
         // Cek apakah user sudah pernah absen untuk acara ini
         $sudahAbsen = Absensi::where('user_id', Auth::id())
-            ->where('kode_acara', $kode)
+            ->where('acara_id', $validToken->acara_id)
             ->exists();
 
         if ($sudahAbsen) {
@@ -74,9 +84,10 @@ class AppAbsenController extends Controller
         // Simpan data absensi
         Absensi::create([
             'user_id' => Auth::id(),
-            'kode_acara' => $kode,
+            'acara_id' => $validToken->acara_id,
             'waktu_absen' => now(),
-            'lokasi' => $lokasi ?? 'Job Fair Bondowoso 2025', // 🔹 gunakan lokasi dari URL jika ada
+            'lokasi' => $lokasi,
+            'kode_acara' => $acara->nama_acara,
         ]);
 
         // Tandai token sudah digunakan
@@ -104,12 +115,12 @@ class AppAbsenController extends Controller
     }
     public function data()
     {
-        $items = Absensi::with('user')
+        $items = Absensi::with(['user', 'acara'])
             ->orderByDesc('waktu_absen')
             ->get();
 
         $data = $items->map(function ($item, $index) {
-            // pastikan waktu_absen selalu terformat dengan aman
+
             $waktu = $item->waktu_absen
                 ? Carbon::parse($item->waktu_absen)->format('d M Y H:i:s')
                 : '-';
@@ -119,7 +130,7 @@ class AppAbsenController extends Controller
                 'no' => $index + 1,
                 'nama' => $item->user->name ?? '-',
                 'email' => $item->user->email ?? '-',
-                'kode_acara' => $item->kode_acara,
+                'acara' => $item->acara->nama_acara ?? '-',
                 'lokasi' => $item->lokasi ?? '-',
                 'waktu_absen' => $waktu,
             ];

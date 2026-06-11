@@ -1,5 +1,6 @@
 @extends('crafto.master')
-@section('title','Detil Lowongan Kerja')
+@section('title', $lowongan->judul )
+@section('description', strip_tags($lowongan->deskripsi_pekerjaan))
 @push('css')
     <style>
         .card-custom {
@@ -60,7 +61,7 @@
                         <a href="#" class="me-25px text-dark-gray fw-500 section-link xs-me-0"><i class="feather icon-feather-calendar text-golden-yellow"></i> Diposting {{ $lowongan->created_at ? $lowongan->created_at->diffForHumans() : '-' }}</a>
                     </div>
                     <div class="d-block d-sm-flex align-items-center mb-30px">
-                        <a href="#" class="me-25px text-dark-gray fw-500 section-link xs-me-0"><i class="feather icon-feather-bell text-golden-yellow"></i> Batas waktu lamaran kurang {{ $lowongan->batas_lamaran ? $lowongan->batas_lamaran->endOfDay()->diffForHumans() : '-' }} - {{  \Carbon\Carbon::parse($lowongan->batas_lamaran)->translatedFormat('d F Y') }}</a>
+                        <a href="#" class="me-25px text-dark-gray fw-500 section-link xs-me-0"><i class="feather icon-feather-bell text-golden-yellow"></i> Batas waktu lamaran {{ $lowongan->batas_lamaran ? $lowongan->batas_lamaran->endOfDay()->diffForHumans() : '-' }} - {{  \Carbon\Carbon::parse($lowongan->batas_lamaran)->translatedFormat('d F Y') }}</a>
                     </div>
                     <div class="mb-2 h-1px w-100 bg-extra-medium-gray sm-mt-10px xs-mb-8"></div>
                     <div class="row mb-10px">

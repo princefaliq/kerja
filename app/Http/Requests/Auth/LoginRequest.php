@@ -88,15 +88,26 @@ class LoginRequest extends FormRequest
             ]);
         }
 // 🔹 Cek status user (ganti 'aktif' sesuai tipe datamu)
-        if ($user->status !== 'aktif') { // atau !$user->status jika boolean
-            // jika user PERUSAHAAN → TIDAK PERLU verifikasi email
+        // 🔹 Cek status user
+
+        if ($user->status === 'diblokir') {
+
+            throw ValidationException::withMessages([
+                'login' => __('Akun Anda telah diblokir oleh administrator.'),
+            ]);
+        }
+
+        if ($user->status === 'nonaktif') {
+
+            // jika user PERUSAHAAN
             if ($user->hasRole('Perusahaan')) {
                 throw ValidationException::withMessages([
                     'login' => __('Akun perusahaan Anda belum diaktifkan admin. Akan ada email jika sudah diaktifkan.'),
                 ]);
             }
+
             throw ValidationException::withMessages([
-                'login' => __('Akun Anda tidak aktif.'),
+                'login' => __('Akun Anda belum aktif. Silakan cek email verifikasi.'),
             ]);
         }
         if (! Auth::attempt($credentials, $this->boolean('remember'))) {

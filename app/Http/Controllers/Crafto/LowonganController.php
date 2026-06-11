@@ -161,9 +161,12 @@ class LowonganController extends Controller
             abort(404, 'Lowongan tidak ditemukan.');
         }
 
-        if ($lowongan->status == 0 && !auth()->user()->hasRole('Admin')) {
+        $isAdmin = auth()->check() && auth()->user()->hasRole('Admin');
+
+        if ($lowongan->status == 0 && !$isAdmin) {
             abort(404, 'Lowongan tidak ditemukan.');
         }
+
 
 
         $sudahMelamar = $sudahIsi = $sudahAbsen = false;

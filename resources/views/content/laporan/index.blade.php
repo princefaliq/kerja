@@ -65,16 +65,41 @@
                     </div>
                     <!--end::Card title-->
                     <!--begin::Card toolbar-->
-                    <div class="card-toolbar">
-                        <a href="{{ route('laporan.export') }}" class="btn btn-success me-2 hover-elevate-down">
-                            <i class="bi bi-file-earmark-excel me-2"></i> Export Excel
+                    <div class="card-toolbar d-flex align-items-center gap-2 flex-wrap">
+
+                        <form method="GET" class="m-0">
+                            <select name="id_acara"
+                                    class="form-select form-select-sm w-250px"
+                                    onchange="this.form.submit()">
+                                <option value="">Semua Acara</option>
+
+                                @foreach($acaras as $acara)
+                                    <option value="{{ $acara->id }}"
+                                        {{ request('id_acara') == $acara->id ? 'selected' : '' }}>
+                                        {{ $acara->nama_acara }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </form>
+
+                        <a href="{{ route('laporan.export') }}"
+                           class="btn btn-success hover-elevate-down">
+                            <i class="bi bi-file-earmark-excel me-2"></i>
+                            Export Excel
                         </a>
-                        <a href="{{ route('laporan.export.summary') }}" class="btn btn-outline btn-outline-dashed btn-outline-success btn-active-light-success hover-elevate-down me-2">
-                            <i class="bi bi-file-earmark-excel me-2"></i> Export Rekap (Excel)
+
+                        <a href="{{ route('laporan.export.summary') }}"
+                           class="btn btn-outline btn-outline-dashed btn-outline-success btn-active-light-success hover-elevate-down">
+                            <i class="bi bi-file-earmark-excel me-2"></i>
+                            Export Rekap
                         </a>
-                        <button onclick="printReport()" class="btn btn-primary hover-elevate-down no-print">
-                            <i class="bi bi-printer me-2"></i> Cetak Laporan
+
+                        <button onclick="printReport()"
+                                class="btn btn-primary hover-elevate-down no-print">
+                            <i class="bi bi-printer me-2"></i>
+                            Cetak
                         </button>
+
                     </div>
                     <!--end::Card toolbar-->
                 </div>
@@ -150,17 +175,52 @@
     <script>
         const dataPendidikan = @json($dataPendidikan ?? []);
         const dataKabupaten = @json($dataKabupaten ?? []);
-
+        const kategori = @json($kategori);
+        const laki = @json($laki);
+        const perempuan = @json($perempuan);
         // ===== Chart Pendidikan =====
-        var chartPendidikan = new ApexCharts(document.querySelector("#chartPendidikan"), {
-            series: [{ name: 'Jumlah', data: Object.values(dataPendidikan) }],
-            chart: { type: 'bar', height: 350, toolbar: { show: false } },
-            plotOptions: { bar: { borderRadius: 6, columnWidth: '45%' } },
-            dataLabels: { enabled: false },
-            xaxis: { categories: Object.keys(dataPendidikan), labels: { style: { fontSize: '13px' } } },
-            colors: ['#0d6efd'],
-            yaxis: { title: { text: 'Jumlah Pencaker' } }
-        });
+        var chartPendidikan = new ApexCharts(
+            document.querySelector("#chartPendidikan"),
+            {
+                series: [
+                    {
+                        name: 'Laki-laki',
+                        data: laki
+                    },
+                    {
+                        name: 'Perempuan',
+                        data: perempuan
+                    }
+                ],
+                chart: {
+                    type: 'bar',
+                    height: 350,
+
+                    toolbar: {
+                        show: false
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        borderRadius: 4,
+                        columnWidth: '55%'
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                xaxis: {
+                    categories: kategori
+                },
+                colors: ['#0d6efd', '#e83e8c'],
+                yaxis: {
+                    title: {
+                        text: 'Jumlah Pencaker'
+                    }
+                }
+            }
+        );
+
         chartPendidikan.render();
 
         // ===== Chart Kabupaten =====

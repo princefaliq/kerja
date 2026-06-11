@@ -79,17 +79,16 @@ class AppPerusahaanController extends Controller
                         : '-';
                 })
                 ->addColumn('status', function ($u) {
-                    $status = $u->status ?? 'nonaktif';
 
-                    if ($status === 'aktif') {
-                        $badgeClass = 'badge-light-success';
-                    } elseif ($status === 'nonaktif') {
-                        $badgeClass = 'badge-light-danger';
-                    } else {
-                        $badgeClass = 'badge-light-warning';
+                    if ($u->status === 'aktif') {
+                        return "<span class='badge badge-light-success fw-bold'>AKTIF</span>";
                     }
 
-                    return "<span class='badge {$badgeClass} fw-bold text-uppercase'>{$status}</span>";
+                    if ($u->status === 'diblokir') {
+                        return "<span class='badge badge-light-danger fw-bold'>DIBLOKIR</span>";
+                    }
+
+                    return "<span class='badge badge-light-warning fw-bold'>NONAKTIF</span>";
                 })
                 ->addColumn('status_raw', function ($u) {
                     return $u->status ?? 'nonaktif';

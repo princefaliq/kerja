@@ -38,6 +38,7 @@ class AppAcaraController extends Controller
     {
         $request->validate([
             'nama_acara'      => 'required|string|max:255',
+            'lokasi'          => 'nullable|string|max:500',
             'tanggal_mulai'   => 'required|date',
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
             'waktu_mulai'     => 'required|date_format:H:i',
@@ -47,6 +48,7 @@ class AppAcaraController extends Controller
 
         Acara::create([
             'nama_acara'      => $request->nama_acara,
+            'lokasi'          => $request->lokasi,
             'tanggal_mulai'   => $request->tanggal_mulai,
             'waktu_mulai'     => $request->waktu_mulai,
             'tanggal_selesai' => $request->tanggal_selesai,
@@ -84,6 +86,7 @@ class AppAcaraController extends Controller
         }
         $request->validate([
             'nama_acara'       => 'required|string|max:255',
+            'lokasi'           => 'nullable|string|max:500',
 
             'tanggal_mulai'    => 'required|date',
             'tanggal_selesai'  => 'required|date|after_or_equal:tanggal_mulai',
@@ -96,6 +99,7 @@ class AppAcaraController extends Controller
 
         $acara->update([
             'nama_acara'       => $request->nama_acara,
+            'lokasi'           => $request->lokasi,
             'tanggal_mulai'    => $request->tanggal_mulai,
             'waktu_mulai'      => $request->waktu_mulai,
             'tanggal_selesai'  => $request->tanggal_selesai,

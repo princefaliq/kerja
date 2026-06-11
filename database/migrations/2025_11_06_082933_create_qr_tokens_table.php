@@ -15,7 +15,9 @@ class CreateQrTokensTable extends Migration
     {
         Schema::create('qr_tokens', function (Blueprint $table) {
             $table->id();
-            $table->string('kode_acara'); // relasi logika ke acara/jenis absensi
+            $table->foreignId('acara_id')
+                ->constrained('acara')
+                ->cascadeOnDelete();
             $table->string('token')->unique(); // token unik di QR
             $table->boolean('digunakan')->default(false); // sudah dipakai atau belum
             $table->timestamp('expired_at'); // waktu kedaluwarsa token

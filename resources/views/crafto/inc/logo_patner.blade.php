@@ -38,14 +38,14 @@
             fetch("{{ route('perusahaan.list') }}")
                 .then(res => res.json())
                 .then(data => {
-
+                    console.log(data)
                     const container = document.getElementById("perusahaan-list");
                     container.innerHTML = "";
                     const baseUrl = "{{ url('perusahaan/') }}/";
                     data.forEach(item => {
                         const slide = `
                 <div class="swiper-slide">
-                    <a href="${baseUrl+item.id}" title="${item.name}">
+                    <a href="${baseUrl+item.slug}" title="${item.name}">
                         <img src="${item.avatar_url}" alt="${item.name}"
                             class="h-100px xs-h-30px"
                             >

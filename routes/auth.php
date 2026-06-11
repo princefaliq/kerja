@@ -5,6 +5,7 @@ use App\Http\Controllers\Crafto\LowonganController;
 use App\Http\Controllers\Crafto\LupaPaswordController;
 use App\Http\Controllers\Dashboard\AppAbsenController;
 use App\Http\Controllers\Dashboard\AppAcaraController;
+use App\Http\Controllers\Dashboard\AppLamaranController;
 use App\Http\Controllers\Dashboard\AppLaporanController;
 use App\Http\Controllers\Dashboard\AppLowonganController;
 use App\Http\Controllers\Dashboard\AppMyprofileController;
@@ -51,6 +52,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('app/logout', [AuthenticatedSessionController::class, 'destroy'])
                 ->name('logout');
+
 });
 Route::group([
     'prefix' => '/app',
@@ -58,7 +60,7 @@ Route::group([
 ],
     function () {
 
-        // Rute untuk pengguna dengan peran 'admin'
+        // Route untuk pengguna dengan peran 'admin'
         Route::middleware('role:Admin')->group(function () {
             Route::any('user', [UserController::class, 'index'])->name('user.index');
             Route::get('user/create', [UserController::class, 'create'])->name('user.create');
@@ -71,11 +73,23 @@ Route::group([
             Route::post('/perusahaan/toggle-status', [AppPerusahaanController::class, 'toggleStatus'])
                 ->name('perusahaan.toggleStatus');
 
+
+
             Route::get('perusahaan/data', [AppPerusahaanController::class, 'data'])->name('perusahaan.data');
             Route::get('perusahaan', [AppPerusahaanController::class, 'index'])->name('perusahaan.index')->name('perusahaan.index');
 
             Route::get('pelamar', [AppPelamarController::class, 'index'])->name('pelamar.index')->name('pelamar.index');
             Route::get('pelamar/data', [AppPelamarController::class, 'data'])->name('pelamar.data');
+            Route::post('/pelamar/{id}/toggle-status', [AppPelamarController::class, 'toggleStatus'])
+                ->name('pelamar.toggle-status');
+            Route::post(
+                '/pelamar/{id}/toggle-block',
+                [AppPelamarController::class, 'toggleBlock']
+            )->name('pelamar.toggle-block');
+            Route::post(
+                '/pelamar/{id}/clean-files',
+                [AppPelamarController::class, 'cleanFiles']
+            )->name('pelamar.clean-files');
             Route::get('myprofile/{id}', [AppMyprofileController::class, 'show'])->name('myprofile.show');
 
             Route::get('absen/qr', [AppAbsenController::class, 'index'])->name('absen.qr.index');

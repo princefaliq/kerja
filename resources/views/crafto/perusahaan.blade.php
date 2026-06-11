@@ -1,6 +1,6 @@
 @extends('crafto.master')
 @section('title','Profile Perusahaan')
-
+@section('description', strip_tags($perusahaan->deskripsi))
 @push('css')
 
     <style>

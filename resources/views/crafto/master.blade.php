@@ -4,7 +4,8 @@
 <head>
     <title>@yield('title') | {{ config('app.name') }}</title>
     <meta charset="utf-8">
-    <meta name="description" content="Kerja Berkah adalah portal resmi di bawah Dinas Penanaman Modal, Pelayanan Terpadu Satu Pintu (DPMPTSP) dan Tenaga Kerja Kabupaten Bondowoso yang menyediakan informasi lowongan kerja terbaru, sistem pencarian kerja, serta layanan ketenagakerjaan untuk masyarakat Bondowoso." />
+
+    <meta name="description" content="@yield('description','Kerja Berkah adalah portal resmi di bawah Dinas Penanaman Modal, Pelayanan Terpadu Satu Pintu (DPMPTSP) dan Tenaga Kerja Kabupaten Bondowoso yang menyediakan informasi lowongan kerja terbaru, sistem pencarian kerja, serta layanan ketenagakerjaan untuk masyarakat Bondowoso.')" />
     <meta name="keywords" content="kerja berkah, lowongan kerja bondowoso, DPMPTSP Bondowoso, tenaga kerja bondowoso, portal kerja resmi, info loker bondowoso, pencarian kerja, pekerjaan terbaru bondowoso, karier bondowoso, dinas tenaga kerja bondowoso, sistem pencari kerja, lowongan pemerintah bondowoso" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta property="og:locale" content="id_ID" />
@@ -170,9 +171,20 @@
         <div class="row justify-content-center text-center text-sm-start">
             <!-- start footer column -->
             <div class="col-lg-3 col-sm-6 md-mb-35px">
-                <span class="alt-font d-block text-white mb-10px fs-20"><i class="feather icon-feather-map-pin align-text-bottom icon-extra-medium text-base-color me-10px"></i>Job Fair 2025</span>
-                <p class="w-80 lg-w-100 md-w-70 sm-w-90 xs-w-100 mb-5px">GOR PELITA, Jl. Letjen Sutarman, Kec. Bondowoso,</p>
-                <a href="https://maps.app.goo.gl/kWuz7dLJzHrPp8PN9" target="_blank" class="text-decoration-line-bottom text-uppercase fs-15 alt-font fw-500">Get directions</a>
+                <span class="alt-font d-block text-white mb-10px fs-20">
+                    <i class="feather icon-feather-map-pin align-text-bottom icon-extra-medium text-base-color me-10px"></i>
+                    {{ $acara->nama_acara }}
+                </span>
+
+                <p class="w-80 lg-w-100 md-w-70 sm-w-90 xs-w-100 mb-5px">
+                    {{ $acara->lokasi }}
+                </p>
+
+                <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($acara->lokasi) }}"
+                   target="_blank"
+                   class="text-decoration-line-bottom text-uppercase fs-15 alt-font fw-500">
+                    Get directions
+                </a>
             </div>
             <!-- end footer column -->
             <!-- start footer column -->
