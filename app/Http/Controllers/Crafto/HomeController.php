@@ -65,6 +65,7 @@ class HomeController extends Controller
         $perusahaans = User::whereHas('roles', function ($q) {
             $q->where('name', 'Perusahaan');
         })
+            ->where('status', 'aktif')
             ->with('perusahaan') // <-- load relasi
             ->select('id', 'name', 'avatar')
             ->latest()
